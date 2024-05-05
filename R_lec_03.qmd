@@ -1,0 +1,276 @@
+---
+title: "Data Import and Tidying"
+author: Sang-Il Lee
+title-slide-attributes: 
+  data-background-image: R_2.gif
+  data-background-position: 85% 5%
+  data-background-size: 20%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: false
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+---
+
+# Data Import
+
+## A data science process with R: 1st step
+
+![](images/clipboard-1225375471.png)
+
+## `readr` package
+
+![](images/clipboard-1251213286.png){fig-align="center"}
+
+## Main functions of `readr` package
+
+| Names          | Formats                                    |
+|----------------|--------------------------------------------|
+| `read_csv()`   | 콤마분리(comma-separated values, CSV) 형식 |
+| `read_csv2()`  | 세미콜론분리(semicolon-separated) 형식     |
+| `read_tsv()`   | 탭구분(tab-limited) 형식                   |
+| `read_delim()` | 여타의 구분 형식                           |
+| `read_fwf()`   | 고정폭(fixed-width) 형식                   |
+| `read_table()` | 공백구분 형식                              |
+| `read_log()`   | 아파치 형식(Apache-style)의 로그 파일      |
+
+## Main arguments of `read_csv()`
+
+-   컬럼명: `col_names`
+
+-   컬럼의 데이터 유형 지정과 파싱(parsing): `col_types = cols()`
+
+    -   `col_double()`
+
+    -   `col_integer()`
+
+    -   `col_character()`
+
+    -   `col_logical()`
+
+## Related packages
+
+::: {layout="[30,30, 30]" layout-valign="center"}
+![](images/clipboard-2419843589.png)
+
+![](images/clipboard-2386206028.png)
+
+![](images/clipboard-812069546.png)
+:::
+
+## `readxl` package
+
+-   `read_xls(), read_xlsx(), read_excel()`
+
+    -   `sheet`
+
+    -   `skip`
+
+    -   `col_names`
+
+    -   `col_types`: "skip", "guess", "text", "logical", "numeric", etc.
+
+## Another way
+
+![](images/clipboard-3854717875.png)
+
+# Tibble
+
+## `tibble` package
+
+-   A new type of dataframe provided by tidyverse
+
+![](images/clipboard-3459494907.png){fig-align="center"}
+
+## tibble vs. data.frame
+
+![](images/clipboard-2404269740.png){fig-align="center"}
+
+## Data viewer
+
+-   Like an Excel view
+
+-   How to initiate
+
+    -   `View()` function
+
+    -   Click on an icon in Environment window
+
+-   Functions
+
+    -   Sorting
+
+    -   Scrolling
+
+    -   Filtering
+
+    -   Searching
+
+## Data viewer
+
+![](images/clipboard-3652581161.png)
+
+## Data viewer
+
+![](images/clipboard-2907343879.png)
+
+# Data Tidying
+
+## `tidyr` package
+
+![](images/clipboard-1046439731.png){fig-align="center"}
+
+## The concept of tidy data
+
+![](images/clipboard-4067066416.png)
+
+## The concept of tidy data
+
+![](images/clipboard-3412852372.png)
+
+## The concept of tidy data
+
+-   개별 변수(variable)는 열(column) 하나를 차지한다. 즉, 개별 열에는 하나의 변수가 위치한다.
+
+-   개별 관측개체(observation)는 하나의 행(row)을 차지한다. 즉, 개별 행에는 하나의 관측개체가 위치한다.
+
+-   개별 값(value)은 하나의 셀(cell)을 차지한다. 즉, 개별 셀에는 하나의 값이 위치한다.
+
+## Examples: table1
+
+```{r}
+#| echo: true
+library(tidyverse)
+table1
+```
+
+## Examples: table2
+
+```{r}
+table2
+```
+
+## Examples: table3
+
+```{r}
+table3
+```
+
+## Benefits of tidy data
+
+![](images/clipboard-3106963859.png)
+
+## Benefits of tidy data
+
+![](images/clipboard-3609380673.png)
+
+## Benefits of tidy data
+
+![](images/clipboard-1736663833.png)
+
+## Core methods of data tidying
+
+![](images/clipboard-1179593338.png){fig-align="center"}
+
+## wide form vs. long form
+
+![](images/clipboard-2491549849.png){fig-align="center"}
+
+## Lengthening data
+
+::: panel-tabset
+## table4a
+
+```{r}
+#| echo: true
+table4a
+```
+
+## Result
+
+```{r}
+#| echo: true
+table4a |> 
+  pivot_longer(
+    cols = c(`1999`, `2000`),
+    names_to = "year", 
+    values_to = "cases"
+  )
+```
+:::
+
+## Lengthening data
+
+![](images/clipboard-2601245679.png)
+
+## Widening data
+
+::: panel-tabset
+## table2
+
+```{r}
+#| echo: true
+table2
+```
+
+## Result
+
+```{r}
+#| echo: true
+table2 |> 
+  pivot_wider(
+    id_cols = c(country, year),
+    names_from = type, 
+    values_from = count
+  )
+```
+:::
+
+## Widening data
+
+![](images/clipboard-3400622461.png)
+
+# Data Join
+
+## `dplyr` package
+
+![](images/clipboard-3059639685.png){fig-align="center"}
+
+## Keys
+
+![](images/clipboard-1575493085.png)
+
+## Types of join
+
+![](images/clipboard-1394869847.png){fig-align="center"}
+
+## Types of join
+
+::: {layout="[45, -5, 45]" layout-valign="center"}
+![](images/clipboard-3276497169.png)
+
+![](images/clipboard-1577298199.png)
+:::
+
+## Types of join
+
+::: {layout="[45, -5, 45]" layout-valign="center"}
+![](images/clipboard-2197162614.png){fig-align="center"}
+
+![](images/clipboard-2555805146.png){fig-align="center"}
+:::

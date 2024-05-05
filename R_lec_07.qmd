@@ -1,0 +1,370 @@
+---
+title: "Data Collection"
+author: Sang-Il Lee
+title-slide-attributes: 
+  # data-background-image: R_6.gif
+  data-background-position: 85% 5%
+  data-background-size: 10%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: false
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Collecting Data from Files on the Web
+
+## 
+
+::: {layout-ncol="3"}
+![](images/clipboard-1251213286.png)
+
+![](images/clipboard-2386206028.png)
+
+![](images/clipboard-3228177900.png)
+:::
+
+## `readr` package
+
+::: panel-tabset
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+library(tidyverse)
+library(readr)
+read_csv("https://pos.it/r4ds-students-csv")
+```
+
+## Result
+
+```{r}
+library(tidyverse)
+library(readr)
+read_csv("https://pos.it/r4ds-students-csv")
+```
+:::
+
+## `openxlsx` package
+
+::: panel-tabset
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+library(openxlsx)
+read.xlsx("https://github.com/awalker89/openxlsx/raw/master/inst/readTest.xlsx")
+```
+
+## Result
+
+```{r}
+library(openxlsx)
+read.xlsx("https://github.com/awalker89/openxlsx/raw/master/inst/readTest.xlsx")
+```
+:::
+
+## `googlesheet4` package
+
+::: panel-tabset
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+library(googlesheets4)
+gs4_deauth()
+read_sheet("https://docs.google.com/spreadsheets/d/1U6Cf_qEOhiR9AZqTqS3mbMF3zt2db48ZP5v3rkrAEJY/edit#gid=780868077")
+```
+
+## Result
+
+```{r}
+library(googlesheets4)
+gs4_deauth()
+read_sheet("https://docs.google.com/spreadsheets/d/1U6Cf_qEOhiR9AZqTqS3mbMF3zt2db48ZP5v3rkrAEJY/edit#gid=780868077")
+```
+:::
+
+# Web Scraping
+
+## `rvest` package
+
+![](images/clipboard-1209836452.png){fig-align="center"}
+
+## Example 1: Website
+
+[vignette("starwars")](https://rvest.tidyverse.org/articles/starwars.html)
+
+```{r}
+#| eval: false
+#| echo: true
+<section>
+  <h2 data-id="1">The Phantom Menace</h2>
+  <p>Released: 1999-05-19</p>
+  <p>Director: <span class="director">George Lucas</span></p>
+  
+  <div class="crawl">
+    <p>...</p>
+    <p>...</p>
+    <p>...</p>
+  </div>
+</section>
+```
+
+## Example 1: Title
+
+::: panel-tabset
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+library(rvest)
+url <- "https://rvest.tidyverse.org/articles/starwars.html"
+read_html(url) |> 
+  html_elements("section") |> 
+  html_element("h2") |> 
+  html_text2()
+```
+
+## Result
+
+```{r}
+library(rvest)
+url <- "https://rvest.tidyverse.org/articles/starwars.html"
+read_html(url) |> 
+  html_elements("section") |> 
+  html_element("h2") |> 
+  html_text2()
+```
+:::
+
+## Example 1: All together
+
+::: panel-tabset
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+section <- read_html(url) |> 
+  html_elements("section")
+tibble(
+  title = section |> 
+    html_element("h2") |> 
+    html_text2(),
+  released = section |> 
+    html_element("p") |> 
+    html_text2() |> 
+    str_remove("Released: ") |> 
+    parse_date(),
+  director = section |> 
+    html_element(".director") |> 
+    html_text2(),
+  intro = section |> 
+    html_element(".crawl") |> 
+    html_text2()
+)
+```
+
+## Result
+
+```{r}
+section <- read_html(url) |> 
+  html_elements("section")
+tibble(
+  title = section |> 
+    html_element("h2") |> 
+    html_text2(),
+  released = section |> 
+    html_element("p") |> 
+    html_text2() |> 
+    str_remove("Released: ") |> 
+    parse_date(),
+  director = section |> 
+    html_element(".director") |> 
+    html_text2(),
+  intro = section |> 
+    html_element(".crawl") |> 
+    html_text2()
+)
+```
+:::
+
+## Example 2: Naver news
+
+::: r-fit-text
+-   [네이버 뉴스](https://news.naver.com/)
+
+-   뉴스 검색: "지방소멸"
+
+-   검색 결과: <https://search.naver.com/search.naver?where=news&ie=utf8&sm=nws_hty&query=%EC%A7%80%EB%B0%A9%EC%86%8C%EB%A9%B8>
+:::
+
+## Example 2: Naver news
+
+::: panel-tabset
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+url <- "https://search.naver.com/search.naver?where=news&ie=utf8&sm=nws_hty&query=%EC%A7%80%EB%B0%A9%EC%86%8C%EB%A9%B8"
+title <- url |> 
+  read_html() |> 
+  html_elements(".news_tit") |> 
+  html_text2()
+contents <- url |> 
+  read_html() |> 
+  html_elements(".dsc_txt_wrap") |> 
+  html_text2()
+tibble(title, contents)
+```
+
+## Result
+
+```{r}
+url <- "https://search.naver.com/search.naver?where=news&ie=utf8&sm=nws_hty&query=%EC%A7%80%EB%B0%A9%EC%86%8C%EB%A9%B8"
+title <- url |> 
+  read_html() |> 
+  html_elements(".news_tit") |> 
+  html_text2()
+contents <- url |> 
+  read_html() |> 
+  html_elements(".dsc_txt_wrap") |> 
+  html_text2()
+tibble(title, contents)
+```
+:::
+
+# API
+
+`httr2` package
+
+![](images/clipboard-2579380411.png){fig-align="center"}
+
+## Example: Naver news
+
+::: r-fit-text
+-   NAVER Developer (<https://developers.naver.com/main/>)
+
+-   \[Products\]-\[서비스 API\]-\[검색\] (<https://developers.naver.com/products/service-api/search/search.md>)
+
+    -   오픈 API 이용 신청
+
+    -   개발 가이드 보기
+
+-   오픈 API 이용 신청
+
+    -   애플리케이션 이름
+
+    -   비로그인 오픈 API 서비스 환경
+
+        -   WEB 설정
+
+        -   웹 서비스 URL: http://localhost
+:::
+
+## Example: Naver news
+
+```{r}
+#| echo: false
+your_ClientID <- "hYwglpLz9Cq8Oyn6hzgE"
+your_Client_Secret <- "m7onDeHfwe"
+```
+
+::: panel-tabset
+## Code 1
+
+```{r}
+#| echo: true
+#| eval: false
+library(httr2)
+search <- "지방소멸"
+your_url <- "https://openapi.naver.com/v1/search/news.json"
+result_naver <- request(your_url) |> 
+  req_headers(
+    "X-Naver-Client-ID" = your_ClientID,
+    "X-Naver-Client-Secret" = your_Client_Secret
+  ) |> 
+  req_url_query(
+    query = search,
+    display = 100,
+    start = 1,
+    sort = "date"
+  ) |> 
+  req_perform() |> 
+  resp_body_json() 
+naver_data <- data.frame(t(sapply(result_naver$items, data.frame)))
+naver_data
+```
+
+## Result 1
+
+```{r}
+library(httr2)
+search <- "지방소멸"
+your_url <- "https://openapi.naver.com/v1/search/news.json"
+result_naver <- request(your_url) |> 
+  req_headers(
+    "X-Naver-Client-ID" = your_ClientID,
+    "X-Naver-Client-Secret" = your_Client_Secret
+  ) |> 
+  req_url_query(
+    query = search,
+    display = 100,
+    start = 1,
+    sort = "date"
+  ) |> 
+  req_perform() |> 
+  resp_body_json() 
+naver_data <- data.frame(t(sapply(result_naver$items, data.frame)))
+naver_data
+```
+
+## Code 2
+
+```{r}
+#| echo: true
+#| eval: false
+all_news <- data.frame()
+search <- "지방소멸"
+for(i in 1:10){
+  news <- request(your_url) |> 
+    req_headers(
+      "X-Naver-Client-ID" = your_ClientID,
+      "X-Naver-Client-Secret" = your_Client_Secret
+    ) |> 
+    req_url_query(
+      query = search,
+      display = 100,
+      start = i,
+      sort = "date"
+    ) |> 
+    req_perform() |> 
+    resp_body_json()
+  body <- data.frame(t(sapply(news$item, data.frame)))
+  all_news <- bind_rows(all_news, body)
+}
+```
+:::

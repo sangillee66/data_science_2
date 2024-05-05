@@ -1,0 +1,548 @@
+---
+title: "Lab05: 데이터 시각화하기"
+author: 이상일(서울대학교 지리교육과 교수), 김세창(사회교육과 지리전공 석사), 김우형(사회교육과 지리전공 석사과정)
+number-sections: true
+format: 
+  html: 
+    toc: true
+    embed-resources: true
+code-link: true
+code-copy: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+bibliography: references.bib
+---
+
+## 실습 개요 {.unnumbered}
+
+이 실습은 R로 데이터사이언스를 하는 과정 중 데이터 시각화하기(visualizing)를 다룬다. 다음의 사항을 다룬다. 데이터 시각화하기는 [`tidyverse`](https://www.tidyverse.org/)의 핵심 패키지 중의 하나인 [`ggplot2`](https://ggplot2.tidyverse.org/) 에서 제공된다.
+
+모든 실습의 시작은 [`tidyverse`](https://www.tidyverse.org/) 패키지를 불러오는 것이다. 또한 이후 사용하게 될 패키지 [`ggrepel`](https://ggrepel.slowkow.com/), [`patchwork`](https://patchwork.data-imaginist.com/), [`RColorBrewer`](https://r-graph-gallery.com/38-rcolorbrewers-palettes.html) 패키지도 미리 설치하고 불러온다.
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(patchwork)
+library(RColorBrewer)
+```
+
+실습을 위해 [`ggplot2`](#0) 패키지 속에 포함되어 있는 `mpg` 데이터와 diamonds 데이터를 사용한다. 각 데이터에서 눈여겨 볼 변수는 아래와 같다.
+
+-   `mpg`
+
+    -   `displ` : 배기량(displacement)
+
+    -   `class` : 자동차 유형(compact/midsize/suv/2seater/minivan/pickup/subcompact)
+
+    -   `hwy` : 고속도로(highway) 연비
+
+-   `diamonds`
+
+    -   `price` : 가격
+
+    -   `carat` : 캐럿
+
+    -   `color` : 다이아몬드 색깔
+
+    -   `clarity` : 투명도
+
+    -   `cut` : 가공의 품질
+
+## 핵심 레이어: 심미성과 기하
+
+이 8개 구성요소 중 가장 중요한 것은 '심미성(aesthetics)' 혹은 '심미성 매핑(aesthetic mapping)'와 '기하(geometries)' 혹은 '기하 객체(geometric objects)'이다. 기하가 그래프의 전체 구조 혹은 형식을 규정하는 것이라면, 심미성은 기하의 외견을 규정한다. 결국 기하는 그래프의 유형(예: 막대 그래프, 산포도 등)과 관련되고, 심미성은 그래프의 시각적 속성(예: x축, y축, 컬러, 크기, 모양 등)과 관련된다. 이 두 가지는 독립적인 요소이지만, 어느 정도는 관련되어 있기도 하다. 모든 기하가 모든 심미성과 결합할 수 있는 것은 아니다. 특정한 기하는 오로지 특정한 심미성과만 결합한다. 예를 들어 포인트 기하 객체(`geom_point()`)는 크기(`size`) 심미성과 관련되지만, 라인 기하 객체(`geom_line()`)는 크기 심미성과는 관련되지 않고 라인폭(`linewidth`) 심미성과만 관련되는 식이다.
+
+### 기초 예제
+
+그래프를 그리기 위해 반드시 필요한 것은 데이터, 심미성, 기하이다. 이들을 차례로 하나씩 추가해본다.
+
+@fig-data 를 보면, 빈 화면만 출력되는 것을 볼 수 있다. 데이터만 올라왔으므로, 그릴 수 있는 것이 없다. @fig-data-aesthetics 에서는 x축과 y축이 나타났다. 그러나 이 재료를 가지고 무슨 그래프를 그릴지는 지정하지 않았으므로 아무 그래프도 나타나지 않는다. @fig-data-aesthetics-geometries 에서야 비로소 그래프가 나타나는데, 이는 어떤 데이터로부터 어떤 변수를 사용할지, 그리고 그것을 어떤 방식으로 그릴지를 모두 지정해주었기 때문이다.
+
+```{r}
+#| label: fig-data
+#| fig-cap: "데이터만 추가"
+
+# 데이터만 추가
+ggplot(data=mpg)
+```
+
+```{r}
+#| label: fig-data-aesthetics
+#| fig-cap: "데이터 + 심미성(x, y축)"
+ggplot(data=mpg, aes(x=displ, y=hwy))
+```
+
+```{r}
+#| label: fig-data-aesthetics-geometries
+#| fig-cap: "데이터 + 심미성(x, y축) + 기하"
+ggplot(data=mpg, aes(x=displ, y=hwy)) +
+  geom_point()
+```
+
+### 심미성 매핑
+
+심미성 매핑이란 다양한 시각적 속성 혹은 재료를 그래프에 적용 혹은 부여하는 과정을 의미한다. `displ`과 `hwy`의 관계가 `class`에 따라 어떻게 달라지는지를 시각화한다. 다음의 두 그래프를 비교해 본다.
+
+```{r}
+#| label: fig-aesthetic-color
+#| fig-cap: "심미성: 컬러"
+ggplot(mpg, aes(x = displ, y = hwy, color = class)) +
+  geom_point()
+```
+
+```{r}
+#| label: fig-aesthetic-shape
+#| fig-cap: "심미성: 형태"
+ggplot(mpg, aes(x = displ, y = hwy, shape = class)) +
+  geom_point()
+```
+
+@fig-aesthetic-color 과 @fig-aesthetic-shape 중 어느 것이 더 효과적인 시각화라고 생각하는가? 컬러(`color`)와 형태(`shape`)라는 심미성 요소 외에 크기(`size`)와 투명도(`alpha`) 요소를 동일한 데이터에 적용해 본다.
+
+```{r}
+#| label: fig-aesthetic-size
+#| fig-cap: "심미성: 크기"
+ggplot(mpg, aes(x = displ, y = hwy, size = class)) +
+  geom_point()
+```
+
+```{r}
+#| label: fig-aesthetic-alpha
+#| fig-cap: "심미성: 투명도"
+ggplot(mpg, aes(x = displ, y = hwy, alpha = class)) +
+  geom_point()
+```
+
+크기와 투명도는 양적인 차이를 나타내는데 적합한 심미성이기 때문에 `class`라는 정성적인 범주의 차이를 보여주는데는 적합하지 않다. 심미성 부여에서 가장 중요한 것은 결국 얼마나 적절한 심미성 요소, 혹은 시각 변수(visual variables)를 선택하느냐에 달려 있다.
+
+### 기하 객체
+
+@fig-geometric-point 와 @fig-geometric-smooth 이 다르게 보이는 것은 기하 객체가 하나는 포인트(`point`)이고 다른 하나는 완만한 선(`smooth`)이기 때문이다.
+
+```{r}
+#| label: fig-geometric-point
+#| fig-cap: "기하: geom_point()"
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point()
+```
+
+```{r}
+#| label: fig-geometric-smooth
+#| fig-cap: "기하: geom_smooth()"
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_smooth()
+```
+
+@fig-aesthetic-color 과 @fig-geometric-smooth 두 개를 결합해 본다.
+
+```{r}
+#| label: fig-geometric-point-smooth-1
+#| fig-cap: "기하: geom_point() + geom_smooth() 1"
+ggplot(mpg, aes(x = displ, y = hwy, color = class)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+원하는 것이 아니다. 왜 이런 결과가 나왔으며, 어떻게 하면 원하는 것을 얻을 수 있을지 생각해 본다.
+
+```{r}
+#| label: fig-geometric-point-smooth-2
+#| fig-cap: "기하: geom_point() + geom_smooth() 2"
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point(aes(color = class)) + 
+  geom_smooth()
+```
+
+두 결과의 차이는 `color` 심미성을 글로벌하게 적용하느냐 로컬하게 적용하느냐(포인트 기하에만 적용)에 달린 것이다. 글로벌한 심미성은 `ggplot()`속에서 설정하고, 국지적인 심미성은 개별 기하(`geom_point()`) 속에서 설정한다. 매우 중요한 사항이니 꼭 기억하도록 한다.
+
+다양한 기하 객체는 동일한 데이터를 다양한 방식으로 탐색할 수 있게 해준다. 다음의 세가지 기하 객체는 탐색적 데이터 분석에서 널리 사용되는 것이다.
+
+```{r}
+#| label: fig-geometric-histogram-1
+#| fig-cap: "기하: geom_histogram()"
+ggplot(mpg, aes(x = hwy)) +
+  geom_histogram(binwidth = 2)
+```
+
+```{r}
+#| label: fig-geometric-density-1
+#| fig-cap: "기하: geom_density()"
+ggplot(mpg, aes(x = hwy)) +
+  geom_density()
+```
+
+```{r}
+#| label: fig-geometric-boxplot-1
+#| fig-cap: "기하: geom_boxplot()"
+ggplot(mpg, aes(x = hwy)) +
+  geom_boxplot()
+```
+
+## 다른 레이어
+
+### 스케일
+
+스케일(scales)은 심미성이 구체적으로 어떻게 구현될지를 결정한다. 예를 들어 color 심미성이 적용되었다 하더라도 어떤 색상이 선정되어 어떻게 배열되는지에 따라 최종 그래프의 모습은 매우 달라질 수 있다. 그래프를 다시 나타낸다. 스케일이 어느 부분에 어떻게 적용되었는지 생각해 본다.
+
+```{r}
+#| label: fig-scale-1
+#| fig-cap: ""
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point() 
+```
+
+@fig-scale-1 은 아래에서 보는 것처럼, `ggplot2`가 자동적으로 적용한 세 가지의 스케일 설정에 의거해 만들어진 것이다.
+
+```{r}
+#| label: fig-scale-2
+#| fig-cap: ""
+#| eval: false
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_color_discrete()
+```
+
+수정하여 다음과 같이 적용할 수 있다. `scale` 함수의 아규먼트가 어떤 역할을 하는지 생각해 본다.
+
+```{r}
+#| label: fig-scale-3
+#| fig-cap: ""
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  scale_x_continuous(labels = NULL) +
+  scale_y_continuous(breaks = seq(15, 40, by = 5)) +
+  scale_color_brewer(palette = "Set1", labels = c("4" = "4-wheel", "f" = "front", "r" = "rear"))
+```
+
+`scale_color_brewer()` 함수는 [ColorBrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3) 컬러 스케일을 사용한 것인데 익히고 있으면 많은 도움이 된다. 살펴보면 양적인 변수에 적용하기 좋은 팔레트가 있고, 질적인 변수에 적용하기 좋은 팔레트도 있다. 한번 마음에 드는 팔레트를 골라보자.
+
+```{r}
+par(mar=c(0.1, 3, 0.1, 1))
+display.brewer.all()
+```
+
+::: {.callout-tip collapse="false"}
+## 직접 색상 지정하는 방법
+
+한편, 내가 원하는 색상을 골라 직접 지정하는 방법도 있다. `scale_color_brewer()` 대신 `scale_color_manual()` 함수를 사용하면 된다. 또한 RGB 색상에 대한 html 코드를 사용해도 되고, R에서 부여한 657개의 이름 중에서 골라 사용해도 된다. 색상 이름 및 html 코드는 [다음 사이트](https://rstudio-pubs-static.s3.amazonaws.com/3486_79191ad32cf74955b4502b8530aad627.html)를 참고하라.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  scale_x_continuous(labels = NULL) +
+  scale_y_continuous(breaks = seq(15, 40, by = 5)) +
+  scale_color_manual(values = c("sienna1", "slateblue4", "#698B22"))
+```
+:::
+
+### 패싯
+
+패싯(facets) 레이어는 다면생성(faceting) 과정을 통해 하나의 플롯을 여러개의 하위 플롯으로 쪼갬으로서 생성된다.
+
+```{r}
+#| label: fig-facet-1
+#| fig-cap: "패싯: facet_wrap()"
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  facet_wrap(~cyl)
+```
+
+두 개의 변수에 의거해 패싯을 생성할 수도 있다.
+
+```{r}
+#| label: fig-facet-2
+#| fig-cap: "패싯: facet_grid()"
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  facet_grid(drv ~ cyl)
+```
+
+### 통계적 변환
+
+어떤 시각화 과정은 필연적으로 통계적 변환(statistical transformation)을 수반한다.
+
+```{r}
+#| label: fig-stat-1
+#| fig-cap: "통계적 변환: geom_bar()"
+ggplot(diamonds, aes(x = cut)) + 
+  geom_bar()
+```
+
+`after_stat()`이라고 하는 도우미 함수를 사용하면, 이 그래프를 절대 빈도가 아닌 상대 빈도 그래프로 변환할 수 있다. 이 역시 통계적 변환 과정이 숨어 있는 것이다.
+
+```{r}
+#| label: fig-stat-3
+#| fig-cap: "통계적 변환: geom_bar()"
+ggplot(diamonds, aes(x = cut, y = after_stat(prop), group = 1)) + 
+  geom_bar()
+```
+
+::: {.callout-tip collapse="false"}
+## geom_bar() vs. geom_col()
+
+`geom_bar()` 함수는 자동으로 통계적 변환을 한 후 결과를 반환한다. 그래서 y축을 지정하지 않아도 된다. 반면 `geom_col()` 함수는 마찬가지로 막대그래프이지만, x축과 그에 상응하는 y축의 값을 바탕으로 그래프를 생성한다. 아래의 두 코드를 살펴보고 결과를 비교해보자. `geom_bar()`의 통계적 변환이 무엇을 한 것인지, 두 함수의 차이가 무엇이지 이해할 수 있을 것이다. 참고로 두 번째 코드는 지난 실습 때 다룬 `count()` 함수를 활용한 것이다. 다른 코드이지만 동일한 결과가 출력됨됨을 알 수 있다.
+
+```{r}
+diamonds |> 
+  ggplot(aes(x = cut)) +
+  geom_bar()
+```
+
+```{r}
+diamonds |>
+  count(cut) |> 
+  ggplot(aes(x = cut, y = n)) +
+  geom_col()
+```
+:::
+
+막대 그래프에 심미성을 가미하고, `position` 아규먼트를 통한 위치 조정(position adjustment)을 시도한다.
+
+```{r}
+#| label: fig-bar-fill-1
+#| fig-cap: "position: stack"
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar()
+```
+
+기하 객체에 색상을 지정하고 싶을 때, 0차원(`point`)과 1차원(`line`) 객체에는 `color`라는 심미성을 적용하지만, 막대 그래프와 같은 2차원(`area`) 객체에는 `fill`이라는 심미성을 적용한다. 자주 혼돈이 되는 부분이다.
+
+위치 조정을 위해 `position` 아규먼트를 사용하는데, 네 가지 옵션이 있다.
+
+-   `position = "stack"`
+
+-   `position = "identity"`
+
+-   `position = "dodge"`
+
+-   `position = "fill"`
+
+@fig-bar-fill-1 에는 디폴트로 `position = "stack"`이 적용된 것이다. @fig-bar-fill-2 는 `position = "dodge"`를 적용한 것이다 . 나머지 옵션도 적용해보고 차이가 무엇인지 알아본다.
+
+```{r}
+#| label: fig-bar-fill-2
+#| fig-cap: "position: dodge"
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "dodge")
+```
+
+::: {.callout-tip collapse="false"}
+## position 아규먼트의 종류와 차이
+
+`position` 아규먼트에 따른 차이는 아래의 그래프가 잘 보여준다. 아래에서 배울(운) `patchwork`도 활용했다.
+
+```{r}
+g1 <- ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "stack") +
+  labs(title = "'stack' graph")
+
+g2 <- ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "dodge") +
+  labs(title = "'dodge' graph")
+
+g3 <- ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "fill") +
+  labs(title = "'fill' graph")
+
+g4 <- ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "identity") +
+  labs(title = "'identity' graph")
+
+g1+g2+g3+g4 +
+  plot_annotation(
+    title = "How does position argument work?",
+    subtitle = "Graph differences by position argument"
+  )
+```
+:::
+
+### 좌표
+
+좌표(coordinates) 레이어 혹은 좌표계(coordinate systems)는 그래픽 요소들의 위치 결정에 기준이 되는 준거체계이다. 특히 두 가지가 함수가 유용하다. `coord_flip()` 함수는 축을 전환한다.
+
+```{r}
+#| label: fig-coordinates-1
+#| fig-cap: "coord_clip() 함수"
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "fill") +
+  coord_flip()
+```
+
+`coord_fixed()` 함수는 두 축의 스케일을 절대화하여 동일하게 적용한다. 아규먼트로 x축 한 단위 대비 y축 한 단위의 비(y/x)를 받으며, 생략할 경우 디폴트로 1을 지정한다. 무슨 의미인지 알아본다.
+
+```{r}
+#| label: fig-coordinates-2
+#| fig-cap: "coord_fixed() 함수"
+ggplot(mpg, aes(cty, hwy)) +
+  geom_point() +
+  coord_fixed()
+```
+
+::: {.callout-tip collapse="false"}
+## 왜 `coord_fixed()` 함수를 사용할까?
+
+`coord_fixed()`를 사용하지 않아도 `ggplot`은 적당한 비율을 찾아 그래프를 그려준다. 그러나 간혹 사용자가 원하는 가로-세로 비율이 있을 때가 있다. 예를 들어, 우리나라가 동고서저의 지형임을 보여주는 그래프를 그려보자.
+
+```{r}
+# 가상 데이터
+data <- tibble(x=seq(0, 170, by=10),
+               y=c(10, 62, 108, 162, 245, 330, 469, 608, 780, 942,
+                   1125, 1307, 1500, 1707, 1324, 849, 394, 0))
+```
+
+```{r}
+# 비율 지정 안하면?
+ggplot(data, aes(x=x, y=y)) +
+  geom_point()+
+  geom_line()+
+  labs(x="서울-강릉(km)", y="고도(m)")
+```
+
+비율을 지정하지 않으니 조금 이상하다. 시각적 효과를 위해서, 가로 한 단위와 세로 한 단위의 비율을 적절히 맞춰보자.
+
+```{r}
+# 적정 비율 지정하기
+ggplot(data, aes(x=x, y=y)) +
+  geom_point()+
+  geom_line()+
+  labs(x="서울-강릉(km)", y="고도(m)") +
+  coord_fixed(ratio = 0.02)
+```
+
+아까보다 조금 더 가독성이 좋아짐을 확인할 수 있다.
+:::
+
+### 테마
+
+디폴트인 회색빛 배경이 마음에 들지 않았다면 @fig-ggplot-themes-2 처럼 흑백 테마(`theme_bw()`)를 적용할 수도 있다. 다른 테마도 적용해 보고 그 차이를 알아본다.
+
+```{r}
+#| label: fig-ggplot-themes-2
+#| fig-cap: "theme_bw() 함수"
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(se = FALSE) +
+  theme_bw()
+```
+
+이렇게 한꺼번에 그래프의 외관을 바꿀 수도 있지만 `theme()` 함수를 통해 그래프의 개별 요소 하나씩을 모두 수정할 수 있다. 어떤 요소를 바꿀 수 있는지 다음을 참고한다.
+
+-   <https://ggplot2.tidyverse.org/reference/theme.html>
+
+@fig-ggplot-themes-3 는 몇 가지 요소를 수정한 사례이다.
+
+```{r}
+#| label: fig-ggplot-themes-3
+#| fig-cap: "개별 요소의 수정: theme() 함수"
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  labs(
+    title = "Larger engine sizes tend to have lower fuel economy",
+    caption = "Source: https://fueleconomy.gov."
+  ) +
+  theme(
+    legend.position = c(0.6, 0.7),
+    legend.direction = "horizontal",
+    plot.title = element_text(face = "bold"),
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.caption = element_text(hjust = 0)
+  )
+```
+
+## 기타 사항
+
+### 라벨과 주석
+
+`lab()` 함수를 활용하면 그래프의 다양한 종류의 라벨을 설정할 수 있다.
+
+```{r}
+#| label: fig-ggplot-label-1
+#| fig-cap: "라벨링"
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(se = FALSE) +
+  labs(
+    x = "Engine displacement (L)",
+    y = "Highway fuel economy (mpg)",
+    color = "Car type",
+    title = "Fuel efficiency generally decreases with engine size",
+    subtitle = "Two seaters (sports cars) are an exception because of their light weight",
+    caption = "Data from fueleconomy.gov"
+  )
+```
+
+기하 함수인 `geom_text()` 혹은 `geom_label()`를 통해 그래프 속에 텍스트를 삽입할 수 있다. 주석이 겹치는 것을 방지하기 위해 `ggrepel` 패키지가 유용하게 사용될 수 있다.
+
+```{r}
+library(ggrepel)
+```
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) + 
+  geom_point(colour = "red") +
+  geom_label_repel(data = mpg |> slice_sample(prop = 0.1), aes(label = class))
+```
+
+### 레이아웃
+
+레이아웃(layout)은 복수의 그래프를 적절히 배치하여 하나의 그래픽으로 융합하는 과정을 의미한다. 수 많은 [`ggplot2`](https://ggplot2.tidyverse.org/)의 [확장 패키지(ggplot2 extensions)](https://exts.ggplot2.tidyverse.org/) 중 하나이 [`patchwork`](https://patchwork.data-imaginist.com/) 패키지를 활용할 수 있다.
+
+```{r}
+#| label: fig-ggplot-patchwork-1
+#| fig-cap: "레이아웃: patchwork 패키지"
+p1 <- ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  labs(title = "Plot 1")
+p2 <- ggplot(mpg, aes(x = drv, y = hwy)) + 
+  geom_boxplot() + 
+  labs(title = "Plot 2")
+p1 + p2
+```
+
+::: {.callout-tip collapse="false"}
+## `patchwork()` 더 살펴보기
+
+`patchwork()` 패키지는 그래프의 배치를 적용하는데 매우 유용하다. 좌우배치를 하되 자동으로 줄넘김을 원한다면 'A+B', 무조건 좌우배치를 원할 때는 'A\|B', 상하배치를 원하다면 'A/B'의 형식을 사용하면 된다. 매우 직관적이다. 위에서 `position` 아규먼트를 공부할 때 사용한 코드를 재사용해보자.
+
+```{r}
+g1+g2+g3+g4
+```
+
+```{r}
+(g1+g3+g4)/g2
+```
+:::
+
+### 그래프의 저장
+
+두 가지 방식이 있다.
+
+첫 번째 방식은 Output 창의 Plots 탭에 있는 Export 버을 이용하는 것이다. 다양한 그래픽 포멧 뿐만 아니라 pdf 형식으로도 저장할 수 있다.
+
+두 번째 방식은 [`ggplot2`](https://ggplot2.tidyverse.org/) 의 `ggsave()` 함수를 이용하는 것이다. 결과물의 폰트 크기, 가로세로비, 해상도 등을 종합적으로 고려하여 최적의 세팅값을 찾아야 한다. 자신의 디바이스에 따라 동일한 세팅값이 다른 결과를 산출할 수도 있다.
+
+```{r}
+#| label: fig-ggplot-save-1
+#| fig-cap: "그래프의 저장: ggsave() 함수"
+my_plot <- ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  labs(
+    title = "Larger engine sizes tend to have lower fuel economy",
+    caption = "Source: https://fueleconomy.gov."
+  ) +
+  theme(
+    legend.position = c(0.6, 0.7),
+    legend.direction = "horizontal",
+    plot.title = element_text(face = "bold"),
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.caption = element_text(hjust = 0)
+  )
+ggsave(filename = "my_plot.png", plot = my_plot, width = 8, height = 8 * 0.618, dpi = 600)
+```

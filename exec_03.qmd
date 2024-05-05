@@ -1,0 +1,385 @@
+---
+title: "데이터 불러오기와 정리하기"
+author: 이상일(서울대학교 지리교육과)
+date-modified: last-modified
+number-sections: true
+format: 
+  html: 
+    toc: true
+code-link: true
+code-copy: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+bibliography: references.bib
+---
+
+## 실습 개요 {.unnumbered}
+
+이 실습은 R로 데이터사이언스를 하는 과정 중 데이터 불러오기(importing)와 데이터 정리하기(tidying)에 집중한다. 본격적으로 해당 주제를 다루기 전에 tidyverse의 공식 데이터 프레임 형식인 티블(tibble)에 대해 간단히 배운다.
+
+모든 실습의 시작은 `tidyverse` 패키지를 불러오는 것이다.
+
+```{r}
+library(tidyverse)
+```
+
+## 티블(tibble)
+
+### 왜 티블인가?
+
+데이터 프레임은 가장 널리 사용되는 데이터 형식이고, 일반적인 상황이라면 거의 대부분 데이터 프레임을 가지고 데이터사이언스를 한다. Base R은 전통적으로 `data.frame` 객체를 통해 데이터 프레임을 관리해왔다. `tibble`은 이러한 `data.frame`의 현대적 개량 버전으로 이해하면 되고, 조금의 차이는 있지만 대동소이하다. 이 새로운 데이터 프레임 형식은 `tidyverse` 패키지의 핵심 패키지 중 하나인 [`tibble`](https://tibble.tidyverse.org/) 패키지에서 지원된다.
+
+### 티블 생성하기
+
+#### 기존 데이터를 티블 포맷으로 변환하기
+
+Base R에 포함되어 있는 `iris`라는 데이터 프레임을 사용한다. 아래의 코드를 실행하면 `iris` 데이터가 `data.frame` 형식으로 저장되어 있음을 알 수 있다. Base R의 `class()` 함수의 쓰임새를 확인하라.
+
+```{r}
+iris |> 
+  glimpse()  
+class(iris)
+```
+
+`as_tibble()` 함수를 이용하여 `tibble` 객체로 전환한다. 그러면 `data.frame` 객체가 `tibble` 객체로 전환된 것을 알 수 있다.
+
+```{r}
+iris_tbl <- iris |> 
+  as_tibble() 
+class(iris_tbl)
+```
+
+#### 티블 객체를 직접 생성하기
+
+`tibble` 객체를 직접 생성하는 방식은 두 가지로 나뉜다.
+
+-   열-단위 방식(보다 일반적): 우선 열-벡터를 만들고 그것을 결합해 최종적인 `tibble` 객체를 만든다. `tibble()` 함수를 이용한다.
+
+-   행-단위 방식: 우선 행-벡터를 만들고 그것을 결합해 최종적인 `tibble` 객체를 만든다. `tribble()` 함수를 이용한다. `tribble`은 전치티블(**tr**ansposed t**ibble**)의 약자이다.
+
+```{r}
+tibble(
+  x = c(1, 2, 5), 
+  y = c("h", "m", "g"),
+  z = c(0.08, 0.83, 0.60)
+)
+```
+
+```{r}
+tribble(
+  ~x, ~y, ~z,
+  1, "h", 0.08,
+  2, "m", 0.83,
+  5, "g", 0.60
+)
+```
+
+## 데이터 불러오기
+
+### `readr` 패키지
+
+#### 파일 형식
+
+[`readr`](https://readr.tidyverse.org/) 패키지는 다양한 함수를 이용해 다양한 형식의 데이터를 불러올 수 있게 도와준다.
+
+-   `read_csv()`: 콤마분리(comma-separated values, CSV) 형식의 파일
+
+-   `read_csv2()`: 세미콜론분리(semicolon-separated) 형식의 파일
+
+-   `read_tsv()`: 탭구분(tab-delimited) 형식의 파일
+
+-   `read_delim()`: 여타의 구분 형식의 파일
+
+-   `read_fwf()`: 고정폭(fixed-width) 형식의 파일
+
+-   `read_table()`: 공백구분 형식의 파일
+
+-   `read_log()`: 아파치 형식(Apache-style)의 로그 파일
+
+#### `read_csv()` 함수의 활용
+
+지난번 실습에서 사용한 데이터를 면밀히 살펴본다.
+
+```{r}
+students <- read_csv("https://pos.it/r4ds-students-csv")
+students
+```
+
+다음의 몇 가지 점이 불만족스럽다.
+
+-   변수명: 특히 `Student ID`와 `Full Name` 변수명은 규칙에 어긋난다. 변수명 속에 공란이 있으면 좋지 않다. 이런 이름을 비구문명(non-syntactic name)이라고 하고, \`\`로 둘러싸여 표시된다. 나중에 문제를 일으킬 수 있다.
+
+-   변수 형식: `mealPlan`은 문자형(chr)이 아니라 팩트형(fct)이, `AGE`는 문자형(chr)이 아니라 수치형(dbl)이 적절하다.
+
+-   결측치(NA): `favourite.food`의 'N/A'는 형식에 맞지 않아 결측치가 아니라 문자로 취급된다. 따라서 'N/A'가 결측치임을 알려주어야 한다.
+
+아래의 코드는 이러한 점을 반영하여 csv 파일을 다시 불러오기 한 것이다. 조교의 도움을 받아 각 아규먼트(`skip`, `col_names`, `col_types`, `na`)가 어떤 역할을 했는지 생각해 본다.
+
+```{r}
+students <- read_csv(
+  "https://pos.it/r4ds-students-csv", 
+  skip = 1, 
+  col_names = c("student_id", "full_name", "favorite_food", "meal_plan", "age"),
+  col_types = cols(
+    meal_plan = col_factor(),
+    age = col_number()),
+  na = c("N/A")
+  )
+students
+```
+
+### 엑셀 파일
+
+#### `readxl` 패키지
+
+가장 널리 사용되는 스프레드시트(spreadsheet) 형식인 엑셀 파일을 불러들이기 위해서는 [`readxl`](https://readxl.tidyverse.org/)이라는 패키지가 필요하다. `tidyverse`의 핵심 패키지는 아니지만 일종의 친척 패키지라 할 수는 있다. `tidyverse`에 포함되어 있지 않기 때문에 따로 인스톨하고 `library()` 함수를 통해 불러와야 한다.
+
+```{r}
+library(readxl)
+```
+
+가장 널리 사용되는 명령어는 다음의 세 가지이다.
+
+-   `read_xls()`: xls 포맷의 엑셀 파일 불러오기
+
+-   `read_xlsx()`: xlsx 포맷의 엑셀 파일 불러오기
+
+-   `read_excel()`: xls, xlsx 포맷의 엑셀 파일 불러오기
+
+#### `read_excel()` 함수의 활용
+
+`World Population Prospects 2022` 데이터를 직접 다운받아 실습을 진행하고자 한다. 이 데이터셋은 매우 중요하다. 다음의 절차에 따라 해당 엑셀 파일을 다운로드한다.
+
+-   WPP 웹사이트(<https://population.un.org/wpp/>)에 접속한다.
+
+-   Download Data Files를 클릭한다.
+
+-   다음의 파일을 클릭한다: Compact (most used: estimates and medium projections) (XLSX, 24.07 MB)
+
+-   엑셀 파일(WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1)을 다운로드하여 자신의 프로젝트 폴더에 저장한다.
+
+R 바깥에서 다운로드한 파일을 열어 어떠한 정보가 어떠한 방식으로 수록되어 있는지 살펴본다. 데이터 불러오기를 위해 다음의 네 가지 사항에 유의해야 함을 이해한다.
+
+-   16번 행까지는 불필요한 영역이다.
+
+-   17번 행을 변수명으로 사용할 경우 많은 문제점이 발생한다.
+
+-   결측치는 공란이거나 '...' 기호로 표시되어 있다.
+
+-   첫 번째 워킹시트(Estimates)에는 1950\~2021의 데이터가, 두 번째 워킹시트(Medium variant)에는 2022\~2100년의 데이터가 수록되어 있다. 나중에 결합해야한다.
+
+우선 엑셀 파일을 그대로 불러와 본다.
+
+```{r}
+read_excel(
+  "WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1.xlsx", 
+  sheet = "Estimates" 
+  )
+```
+
+끔찍할 것이다. 위의 네 가지 사항을 감안하여 다음과 같은 코드를 실행한다.
+
+```{r}
+new_names <- c("index", "variant", "region_name", "notes", "location_code", 
+                "ISO3", "ISO2", "SDMX", "type", "parent_code", "year", "pop_jan_total", 
+                "pop_jul_total", "pop_jul_male", "pop_jul_female", "pop_den", "sex_ratio", 
+                "median_age", "natural_change", "RNC", "pop_change", "PGR", 
+                "dubling_time", "births", "births_by_f1519", "CBR", "TFR", "NRR", 
+                "mean_age_childbearing", "sex_ratio_birth", "deaths_total", 
+                "deaths_male", "deaths_female", "CDR", "life_exp_total", 
+                "life_exp_male", "life_exp_female", "life_exp_15_total", 
+                "life_exp_15_male", "life_exp_15_female", "life_exp_65_total", 
+                "life_exp_65_male", "life_exp_65_female", "life_exp_80_total", 
+                "life_exp_80_male", "life_exp_80_female", "infant_deaths", 
+                "IMR", "live_births", "under_five_deaths", "mort_under_five", 
+                "mort_bf_40_total", "mort_bf_40_male", "mort_bf_40_female", "mort_bf_60_total", 
+                "mort_bf_60_male", "mort_bf_60_female", "mort_bt_1550_total", 
+                "mort_bt_1550_male", "mort_bt_1550_female", "mort_bt_1560_total", 
+                "mort_bt_1560_male", "mort_bt_1560_female", "net_migrants", "NMR")
+wpp_2022_estimates <- read_excel(
+  "WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1.xlsx",
+  sheet = "Estimates",
+  skip = 17, 
+  col_names = new_names,
+  col_types = c(rep("guess", 3), "text", "guess", rep("text", 2), rep("guess", 58)),
+  na = c("...", "")
+  )
+wpp_2022_future <- read_excel(
+  "WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1.xlsx",
+  sheet = "Medium variant",
+  skip = 17, 
+  col_names = new_names,
+  col_types = c(rep("guess", 3), "text", "guess", rep("text", 2), rep("guess", 58)),
+  na = c("...", "")
+)
+wpp_2022 <- bind_rows(wpp_2022_estimates, wpp_2022_future)
+View(wpp_2022)
+```
+
+조교의 도움을 받아 코드의 어떤 부분이 어떤 동작을 한 것인지 따져본다.
+
+그런데, 해야할 일이 한가지 더 남아있다. 많은 변수 중에 데이터 탐색이라는 측면에서 가장 중요한 것은 `type`이다. 다음을 통해 `type` 변수에 어떤 내용이 담겨 있는지 확인한다.
+
+```{r}
+wpp_2022 |>    
+  distinct(type)
+```
+
+이 변수를 통해 세계 전체(World), 국가군(SDG region, Region 등), 국가별(Country/Area)로 데이터를 활용할 수 있다는 것을 인지한다. 그런데, "Label/Separator"는 엑셀 내에서 분할선 역할만 하는 것으로 무의미하다. 이를 제거한다.
+
+```{r}
+wpp_2022 <- wpp_2022 |>    
+  filter(type != "Label/Separator")
+```
+
+이제 모든 과정이 끝났다. 나중에 사용하기 위해, `writexl` 패키지의 `write_xlsx()` 함수를 이용하여 엑셀 파일로 저장해 본다.
+
+```{r}
+library(writexl)
+write_xlsx(wpp_2022, "wpp_2022.xlsx")
+```
+
+그런데, 저장된 파일을 `read_excel()` 함수로 다시 불러 들이면 컬럼 형식에 대한 정보가 사라져 버리는 등의 에러가 발생한다. 이런 점 때문에 다음과 같은 대안이 존재한다. [`readr`](https://readr.tidyverse.org/) 패키지의 `write_rds()` 함수로 저장하고, 다시 `read_rds()` 함수로 불러들이면 정확히 동일한 것을 얻을 수 있다.
+
+```{r}
+write_rds(wpp_2022, "wpp_2022.rds")
+read_rds("wpp_2022.rds")
+```
+
+## 데이터 정리하기
+
+여기서는 데이터 늘이기(lengthening data), 데이터 넓히기(widening data), 데이터 결합하기(joining data)를 다룬다.
+
+### 데이터 늘이기
+
+실습을 위해 `tidyverse` 패키지에 포함되어 있는 `who2` 데이터를 사용한다. 이것은 WHO(world Health Organization, 세계보건기구)에서 제공한 데이터로서 1980\~2013년 전세계 209개국의 결핵 환자수에 대한 데이터이다.
+
+```{r}
+glimpse(who2)
+```
+
+`country`와 `year`은 분명한 변수이지만 나머지 56개 변수는 무엇인지 알 수 없다. 그런데 잘 살펴보면, 변수명에 어떤 패턴이 있다는 것을 알 수 있다. 모두 세 부분으로 나뉘어져 있는데, 첫 번째 부분은 진단법(sp, rel, ep)과 관련되어 있고, 두 번째 부분은 성(m, f)과 관련되어 있고, 세 번째 부분은 연령(014, 1524, 2534, 3544, 4554, 5564, 65)과 관련되어 있다. 56개 변수의 셀 값은 모두 케이스(환자수)를 의미한다. 이 지저분한 데이터를 `pivot_longer()` 함수를 이용해 정돈된 데이터로 만들어 본다.
+
+```{r}
+who2 |> 
+  pivot_longer(
+    cols = !c(country, year),
+    names_to = c("diagnosis", "gender", "age"), 
+    names_sep = "_",
+    values_to = "count"
+  )
+```
+
+조교의 도움을 받아 각 아규먼트가 어떤 역할을 하는지 이해한다. 그리고 정돈된 데이터를 만들기 위해 왜 데이터 '늘이기'를 해야하는지 생각해 본라.
+
+### 데이터 넓히기
+
+실습을 위해 `tidyverse` 패키지에 포함되어 있는 `cms_patient_experience` 데이터를 사용한다. 이것은 미국의 [Centers of Medicare and Meicaid Services](https://www.cms.gov/)가 제공한 데이터이다.
+
+```{r}
+cms_patient_experience
+```
+
+이 데이터도 정돈된 데이터가 아니다. 자세히 살펴보면 다음과 같은 사실을 알 수 있다.
+
+-   `org_pac_id`와 `org_nm` 변수는 의료조직의 식별자와 이름이다.
+
+-   의료조직별로 6개씩의 열을 차지하고 있는데, 6개의 열은 `measure_cd`와 `measure_title`에 나타나 있는 것과 같은 6개의 서로 다른 조사 항목을 나타낸다.
+
+-   마지막의 `prf_rate`는 조사 항목별 점수이다.
+
+`pivot_wider()` 함수를 이용하여, 행에는 개별 의료조직이, 열에는 개별 조사 항목이 나타나는 정돈된 데이터를 만들어 본다.
+
+```{r}
+cms_patient_experience |> 
+  pivot_wider(
+    id_cols = starts_with("org"),
+    names_from = measure_cd,
+    values_from = prf_rate
+  )
+```
+
+이에 어떤 의료조직이 어떤 항목에서 얼마의 점수를 받았는지를 일목요연하게 알아 볼 수 있다. 조교의 도움을 받아 각 아규먼트가 어떤 역할을 하는지 이해한다. 정돈된 데이터를 만들기 위해 이번에는 왜 데이터 '넓히기'를 해야하는지 생각해 보라.
+
+### 데이터 결합하기
+
+#### 조인(join)의 종류
+
+여기서는 데이트 프레임을 결합하여 새로운 데이터 프레임을 생성하는 과정에 대해 살펴본다. `tidyverse` 패키지에 포함되어 있는 `dplyr` 패키지는 다양한 종류의 조인(join) 함수를 제공한다.
+
+-   `left_join()`: 첫 번째 변수는 그대로 둔 상태에서 두 번째 변수를 결합함으로써 두 번째 변수의 열을 가져옴
+
+-   `inner_join()`: 두 번째 변수는 그대로 둔 상태에서 첫 번째 변수를 결합함으로써 첫 번째 변수의 열을 가져옴
+
+-   `right_join()`: 두 변수 모두에 존재하는 열을 취함
+
+-   `full_join()`: 최소한 한 변수에 존재하는 열을 모두 취함
+
+-   `semi_join()`: 첫 번째 변수의 행 중 두 번째 변수에 대응하는 행이 있는 것만 취함
+
+-   `anti_join()`: 첫 번째 변수의 행 중 두 번째 변수에 대응하는 행이 없는 것만 취함
+
+이들 중 `left_join()`이 가장 많이 사용되기 때문에 그것에 집중한다.
+
+#### `left_join()` 함수의 활용
+
+실습을 위해 [`nycflights13`](https://github.com/tidyverse/nycflights13) 패키지의 데이터를 사용한다. 이 패키지에는 다섯 개의 데이터 프레임이 포함되어 있다. 지난 번에는 첫 번째 데이터만 사용했다.
+
+-   `flights`: 2013년 NYC를 출발한 모든 항공기
+
+-   `weather`: 공항별 시간별 기상 상황
+
+-   `planes`: 항공기별 건조 정보
+
+-   `airports`: 공항명과 위치
+
+-   `airlines`: 항공사
+
+그리고 이 6개의 데이터 프레임은 @fig-nycflights13-1 처럼 공통키(common key)를 통해 서로 연결되어 있다.
+
+![`nycflights13` 데이터(<https://github.com/tidyverse/nycflights13>)](https://r4ds.hadley.nz/diagrams/relational.png){#fig-nycflights13-1}
+
+`flights` 데이터의 변수가 너무 많기 때문에 조인을 위한 공통키를 중심으로 변수를 줄인다.
+
+```{r}
+library(nycflights13)
+```
+
+```{r}
+flights2 <- flights |> 
+  select(year, time_hour, origin, dest, tailnum, carrier)
+flights2
+```
+
+`flights2` 데이터를 중심으로 나머지 4개의 데이터와 조인한다.
+
+```{r}
+airlines
+flights2 |>
+  left_join(airlines)
+```
+
+```{r}
+weather
+flights2 |> 
+  left_join(weather |> select(origin, time_hour, temp, wind_speed))
+```
+
+```{r}
+planes
+flights2 |> 
+  left_join(planes |> select(tailnum, type, engines, seats))
+```
+
+```{r}
+airports
+flights2 |> 
+  left_join(airports, join_by(origin == faa))
+```
+
+`airports`의 경우만 왜 `join_by()`라는 아규먼트가 필요한지 생각해 본다.
+
+##  {#fig-nycflights-1}

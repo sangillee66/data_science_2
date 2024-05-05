@@ -1,0 +1,188 @@
+---
+title: "R & RStudio"
+author: Sang-Il Lee
+title-slide-attributes: 
+  data-background-image: R_5.gif
+  data-background-position: 85% 5%
+  data-background-size: 20%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: true
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+---
+
+# History of R
+
+## Major Events
+
+![](images/clipboard-1001165257.png){fig-align="center"}
+
+## Bell Labs in 1975
+
+![](images/clipboard-3509501427.png){fig-align="center"}
+
+## S-Plus, 1997
+
+::: {layout="[55,45]" layout-valign="center"}
+![](images/clipboard-1588861203.png){width="581"}
+
+![](images/clipboard-520867837.png){width="384"}
+:::
+
+## Fathers of R, 1993
+
+::: {layout="[25,50,25]" layout-valign="center"}
+![George Ross Ihaka](images/clipboard-4103752460.png)
+
+![University of Auckland](images/clipboard-3647657155.png)
+
+![Robert C. Gentleman](images/clipboard-3701321516.png)
+:::
+
+## Official Birth
+
+![](images/clipboard-692617930.png){width="1501"}
+
+## ggplot2, 2007
+
+::: {layout="[50,-10,40]" layout-valign="center"}
+![](images/clipboard-2318221644.png)
+
+![Hadley Wickham](images/clipboard-2910928344.png)
+:::
+
+## RStudio, 2011
+
+![](images/clipboard-93412336.png)
+
+## shiny, 2012
+
+::: {layout="[40,60]" layout-valign="center"}
+![](images/clipboard-4146211205.png)
+
+![](images/clipboard-2437889464.png)
+:::
+
+## tidyverse, 2016
+
+::: {layout="[45,-10,55]" layout-valign="center"}
+![](images/clipboard-4211850950.png)
+
+![](images/clipboard-1556071055.png)
+:::
+
+## posit, 2022
+
+![](images/clipboard-4259342209.png)
+
+## quarto, 2022
+
+::: {layout="[40,60]" layout-valign="center"}
+![](images/clipboard-138902577.png)
+
+![](images/clipboard-3999895939.png)
+:::
+
+# RStudio
+
+## What is RStudio for R?
+
+::: {layout="[45,-5,55]" layout-valign="center"}
+![](images/clipboard-2963976366.png)
+
+![](images/clipboard-676249587.png)
+:::
+
+## What is RStudio for R?
+
+![](images/clipboard-1340309066.png)
+
+## IDE
+
+![](images/clipboard-2549995943.png){fig-align="center"}
+
+## Four panes or windows
+
+![](images/clipboard-2401742054.png){fig-align="center"}
+
+## R Project
+
+![](images/clipboard-3045448819.png){fig-align="center"}
+
+## R Project
+
+![](images/clipboard-983203921.png){fig-align="center"}
+
+## RStudio Guide
+
+-   [RStudio IDE User Guide](https://docs.posit.co/ide/user/)
+
+-   [Posit Cheatsheets](https://posit.co/resources/cheatsheets/)
+
+# R vs. Python
+
+## Google Trend
+
+![](images/clipboard-1227778562.png){fig-align="center"}
+
+## Differences
+
+![](images/clipboard-358948273.png){fig-align="center"}
+
+## Differences
+
+[![](images/clipboard-2470054351.png)](https://r-craft.org/the-3-reasons-you-should-learn-r-for-data-science/)
+
+## R for Open Science
+
+::: {layout="[45,55]" layout-valign="center"}
+![](images/clipboard-3188950491.png)
+
+![](images/clipboard-1041852686.png)
+:::
+
+## R for Reproducible Research
+
+::: {layout-ncol="3" layout-valign="center"}
+![](images/clipboard-182108294.png)
+
+![](images/clipboard-3965408841.png)
+
+![](images/clipboard-875106470.png)
+:::
+
+## R Communities
+
+![](images/clipboard-2625064294.png){fig-align="center"}
+
+## R Communities
+
+::: {layout="[45,55]" layout-valign="center"}
+![](images/clipboard-271459863.png)
+
+![](images/clipboard-1363032995.png)
+:::
+
+## R and Python in Harmony
+
+::: {layout="[45,55]" layout-valign="center"}
+![](images/clipboard-2653295805.png)
+
+![](images/clipboard-702669114.png)
+:::

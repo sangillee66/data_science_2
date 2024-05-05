@@ -1,0 +1,191 @@
+---
+title: "Lab06: 데이터 탐색하기"
+author: 이상일(서울대학교 지리교육과 교수), 김세창(사회교육과 지리전공 석사), 김우형(사회교육과 지리전공 석사과정)
+number-sections: true
+format: 
+  html: 
+    toc: true
+    embed-resources: true
+code-link: true
+code-copy: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+bibliography: references.bib
+---
+
+## 실습 규칙 {.smaller}
+
+<br/>
+
+-   구글 검색, ChatGPT, 이전 실습 자료 등을 참고할 수 있습니다.
+-   실습에서 다루지 않은 기능들은 문제마다 따로 설명이 되어 있습니다.
+
+## 실습 준비
+
+```{r}
+#| echo: true
+#| output: false
+library(tidyverse)
+library(ggrepel)
+wpp_2022 <- read_rds("wpp_2022.rds")
+```
+
+## 연습 문제 {.smaller}
+
+<br/>
+
+UN에 따르면 2023년 4월 인도의 인구가 중국의 인구를 넘어섰습니다. 중국의 심각한 출산율 저하로 인해 두 국가의 인구 수 차이는 앞으로 더 커질 것으로 전망됩니다. 1950년부터 2100년까지의 두 국가의 인구 수를 시각화하여 이러한 경향을 파악해 보겠습니다.
+
+<br/>
+
+-   `wpp_2022`의 `pop_jul_total` 데이터를 활용하세요.
+
+-   `scale_y_continuous()`를 활용하면 y축의 설정을 변경할 수 있습니다. 쉼표를 사용해 숫자를 끊어 가독성을 높이기 위해 어떤 아규먼트가 필요한지 검색을 통해 찾아보세요.
+
+-   `theme()`을 통해 세부 사항도 조정해보세요. (선 굵기, 테마, 범례의 위치, 굵은 제목 등)
+
+## 연습 문제
+
+::: panel-tabset
+## Graph
+
+```{r}
+#| echo: false
+wpp_2022 |> 
+  filter(region_name == "India" | region_name == "China") |> 
+  select(region_name, year, pop_jul_total) |> 
+  ggplot(aes(x = year, y = pop_jul_total, color = region_name)) +
+  geom_line(size = 1.0) +
+  labs(title = "Population Growth of China and India 1950 - 2100",
+       subtitle = "India has overtaken China as the world's most populous country",
+       x = "Year",
+       y = "Population(thousands)",
+       color = "Country",
+       caption = "Your Name, Department of AI-Integrated Education at SNU") +
+  theme_bw() +
+  theme(legend.position = c(0.1, 0.7),
+        plot.title = element_text(face = "bold")) +
+  scale_y_continuous(labels = scales::comma)
+```
+
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+wpp_2022 |> 
+  filter(region_name == "India" | region_name == "China") |> 
+  select(region_name, year, pop_jul_total) |> 
+  ggplot(aes(x = year, y = pop_jul_total, color = region_name)) +
+  geom_line(size = 1.0) +
+  labs(title = "Population Growth of China and India 1950 - 2100",
+       subtitle = "India has overtaken China as the world's most populous country",
+       x = "Year",
+       y = "Population(thousands)",
+       color = "Country",
+       caption = "Your Name, Department of AI-Integrated Education at SNU") +
+  theme_bw() +
+  theme(legend.position = c(0.1, 0.7),
+        plot.title = element_text(face = "bold")) +
+  scale_y_continuous(labels = scales::comma)
+```
+:::
+
+## 문제 1 {.smaller}
+
+<br/>
+
+1950년에서 2100년까지 UN의 SDG Region별 인구 성장률의 변화를 한 눈에 알아보고자 합니다. 인구 성장률 0은 회색 점선으로 표시되어 있습니다.
+
+<br/>
+
+-   `wpp_2022`의 `PGR` 데이터를 활용하세요.
+-   `geom_hline()`을 사용하면 플롯에 가로줄을 그릴 수 있습니다. 문제와 똑같은 선을 그리기 위해서는 어떤 아규먼트들이 필요할지 검색을 통해 찾아보세요.
+
+## 문제 1
+
+```{r}
+wpp_2022 |> 
+  filter(type == "SDG region" | type == "World") |> 
+  select(region_name, year, PGR) |> 
+  ggplot(aes(x = year, y = PGR)) +
+  geom_line() +
+  facet_wrap(~region_name) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray") +
+  labs(title = "Popultaion Growth Rate Trends from 1950 to 2100",
+       subtitle = "Comparative Analysis Across SDG Regions and Global Patterns",
+       x = "Year",
+       y = "Population Growth Rate (%)",
+       caption = "Your Name, Department of AI-Integrated Education at SNU") +
+  theme_bw()
+```
+
+## 문제 2 {.smaller}
+
+<br/>
+
+1950년부터 2100년까지 국가별 합계출산율을 25년단위로 박스플롯으로 나타내어 전 세계의 합계출산율이 시간이 지남에 따라 어떻게 변화하는지 파악하고자 합니다. 추가적으로 각 시기별로 합계출산율이 가장 높은 국가를 라벨링해 보겠습니다. 대체출산율 2.1은 빨간색 점선으로 그려져 있습니다.
+
+<br/>
+
+-   `wpp_2022`의 `TFR` 데이터를 활용하세요.
+-   `%in%`을 사용하면 `filter()` 함수를 보다 효과적으로 사용할 수 있습니다. 아래의 두 개는 똑같은 결과를 보입니다.
+    -   `filter(year == 1950 | year == 1975 | year == 2000)`
+    -   `filter(year %in% c(1950, 1975, 2000))`
+-   `geom_hline()`을 사용하면 플롯에 가로줄을 그릴 수 있습니다. 문제와 똑같은 선을 그리기 위해서는 어떤 아규먼트들이 필요할지 검색을 통해 찾아보세요.
+
+## 문제 2
+
+```{r}
+wpp_2022_tfr <- wpp_2022 |> 
+  filter(year %in% c(1950, 1975, 2000, 2025, 2050, 2075, 2100) & type == "Country/Area") |>
+  select(year, region_name, TFR)
+
+wpp_2022_tfr |> 
+  ggplot(aes(group = year, x = year, y = TFR)) + 
+  geom_boxplot() +
+  geom_label_repel(data = wpp_2022_tfr |> 
+                     group_by(year) |> 
+                     slice_max(TFR, n = 1), aes(label = region_name)) +
+  geom_hline(yintercept = 2.1, linetype = "dashed", color = "red", size = 1) +
+  labs(title = "Total Fertility Rate by Country from 1950 to 2100",
+       subtitle = "With Replacement Fertility Rate Emphasized",
+       x = "Year",
+       y = "Total Fertility Rate(TFR)",
+       caption = "Your Name, Department of AI-Integrated Education at SNU") +
+  theme_bw()
+```
+
+## 문제 3 {.smaller}
+
+<br/>
+
+1950년에서 2100년까지 25년 단위로 UN의 SDG Region별 인구가 전 세계 인구에서 차지하는 비중을 확인하고자 합니다.
+
+<br/>
+
+-   `wpp_2022`의 `pop_jul_total` 데이터를 활용하세요.
+-   `geom_bar()`의 아규먼트인 `stat = "identity"`를 사용하면 y축의 높이를 빈도가 아닌 데이터의 값을 기반으로 설정해줍니다.
+-   `scale_y_continuous()`를 활용하면 y축의 설정을 변경할 수 있습니다. y축의 값을 백분율로 나타내기 위해 어떤 아규먼트가 필요한지 검색을 통해 찾아보세요.
+
+## 문제 3
+
+```{r}
+wpp_2022 |> 
+  filter(type == "SDG region" & year %in% c(1950, 1975, 2000, 2025, 2050, 2075, 2100)) |> 
+  select(region_name, year, pop_jul_total) |> 
+  group_by(year) |> 
+  mutate(prop = pop_jul_total / sum(pop_jul_total)) |> 
+  ggplot(aes(x = year, y = prop, fill = region_name)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = "World Population Proportions by SDG Region, from 1950 to 2100",
+       x = "Year",
+       y = "Population Proportion (%)",
+       fill = "SDG Region",
+       caption = "Your Name, Department of AI-Integrated Education at SNU") +
+  theme(legend.position = "bottom")
+```

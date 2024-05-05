@@ -1,0 +1,417 @@
+---
+title: "Lab07: 데이터 수집하기"
+author: "이상일(서울대학교 지리교육과 교수), 김세창(사회교육과 지리전공 석사), 김우형(사회교육과 지리전공 석사과정)"
+date-modified: last-modified
+number-sections: true
+format: 
+  html: 
+    toc: true
+    embed-resources: false
+code-link: true
+code-copy: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+bibliography: references.bib
+---
+
+## 실습 개요 {.unnumbered}
+
+이 실습은 R로 데이터를 수집하는 과정을 다룬다. R을 활용한 데이터 수집은 다양한 방법으로 진행될 수 있지만 여기서는 웹상의 데이터 파일 불러오기, 웹 스크레이핑, API를 이용하는 방식에 집중한다. 실습의 시작은 [`tidyverse`](https://www.tidyverse.org/) 패키지를 불러오는 것이다.
+
+## 웹상의 데이터 파일 불러오기
+
+```{r}
+library(tidyverse)
+```
+
+아마도 데이터를 수집하는 가장 단순한 방법은 웹상에 파일 형태로 존재하는 데이터를 R에서 불러오는 것일 것이다. `readr` 패키지에서 제공하는 다양한 데이터 불러오기 함수(예: [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html))를 데이터의 URL에 적용하면 손쉽게 데이터를 획득할 수 있다.
+
+```{r}
+students <- read_csv("https://pos.it/r4ds-students-csv")
+students
+```
+
+그런데 엑셀 형식의 파일은 [`readxl`](https://readxl.tidyverse.org/) 패키지가 제공하는 [`read_excel()`](https://readxl.tidyverse.org/reference/read_excel.html) 함수를 이용해 막바로 데이터를 불러오는 것이 불가능하다. [`openxlsx`](https://ycphs.github.io/openxlsx/) 패키지는 이러한 문제를 해결할 수 있게 해준다. 정말 다양한 함수를 제공하지만 [`read.xlsx()`](https://rdrr.io/pkg/openxlsx/man/read.xlsx.html) 함수가 URL을 통해 엑셀 데이터를 불러오는데 사용된다.
+
+```{r}
+library(openxlsx)
+xlsx_data <- read.xlsx("https://github.com/awalker89/openxlsx/raw/master/inst/readTest.xlsx")
+xlsx_data
+```
+
+## 웹스크레이핑
+
+웹스크레이핑(web scraping)이란 웹페이지로부터 특정한 데이터를 추출하는 것을 의미한다. R에서 웹스크레이핑은 `rvest` 패키지가 답당하는데, `reaxl` 패키지와 마찬가지로 `tidyverse`의 핵심 패키지는 아니기 때문에 따로 불러와야 한다.
+
+```{r}
+library(rvest)
+```
+
+### 웹스크레이핑의 실제 1: 테이블이 하나 있는 경우
+
+위키피디어의 한 항목(List of countries and dependencies by population)에는 표 하나가 포함되어 있다. 해당 표의 데이터를 수집한다.
+
+```{r}
+url <- "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
+my_table <- url |> 
+  read_html() |> 
+  html_element("table") |> 
+  html_table()
+my_table
+```
+
+수집한 데이터를 가공해본다. 필요없는 컬럼을 제거하고, 컬럼 이름을 바꾸고, 몇몇 변수를 특정 형태의 타입(numeric, date)으로 변환하기 위한 과정이다.
+
+```{r}
+my_table <- my_table |> 
+  select(-1, -7) |> 
+  rename(
+    location = "Location",
+    population = "Population",
+    pop_pct = "% ofworld",
+    date = "Date",
+    source = "Source (official or fromthe United Nations)"
+  ) |> 
+  mutate(
+    population = str_remove_all(population, ","),
+    population = as.numeric(population),
+    pop_pct = str_remove(pop_pct, "%"),
+    pop_pct = as.numeric(pop_pct),
+    date = dmy(date)
+  )
+
+my_table
+```
+
+### 웹스크레이핑의 실제 2: 테이블이 둘 이상인 경우
+
+위키피디아의 한 항목(List of FIPS country codes)에는 동일한 내용에 대해 여러 개의 표가 나타나 있다. 개별 표의 데이터를 수집한 후 결합하여 단일한 데이터 프레임을 구성한다.
+
+```{r}
+url <- "https://en.wikipedia.org/wiki/List_of_FIPS_country_codes"
+my_tables <- url |> 
+  read_html() |> 
+  html_elements("table") |> 
+  html_table() |> 
+  bind_rows()
+my_tables
+```
+
+수집한 데이터를 약간 가공한다. 역시 필요한 컬럼만 남기고, 이름을 바꿔준다. 마지막 `str_extract`는 Aruba의 단축어에 원치 않는 문자열이 추가되어 있어 제거하기 위한 코드이다.
+
+```{r}
+my_tables <- my_tables |> 
+  select(1, 2) |> 
+  rename(
+    code = "Code", 
+    short_name = "Short-form name"
+  ) |> 
+  mutate(
+    code = str_extract(code, "[A-Z][A-Z]")
+  )
+my_tables
+```
+
+::: {.callout-tip collapse="false"}
+## 추가 예제
+
+간혹 테이블을 불러올 때 데이터가 깨지는 경우도 발생한다. 이는 인코딩 방식의 문제인데, 아래와 같이 인코딩 아규먼트를 추가하면 해결된다. 보통 "EUC-KR"이나 "UTF-8" 둘 중 하나는 제대로 작동한다.
+
+한 번 네이버가 제공하는 주식 거래 상위 품목을 크롤링해보자.
+
+```{r}
+library(DT)
+kospi <- "https://finance.naver.com/sise/sise_quant.naver?sosok=0"
+
+kospi_table <- kospi |> 
+  read_html(, encoding = "EUC-KR") |> 
+  html_elements("table") |> 
+  html_table() |> 
+  _[[2]] |> 
+  filter(is.na(N) == FALSE)
+
+datatable(kospi_table)
+```
+:::
+
+## API의 활용
+
+KOSIS를 포함한 많은 대한민국의 데이터 포털은 개방 API 서비스를 제공하고 있다. KOSIS는 공유서비스 홈페이지([https://kosis.kr/openapi/](https://kosis.kr/openapi/index.jsp))를 통해 Open API를 통한 데이터 수집을 권장하고 있다.
+
+앞에서 설명한 것처럼, API용 패키지를 직접 사용할 수도 있지만, 래퍼 패키지가 존재하기만 한다면 그것을 활용하는 것이 훨씬 손쉬운 옵션일 수 있다. 놀랍게도 한국의 주석훈(Seokhoon Joo)이라는 분이 그러한 기능을 하는 `kosis`([https://cran.r-project.org/web/packages/kosis/index.html](https://cran.r-project.org/web/packages/kosis/))라는 패키지를 이미 개발해 두었고, 그것을 활용하고자 한다.
+
+실습 주제는 2022년 센서스 인구 기준으로 전국의 17개 시도별 '지방소멸위험지수'를 계산하고 그래프의 형태로 표현하는 것이다.
+
+### KOSIS에서 API KEY 받기
+
+먼저 API를 활용하기 위해 기관으로부터 KEY를 발급받아야 한다. 이를 위해 통계청에 회원가입을 한 후, KEY를 요청해야 한다. 과정은 아래와 같다.
+
+-   KOSIS 공유서비스 웹페이지(<https://kosis.kr/openapi/>) 접속
+
+-   상단의 \[활용신청\] 탭 클릭
+
+    -   통계청의 ONE-ID로 통합로그인(없으면 회원가입 필수)
+
+-   활용신청하여 사용자 인증키 획득
+
+    -   사용자 인증키는 마이페이지에서 언제든 확인 가능
+
+### 패키지 설치 및 인증키 등록
+
+우선 `kosis` 패키지를 오른쪽 하단 윈도우의 Packages 탭을 활용하여 인스톨한다. 이후에 아래와 같이 `kosis`와 `tidyverse` 패키지를 불러온다.
+
+```{r}
+library(kosis)
+```
+
+다음으로, `kosis` 패키지의 [`kosis.setKey()`](https://rdrr.io/pkg/kosis/man/kosis.setKey.html) 함수를 이용하여 인증키를 등록한다. Your Key Here 자리에 부여받은 인증키를 붙여 넣는다.
+
+```{r}
+kosis.setKey(apiKey = "Your Key Here")
+```
+
+### 데이터 추출
+
+이제 통계청 홈페이지에 접속해서 데이터를 불러와본다. 과정은 아래와 같다.
+
+-   KOSIS에 접속 후 로그인
+
+-   데이터에 접근 후 URL 생성
+
+    -   \[국내통계\]-\[주제별 통계\]-\[인구\]-\[인구총조사\]-\[인구부문\]-\[총조사인구(2015년 이후)\]-\[전수부문 (등록센서스, 2015년 이후)\]-\[전수기본표\]-\[연령 및 성별 인구\]
+
+    -   **항목**: '총인구(명)', '총인구_남자(명)', '총인구_여자(명)'만 선택(더 많은 항목을 선택하면 데이터가 너무 커 에러가 발생)
+
+    -   **행정구역별(읍면동)**: '1 레벨'과 '2 레벨' 선택('1 레벨'은 시도 수준, '2 레벨'은 시군구 수준)
+
+    -   **조회기간**: '기간설정' 버턴을 누른 후, 기간설정이 2022\~2022년인지 확인한다.
+
+    -   **응답필드**: 하나씩 눌러 모두 선택한 후, 'URL생성' 탭을 클릭한다. 그리고 나서 'URL 복사' 탭을 클릭한다. URL 속에 api key가 포함되어 있음을 확인한
+
+-   생성한 URL로부터 데이터 획득
+
+```{r}
+#| eval: false
+your_url <- "Your URL"
+data_api <- getStatDataFromURL(url = your_url)
+```
+
+```{r}
+#| echo: false
+kosis.setKey(apiKey = "Y2M3ZTQ5ODZiZTkwM2U0NGU5MGVhYzI0ODQ2ZTk4ZmU=")
+your_url <- "https://kosis.kr/openapi/Param/statisticsParameterData.do?method=getList&apiKey=Y2M3ZTQ5ODZiZTkwM2U0NGU5MGVhYzI0ODQ2ZTk4ZmU=&itmId=T00+T01+T02+&objL1=00+04+05+03+11+11010+11020+11030+11040+11050+11060+11070+11080+11090+11100+11110+11120+11130+11140+11150+11160+11170+11180+11190+11200+11210+11220+11230+11240+11250+21+21004+21005+21003+21010+21020+21030+21040+21050+21060+21070+21080+21090+21100+21110+21120+21130+21140+21150+21310+22+22004+22005+22003+22010+22020+22030+22040+22050+22060+22070+22310+23+23004+23005+23003+23010+23020+23030+23040+23050+23060+23070+23080+23090+23310+23320+24+24010+24020+24030+24040+24050+25+25010+25020+25030+25040+25050+26+26004+26005+26003+26010+26020+26030+26040+26310+29+29004+29005+29003+29010+31+31004+31005+31003+31010+31011+31012+31013+31014+31020+31021+31022+31023+31030+31040+31041+31042+31050+31051+31052+31053+31060+31070+31080+31090+31091+31092+31100+31101+31103+31104+31110+31120+31130+31140+31150+31160+31170+31180+31190+31191+31192+31193+31200+31210+31220+31230+31240+31250+31260+31270+31280+31350+31370+31380+32+32004+32005+32003+32010+32020+32030+32040+32050+32060+32070+32310+32320+32330+32340+32350+32360+32370+32380+32390+32400+32410+33+33004+33005+33003+33020+33030+33040+33041+33042+33043+33044+33320+33330+33340+33350+33360+33370+33380+33390+34+34004+34005+34003+34010+34011+34012+34020+34030+34040+34050+34060+34070+34080+34310+34330+34340+34350+34360+34370+34380+35+35004+35005+35003+35010+35011+35012+35020+35030+35040+35050+35060+35310+35320+35330+35340+35350+35360+35370+35380+36+36004+36005+36003+36010+36020+36030+36040+36060+36310+36320+36330+36350+36360+36370+36380+36390+36400+36410+36420+36430+36440+36450+36460+36470+36480+37+37004+37005+37003+37010+37011+37012+37020+37030+37040+37050+37060+37070+37080+37090+37100+37310+37320+37330+37340+37350+37360+37370+37380+37390+37400+37410+37420+37430+38+38004+38005+38003+38030+38050+38060+38070+38080+38090+38100+38110+38111+38112+38113+38114+38115+38310+38320+38330+38340+38350+38360+38370+38380+38390+38400+39+39004+39005+39003+39010+39020+&objL2=000+005+010+015+020+025+030+035+040+045+050+055+060+065+070+075+080+085+090+095+100+101+104+&objL3=&objL4=&objL5=&objL6=&objL7=&objL8=&format=json&jsonVD=Y&prdSe=Y&startPrdDe=2022&endPrdDe=2022&outputFields=ORG_ID+TBL_ID+TBL_NM+OBJ_ID+OBJ_NM+OBJ_NM_ENG+NM+NM_ENG+ITM_ID+ITM_NM+ITM_NM_ENG+UNIT_NM+UNIT_NM_ENG+PRD_SE+PRD_DE+LST_CHN_DE+&orgId=101&tblId=DT_1IN1503"
+data_api <- getStatDataFromURL(url = your_url)
+```
+
+`getStatDataFromURL` 함수의 아규먼트에 위에서 생성한 URL을 입력하면, 다운로드 과정 없이 곧바로 데이터를 획득할 수 있다.
+
+### 데이터 정리 및 변형
+
+아래와 같이 데이터를 정리 및 변형한다. 최종적으로 지역별 지역소멸위험지수를 산출한다.
+
+```{r}
+data <- data_api |> 
+  select(C1, C1_NM, C2, C2_NM, ITM_ID, ITM_NM, DT) |> 
+  mutate(
+    across(c(C1, DT), as.numeric),
+    ITM_ID = case_match(
+    ITM_ID, "T00" ~ "T",
+    "T01" ~ "M",
+    "T02" ~ "F"),
+  ) |>
+  unite("gender_age", ITM_ID, C2_NM, sep = "_") |> 
+  pivot_wider(
+    id_cols = c(C1, C1_NM),
+    names_from = gender_age,
+    values_from = DT
+  ) |> 
+  mutate(
+    index = (`F_20~24세` + `F_25~29세` + `F_30~34세` + `F_35~39세`) / `T_65세이상`
+  ) |> 
+  select(
+    C1, C1_NM, index
+  )
+```
+
+시도 데이터와 시군구 데이터를 분리하여 저장한다.
+
+```{r}
+data_sido <- data |> 
+  filter(nchar(C1) == 2) 
+
+data_sgg <- data |> 
+  filter(nchar(C1) == 5 & substr(C1, 5, 5) == 0 & !C1_NM %in% c("동부", "면부", "읍부"))
+```
+
+### 그래프 작성
+
+인구소멸위험지수 연구에서 주로 사용되는 5개의 위험도 클래스의 구분법을 적용하고, 위험도 클래스별로 특정한 색상을 적용하고, 그래프의 범례에 5개의 클래스가 모두 나타나게 하려다보니 코드가 조금 복잡해졌다. 
+
+```{r}
+data_sido <- data_sido |> 
+  mutate(
+    index_class = case_when(
+      index < 0.2 ~ "1",
+      index >= 0.2 & index < 0.5 ~ "2",
+      index >= 0.5 & index < 1.0 ~ "3",
+      index >= 1.0 & index < 1.5 ~ "4",
+      index >= 1.5 ~ "5"
+    ),
+    index_class = factor(index_class, levels = as.character(1:5))
+  )
+
+class_color <- c("1" = "#d7191c", "2" = "#fdae61",
+                 "3" = "#ffffbf", "4" = "#a6d96a", 
+                 "5" = "#1a9641")
+data_sido |> 
+  ggplot(aes(x = index, y = fct_reorder(C1_NM, index))) +
+  geom_col(aes(fill = index_class), show.legend = TRUE) +
+  geom_text(aes(label = format(round(index, digits = 3), 
+                               nsmall = 3)), hjust = -0.1) +
+  scale_x_continuous(limits = c(0, 1.5)) +
+  scale_fill_manual(name = "Classes", 
+                    labels = c("< 0.2", "0.2 ~ 0.5", "0.5 ~ 1.0", 
+                               "1.0 ~ 1.5", ">= 1.5"), 
+                    values = class_color, drop = FALSE) +
+  labs(title = "인구소멸위험지수, 2022년", 
+       x = "인구소멸위험지수", 
+       y = "")
+```
+
+::: {.callout-tip collapse="false"}
+## KOSIS API의 추가 예제
+
+이렇게 KOSIS 홈페이지에서 URL을 직접 지정하지 않고도 데이터를 불러오는 방법이 있다. `getStatData` 함수로, 기관명과 데이터 코드를 아규먼트에 입력하면 해당 데이터를 불러올 수 있다. 가령 방금 실습에서 사용한 데이터는 통계청의 2015년 인구총조사 전수부문의 연령 및 성별인구에 해당한다. 이때 통계청의 기관 코드는 [**101**]{.underline}, 해당 데이터의 코드는 [**DT_1IN503**]{.underline}이다.
+
+아래의 코드는 여기에 몇 개의 아규먼트를 더 추가하여 서울특별시 종로구의 2015년부터 2022년까지의 데이터를 불러오고, 이를 바탕으로 인구소멸지수를 계산하여 그 추이를 시각화 한 것이다.
+
+```{r}
+aoi_code <- "11010" # 서울특별시 종로구 코드
+aoi <- getStatData(orgId = 101, tblId = "DT_1IN1503", prdSe = "Y",
+                    startPrdDe = "2015", endPrdDe = "2022",
+                    objL1 = aoi_code, objL2 = "ALL") |> 
+  filter(nchar(C2) == 3)
+
+aoi <- aoi |> 
+  select(C1, C1_NM, C2, C2_NM, ITM_ID, ITM_NM, DT, PRD_DE) |> 
+  filter(ITM_ID == "T00" | ITM_ID == "T01" | ITM_ID == "T02") |> 
+  mutate(
+    across(c(C1, DT), as.numeric),
+    ITM_ID = case_match(
+      ITM_ID, "T00" ~ "T",
+      "T01" ~ "M",
+      "T02" ~ "F"),
+  ) |> 
+  unite("gender_age", ITM_ID, C2_NM, sep = "_") |> 
+  pivot_wider(
+    id_cols = c(C1, C1_NM, PRD_DE),
+    names_from = gender_age,
+    values_from = DT
+  ) |> 
+  mutate(
+    index = (`F_20~24세` + `F_25~29세` + `F_30~34세` + `F_35~39세`) / `T_65세이상`
+  ) |> 
+  select(
+    C1, C1_NM, index, PRD_DE
+  )
+
+region <- aoi$C1_NM[1]
+```
+
+```{r}
+aoi |> 
+  ggplot(aes(x=PRD_DE, y=index)) +
+  geom_point() +
+  geom_line(group = 1, linewidth = 0.5) +
+  ggtitle(paste0(region, " 인구소멸위험지수 추이")) +
+  xlab(label = "연도") +
+  ylab(label = "인구소멸위험지수") +
+  theme(plot.title = element_text(size = 18, hjust=0.5))
+```
+
+`aoi_code`에 내가 원하는 지역의 코드를 넣으면 마찬가지로 해당 관심지역의 인구소멸위험지수 추이를 관측할 수 있다. 예컨대 인구가 빠르게 증가하는 경기 김포시는 "31230", 화성시는 "31240"이고, 소멸지수가 가장 높은 경북 상주시는 "37080", 경북 문경시는 "37090"이다. 제공한 코드에서 한번 `aoi_code` 부분만 변경해보자.
+
+한편, 이렇게 URL 없이 데이터를 불러오는 경우 KOSIS에서 직접 조정하는 것에 비해 덜 번거롭지만 제한사항도 많다. 가령 복수의 지역을 불러오는 것이 반복문을 사용하지 않고서는 불가능하고, 불필요한 데이터를 빼고 가져오기도 어렵다. 그러나 startPrdDe와 endPrdDe 아규먼트를 이용해 데이터를 시계열로 수집하고자 하는 측면에서는 유용하다.
+
+그러므로 수집하고자 하는 데이터를 잘 파악해서 API를 활용해보자.
+:::
+
+### cf) KOSIS API를 활용한 함수 작성
+
+마지막으로, API를 활용한 함수를 소개한다. API를 신청할 때 보았듯, 이는 웹/앱 애플리케이션을 제작하기 위한 용도로 주로 사용된다.
+
+이와 관련된 매우 간단한 예시로, 학생에게 인구소멸지수가 궁금한 지역을 검색해보도록 하는 활동을 구상한다고 가정해보자. 학생이 매번 코드를 작성하며 확인하기란 사실상 불가능하다. 그런데 위에서 사용한 코드와 API를 활용하면 함수를 어렵지 않게 생성할 수 있다.
+
+예컨대 교사가 아래와 같이 `exInd()` 함수를 한번 작성해두면, 학생은 단 한 줄의 코드만 입력해도 금방 지역의 인구소멸지수의 추이를 탐색해볼 수 있을 것이다.
+
+```{r}
+# 함수 생성: 교사 작성 부분
+exInd <- function(){
+  # Library
+  library(tidyverse)
+  library(kosis)
+  library(DT)
+  library(openxlsx)
+  
+  # Table for Searching Region Code
+  region_table <- read.xlsx("https://github.com/Sechang-Kim/gis-lab/raw/download/korea-sigungu-code(2022).xlsx")
+  print(datatable(region_table))
+  
+  # Input Arguments
+  aoi_code <- readline('지역 코드를 입력하세요: ')
+  start <- as.numeric(readline('시작 연도를 입력하세요: '))
+  end <- as.numeric(readline('종료 연도를 입력하세요: '))
+  
+  # Data Request
+  aoi <- getStatData(orgId = 101, tblId = "DT_1IN1503", prdSe = "Y",
+                     startPrdDe = start, endPrdDe = end,
+                     objL1 = aoi_code, objL2 = "ALL") |> 
+    filter(nchar(C2) == 3) # Delete 1-age interval(Only 5-age interval)
+  
+  # Data Cleansing
+  aoi <- aoi |> 
+    select(C1, C1_NM, C2, C2_NM, ITM_ID, ITM_NM, DT, PRD_DE) |> 
+    filter(ITM_ID == "T00" | ITM_ID == "T01" | ITM_ID == "T02") |> 
+    mutate(
+      across(c(C1, DT), as.numeric),
+      ITM_ID = case_match(
+        ITM_ID, "T00" ~ "T",
+        "T01" ~ "M",
+        "T02" ~ "F"),
+    ) |> 
+    unite("gender_age", ITM_ID, C2_NM, sep = "_") |> 
+    pivot_wider(
+      id_cols = c(C1, C1_NM, PRD_DE),
+      names_from = gender_age,
+      values_from = DT
+    ) |> 
+    mutate(
+      index = (`F_20~24세` + `F_25~29세` + `F_30~34세` + `F_35~39세`) / `T_65세이상`
+    ) |> 
+    select(
+      C1, C1_NM, index, PRD_DE
+    )
+  
+  ## Visualization
+  region <- aoi$C1_NM[1] # For Auto-Plot Title
+  vis <- aoi |> 
+    ggplot(aes(x=PRD_DE, y=index)) +
+    geom_point() +
+    geom_line(group = 1, linewidth = 0.5) +
+    ggtitle(paste0(region, " 인구소멸위험지수 추이")) +
+    xlab(label = "연도") +
+    ylab(label = "인구소멸위험지수") +
+    theme(plot.title = element_text(size = 18, hjust=0.5))
+  
+  return(vis)
+}
+```
+
+```{r}
+#| eval: false
+# 함수 실행: 학생 작성 부분
+exInd()
+```

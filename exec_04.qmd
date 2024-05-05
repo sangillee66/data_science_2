@@ -1,0 +1,379 @@
+---
+title: "데이터 변형하기"
+author: 이상일(서울대학교 지리교육과)
+date-modified: last-modified
+number-sections: true
+format: 
+  html: 
+    toc: true
+code-link: true
+code-copy: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+bibliography: references.bib
+---
+
+## 실습 개요 {.unnumbered}
+
+이 실습은 R로 데이터사이언스를 하는 과정 중 데이터 변형하기(transforming)를 다룬다. 데이터 변형하기와 관련된 대부분의 함수는 [`tidyverse`](https://www.tidyverse.org/)의 핵심 패키지 중의 하나인 [`dplyr`](https://dplyr.tidyverse.org/) 에서 제공된다. 데이터 변형하기와 관련된 함수는 크게 네 개로 범주화된다.
+
+-   행 함수: 행(관측개체)에 작동하는 함수, 즉 행의 변화를 야기하는 함수
+
+-   열 함수: 열(변수)에 작동하는 함수, 즉 열의 변화를 야기하는 함수
+
+-   그룹 함수: 그룹에 작동하는 함수
+
+-   데이터 프레임 함수: 데이터 프레임에 작동하는 함수
+
+이번 실습에서는 행 함수, 열 함수, 그룹 함수에 집중한다. 모든 실습의 시작은 [`tidyverse`](https://www.tidyverse.org/) 패키지를 불러오는 것이다.
+
+```{r}
+library(tidyverse)
+```
+
+사용할 데이터는 World Bank가 [gapmider.org](https://www.gapminder.org/)를 통해 무료로 배포하는 것으로 [`gapmider`](https://cran.r-project.org/web/packages/gapminder/readme/README.html) 패키지에 포함되어 있다. [`gapmider`](https://cran.r-project.org/web/packages/gapminder/readme/README.html) 패키지를 인스톨하고 불러온다. 데이터가 어떻게 구성되어 있는지 살펴본다.
+
+```{r}
+library(gapminder)
+View(gapminder)
+```
+
+## 행 함수
+
+### `filter()` 함수
+
+특정 열(변수)과 관련된 조건을 만족하는 행을 선정한다. 행의 길이가 준다.
+
+```{r}
+gapminder |> 
+  filter(continent == "Europe")
+```
+
+```{r}
+gapminder |> 
+  filter(pop > 50000000 & gdpPercap > 30000)
+```
+
+```{r}
+gapminder |> 
+  filter(year == 2007 & (lifeExp > 82 | gdpPercap > 40000))
+```
+
+### `slice()` 함수
+
+`filter()` 함수와 마찬가지로 행의 숫자를 줄인다. `slice()` 함수는 `slice_head()`, `slice_tail()`, `slice_max()`, `slice_min()`과 같은 패밀리 함수가 더 널리 사용된다. 그런데 이 함수들은 작동 방식에 따라 두 가지로 구분된다.
+
+-   특정 열(변수)과 관계 없이, 행의 위치에 의거해 행을 선정: `slice()`, `slice_head()`, `slice_tail()`
+
+-   특정 열(변수)에 따른, 행의 위치에 의거해 행을 선정: `slice_max()`, `slice_min()`
+
+몇 번째에서 몇 번째 사이의 행만을 골라낸다.
+
+```{r}
+gapminder |> 
+  slice(1:5)
+```
+
+가장 앞에 위치한 몇 개(`n`)의 행만을 골라낸다. 실질적으로 위와 동일하다.
+
+```{r}
+gapminder |> 
+  slice_head(n = 5)
+```
+
+가장 뒤에 위치한 몇 개(`n`)의 행만을 골라낸다.
+
+```{r}
+gapminder |> 
+  slice_tail(n = 5)
+```
+
+특정 열(변수)에 따라 값이 가장 큰 몇 개(`n`)의 행만을 골라낸다.
+
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
+  slice_max(gdpPercap, n = 5)
+```
+
+특정 열(변수)에 따라 값이 가장 작은 것들 중 주어진 비중(`prop`)에 해당하는 행만을 골라낸다.
+
+```{r}
+gapminder |> 
+  filter(year == 2007 & continent == "Asia") |> 
+  slice_min(lifeExp, prop = 0.1)
+```
+
+### `arrange()` 함수
+
+특정 열(변수)과 관련된 조건에 의거해 행의 순서를 바꾼다. 행의 길이에는 변화가 없다.
+
+```{r}
+gapminder |> 
+  arrange(lifeExp)
+```
+
+`desc()` 도우미 함수(helper function)는 내림차순으로 행을 배열한다.
+
+```{r}
+gapminder |> 
+  arrange(lifeExp, desc(year))
+```
+
+### `distinct()` 함수
+
+특정 열(변수)에 의거해 중복이 없이 고유한 행만을 골라낸다. 행의 길이가 준다.
+
+`gapminder` 데이터와 관련하여 다음의 코드는 어떤 정보를 우리에게 주는지 생각해 본다.
+
+```{r}
+gapminder |> 
+  distinct(country)
+```
+
+`.keep_all` 아규먼트를 이용하면 나머지 열도 함께 나타낼 수 있다. 나머지 열의 값이 무엇인지 생각해 본다.
+
+```{r}
+gapminder |> 
+  distinct(continent, .keep_all = TRUE)
+```
+
+## 열 함수
+
+### `select()` 함수
+
+열(변수)의 일부를 선택한다. 열의 길이가 준다.
+
+```{r}
+gapminder |> 
+  select(year, country, gdpPercap)
+```
+
+열(변수)의 일부를 선택하지 않는다. 역시 열의 길이가 준다. 실질적으로 위와 동일하다.
+
+```{r}
+gapminder |> 
+  select(-c(lifeExp, continent, pop))
+```
+
+`starts_with()`, `ends_with()`, `contains()`와 같은 도우미 함수를 잘 활용하면 효율적으로 필요한 변수만을 선정할 수 있다.
+
+```{r}
+gapminder |> 
+  select(starts_with("c"))
+```
+
+### `mutate()` 함수
+
+기존의 열(변수)에 기반하여 새로운 변수를 생성한다. 열의 길이가 는다.
+
+```{r}
+gapminder |> 
+  mutate(
+    gdp_billion = gdpPercap * pop / 10^9
+  )
+```
+
+여러개의 변수를 동시에 생성할 수 있다. `row_number()` 도우미 함수는 값에 순위를 부여하는 것이고, `.keep = "used"`는 결과에 변수 생성에 동원된 변수만을 포함시키게 해 준다.\
+
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
+  mutate(
+    gdpPercap_rank = row_number(gdpPercap),
+    lifeExp_highlow = lifeExp > 30000,
+    .keep = "used"
+  )
+```
+
+### `rename()` 함수
+
+변수의 이름을 바꾼다. 열의 길이에는 변화가 없다.
+
+```{r}
+gapminder |> 
+  rename(
+    gdp_percap = gdpPercap,
+    left_exp = lifeExp
+  )
+```
+
+패밀리 함수인 `rename_with()`를 이용하면 다른 것도 가능하다.
+
+```{r}
+gapminder |> 
+  rename_with(
+    tolower, starts_with("l")
+  )
+```
+
+### `relocate()` 함수
+
+변수의 위치를 바꾼다. 열의 길이에는 변화가 없다.
+
+```{r}
+gapminder |> 
+  relocate(year, continent)
+```
+
+`.before`나 `.after` 아규먼트를 사용하여 해당 변수를 어떤 변수의 앞이나 뒤로 보낼 수 있다.
+
+```{r}
+gapminder |> 
+  relocate(pop, .before = lifeExp )
+```
+
+## 그룹 함수
+
+### `group_by()` 함수
+
+특정 범주 열(변수)에 의거해 행을 분할한다. 행의 길이는 변하지 않는다.
+
+하나의 범주 변수에 의거해 그룹화한다. 산출물을 보면 `year`에 의거해 행이 12개의 그룹으로 나누어졌음이 나타나 있다(두 번째 줄: Group: year \[12\]).
+
+```{r}
+gapminder |> 
+  group_by(year)
+```
+
+두 개 이상의 범주 변수에 의거해 그룹화할 수도 있다.
+
+```{r}
+gapminder |> 
+  group_by(year, continent)
+```
+
+### `summarize()` 함수
+
+주어진 열(변수)에 대한 통계 요약값을 계산하고 그것으로 이루어진 새로운 데이터 프레임을 생성한다. 엄밀히 말해 기존 열(변수)을 변형한다기 보다는 기존 데이터 프레임으로부터 새로운 데이터 프레임을 생성한다고 볼 수 있다. `summarize()` 함수는 대부분의 경우 `group_by()` 함수와 함께 사용된다. 다음의 둘을 비교해 보라.
+
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
+  summarize(mean_gdpPercap = mean(gdpPercap))
+```
+
+```{r}
+gapminder |> 
+  filter(year == 2007) |> 
+  group_by(continent) |> 
+  summarize(mean_gdpPercap = mean(gdpPercap))
+```
+
+좀 더 복잡한 확장이 가능하다. 마지막의 `n()`은 자동으로 생성되는 그룹별 빈도값이다.
+
+```{r}
+gapminder |> 
+    group_by(continent, year) |> 
+    summarize(
+      mean_gdpPercap = mean(gdpPercap),
+      sd_gdpPercap = sd(gdpPercap),
+      mean_pop = mean(pop),
+      sd_pop = sd(pop),
+      n = n()
+      )
+```
+
+`group_by()`와 `arrange()`를 결합하는 경우, `.by_group = TRUE`를 하면 그룹별로 행을 배열할 수 있다(그렇지 않으면 그룹 설정을 무시한 채 행을 배열한다.)
+
+```{r}
+gapminder |> 
+  group_by(year, continent) |> 
+  arrange(desc(gdpPercap), .by_group = TRUE)
+```
+
+아래는 연도별/대륙별로 일인당 GDP가 가장 높은 국가를 추출한 것이다. 코드를 생각해 보라.
+
+```{r}
+#| echo: false
+gapminder |> 
+  group_by(year, continent) |> 
+  slice_max(gdpPercap)
+```
+
+`group_by()` 함수가 한 번 적용되면, 그 뒤의 모든 오퍼레이션에 그룹 분할이 적용되기 때문에 예기치 못한 일이 발생할 수 있다. 이것을 회피하기 위해 두 가지 옵션이 있다. 첫번째 방법은 마지막에 `upgroup()` 함수를 첨가하는 것이다. 아래에 위 질문에 대한 정답이 나타나 있다.
+
+```{r}
+gapminder |> 
+  group_by(year, continent) |> 
+  slice_max(gdpPercap) |> 
+  ungroup()
+```
+
+두 번째 방법은 `group_by()` 함수 대신 `by` 아규먼트를 사용하는 것이다. 결과가 달라보이겠지만 정렬의 차이일 뿐 동일하다.
+
+```{r}
+gapminder |> 
+  slice_max(gdpPercap, by = c(year, continent))
+```
+
+### `count()` 함수
+
+특정 범주 열(변수)에 의거한 빈도를 빠르게 계산해 준다.
+
+```{r}
+gapminder |> 
+  count(year, continent)
+```
+
+`wt` 아규먼트를 사용하면 빈도가 아니라 범주별 특정 변수의 합산값을 구할 수 있다.
+
+```{r}
+gapminder |> 
+  count(year, continent, wt = pop)
+```
+
+위의 두 개는 사실 아래와 동일하다.
+
+```{r}
+gapminder |> 
+  group_by(year, continent) |> 
+  summarize(
+    n = n(),
+    sum_pop = sum(pop)
+  )
+```
+
+### `across()` 함수
+
+다수의 열(변수)에 동일한 함수를 적용할 수 있다.
+
+```{r}
+gapminder |> 
+  mutate(
+    across(c(lifeExp, gdpPercap), round)
+  )
+```
+
+이것은 다음과 동일하다.
+
+```{r}
+gapminder |> 
+  mutate(
+    lifeExp = round(lifeExp),
+    gdpPercap = round(gdpPercap)
+  )
+```
+
+`summarize()` 함수와 결합하여 선택된 변수에 특정 함수를 적용하고 그 결과의 이름을 변수명과 함수명을 사용하여 부여할 수 있다.
+
+```{r}
+gapminder |> 
+  group_by(year, continent) |> 
+  summarize(across(c(lifeExp, gdpPercap), mean, .names = "mean_{.col}"))
+```
+
+### `c_across()` 함수
+
+`group_by()` 함수와 `across()` 함수가 결합하는 것과 정반대로, `rowwise()` 함수와 `c_across()` 함수를 결합하며, 행별 통계값을 산출할 수 있다. 물론 여기서 sd 값은 아무런 의미가 없다.
+
+```{r}
+gapminder |> 
+  rowwise() |> 
+  mutate(
+    sd = sd(c_across(where(is.numeric)))
+  )
+```

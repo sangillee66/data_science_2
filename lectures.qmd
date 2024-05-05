@@ -1,0 +1,23 @@
+---
+title: "강의노트"
+author: 이상일(서울대학교 지리교육과)
+date-modified: last-modified
+format: 
+  html: 
+    toc: true
+editor: visual
+---
+
+Chapter 1. 데이터사이언스의 개념과 원리 {{< bi file-pdf-fill >}}
+
+Chapter 2. 인구 현상과 인문사회 콘텐츠
+
+-   인구 현상과 인구 데이터 {{< bi file-pdf-fill >}}
+
+-   인구 성장, 인구 분포, 인구 구조 {{< bi file-pdf-fill >}}
+
+-   인구 동태와 인구 이동 {{< bi file-pdf-fill >}}
+
+Chapter 3. 데이터 수집하기 {{< bi file-pdf-fill >}}
+
+Chapter 4. 데이터로 소통하기

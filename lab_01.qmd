@@ -1,0 +1,352 @@
+---
+title: "Lab01: R과 RStudio"
+author: "이상일(서울대학교 지리교육과 교수), 김세창(사회교육과 지리전공 석사), 김우형(사회교육과 지리전공 석사과정)"
+number-sections: true
+format: 
+  html: 
+    toc: true
+code-link: true
+code-copy: true
+editor: visual
+---
+
+## 실습의 목표 {.unnumbered}
+
+1.  **R**과 **R Studio**를 설치할 수 있다.
+
+2.  R Studio의 **구조 및 기본 사용법**을 이해할 수 있다.
+
+3.  **프로젝트**와 **스크립트**에 대해 이해하고 이를 생성할 수 있다.
+
+::: callout-warning
+## R을 시작하기 전 반드시 확인해야 하는 사항
+
+R은 실행과정에서 폴더 경로에 한글이 포함된 경우 오류가 자주 발생한다. 따라서 사용자 계정 이름이 한국어로 설정되어 있지 않은지 반드시 확인해야 하며, 앞으로 만들 프로젝트 폴더 등도 이름을 모두 영어로 설정하는 것이 좋다.
+
+Windows: \[설정\] -\> \[계정\] -\> \[사용자 정보\]로 들어가 볼드체로 된 사용자 계정 이름이 영어인지 확인하기. 사용자 계정이 한국어로 설정되어 있다면 영어로 된 새로운 윈도우 사용자 계정을 만들어야 한다.
+
+Mac: 프로젝트 폴더 이름 설정만 잘 신경쓰면 된다.
+:::
+
+## R과 R Studio 설치
+
+R과 R Studio 설치를 위해서 아래의 링크로 이동한다. 해당 사이트는 R Studio를 만든 [posit](http://posit.co/)이라는 회사가 관리하는 R Studio Desktop의 다운로드 페이지이다.
+
+다운로드 링크: <https://posit.co/download/rstudio-desktop/>
+
+::: {.callout-tip collapse="true" title="참고: 회사 이름에 대한 이야기"}
+원래는 회사 이름 자체가 R Studio였는데, 2022년에 사명을 posit으로 변경했다. 수석 과학자의 설명에 따르면 R Studio는 R과 파이썬 모두를 지원하는 IDE(Integrated Development Environment, 통합 개발 환경)인데, 이름 때문에 R에만 제한된다는 느낌을 받았다고 한다. 자세한 내용은 [링크](https://www.itworld.co.kr/news/247408) 참고.
+:::
+
+링크에 접속하면 아래의 @fig-install-rstudio 과 같이 R과 R studio를 설치할 수 있는 화면이 나타난다.
+
+![R과 R Studio 다운로드 화면](images/clipboard-607613883.png){#fig-install-rstudio}
+
+### R 설치
+
+위의 링크를 눌러 들어간 웹사이트에서 왼쪽의 **"DOWNLOAD AND INSTALL R"**을 클릭하게 되면 [CRAN(The Comprehensive R Archive Network)](https://cran.rstudio.com/) 사이트에 접속할 수 있다. 상단의 다운로드 목록 중 **본인의 운영체제에 맞는** R의 최신 버전을 다운로드 받으면 된다. 현재 문서 작성 시점에서 R의 최신 버전은 2024년 2월 29에 배포된 4.3.3이다.
+
+::: {.callout-tip collapse="true"}
+## Mac 사용자의 경우
+
+![위는 애플 실리콘 Mac(M1\~M3), 아래는 Intel Mac 전용](images/macr.png)
+:::
+
+::: {.callout-tip collapse="true"}
+## Windows 사용자의 경우
+
+![Install R for the first time 클릭 후 R 다운로드](images/winr.png)
+:::
+
+### R Studio 설치
+
+R Studio를 설치하기 위해 다시 원래의 [다운로드 페이지](https://posit.co/download/rstudio-desktop/)로 돌아와 오른쪽의 **"DOWNLOAD R DESKTOP FOR WINDOWS"**를 눌러 R Studio를 다운받는다. Mac등 다른 운영체제를 사용하는 사람들은 아래로 스크롤하여 설치 파일을 다운로드 받을 수 있다. 현재 문서 작성 시점 기준 R Studio의 최신 버전은 2024년 1월 29일에 배포된 2023.12.1+402이다.
+
+## R의 구조 및 기본 사용법
+
+### 창(pane, 패인)
+
+R Studio를 실행하면 @fig-pane 와 같은 화면이 나온다. 화면이 크게 3개의 창으로 구성되어 있음을 알 수 있다.
+
+![R Studio를 열면 나오는 3개의 창](images/rpane.png){#fig-pane}
+
+왼편에 가장 크게 나타나 있는 창을 Console 창(pane), 오른쪽 아래의 창을 보통 Output 또는 File 창이라고 부른다. 그리고 오른쪽 위의 창을 보통 Environment 창이라고 부른다.
+
+::: callout-note
+개별 창은 여러 개의 탭(tab)으로 구성되어 있는데, 탭의 기능이 매우 다양하기 때문에 소속 탭의 모든 기능을 포괄하는 일관성 있는 창 이름을 붙이는 것이 매우 어렵다. 예를 들어 Output 창의 경우 Plots와 Viewer 탭은 결과물을 보여주는 것이라 할 수 있지만 나머지 탭은 꼭 그렇지도 않다.
+:::
+
+::: {.callout-tip collapse="true"}
+## 참고: Base R의 화면
+
+![Base R의 화면. 좌측에 콘솔 창이 있고, 그래프 등을 생성하면 우측에 따로 창이 하나 생성된다. 콘솔 창만을 가지고 R 프로젝트를 수행하는 것은 어려움이 많다.](images/basicr.png)
+:::
+
+### Console 창에서 놀아보기
+
+#### 프롬프트, 할당, 객체
+
+콘솔 창에 R 프롬프트인 `>`가 나타나 있을 것이다. 아래와 같이 숫자 1을 타이핑하고 실행을 위해 \[enter\] 키를 누른다.
+
+```{r}
+1
+```
+
+간단한 연산을 해본다. 사실 R은 기본적으로 계산기이다.
+
+```{r}
+1 + 2
+```
+
+이제 할당 연산자(`<-`)를 활용하여 할당을 해보자.
+
+```{r}
+a <- 1
+```
+
+우상의 환경 창을 보면 뭔가 생성된 것을 확인할 수 있을 것이다. a라는 객체가 생성되었으며 그것은 1이라는 값을 품고 있다는 의미이다. 이제 a는 알파벳 소문자가 아니라 1이라는 숫자와 필연적으로 결합해 있는 객체이다. 다음과 같이 하면 이러한 사실을 명확히 확인할 수 있다.
+
+```{r}
+a
+```
+
+아래와 같이 하면 객체끼리의 연산이 가능하다.
+
+```{r}
+b <- 2
+c <- a + b
+c
+```
+
+::: {.callout-tip collapse="true"}
+## 참고: 할당 연산자로 `<-`를 사용해야 하는 이유
+
+`<-`를 할당 연산자로 사용하는 데에는 다양한 이유가 있다. 그 중 하나는 `=`을 사용했을 때 발생할 수 있는 혼란을 방지하기 위함인데, `=`은 변수 할당 기능 외에도 다른 기능들을 할 수 있기 때문에다. `=`를 함수 인자 전달에 사용한 아래의 예시를 보자.
+
+```{r}
+# 할당 연산자와 함수 인자 전달에 모두 =를 사용했을 때
+my_data = c(1, 2, 3, NA, 5)
+
+average = mean(x = my_data, na.rm = TRUE)
+
+average
+```
+
+```{r}
+# 할당 연산자에는 <-, 인자 전달에는 =를 사용했을 때
+my_data <- c(1, 2, 3, NA, 5)
+
+average <- mean(x = my_data, na.rm = TRUE)
+
+average
+```
+
+아래의 예시와 같이 `<-`와 `=`를 구분했을 경우에 코드의 가독성이 좋아짐을 확인할 수 있다.
+:::
+
+#### 함수
+
+`sum()` 함수를 사용하여 동일한 연산을 할 수 있다. `sum()` 은 R에 기본적으로 내장되어 있는 Base R 함수 중 하나이다.
+
+```{r}
+sum(a, b)
+```
+
+::: callout-important
+지금부터 모든 함수명에는 항상 `()`를 연결하여 나타낼 것이다. 다른 객체명과의 혼동을 방지하기 위한 것도 있지만, 모든 함수는 `()` 속에 인풋(이것을 아규먼트(argument, 인자)라고 부른다)을 받아들이기 때문이다.
+:::
+
+R에는 수많은 내장 함수가 있다. 그 중 몇가지만 실행하면 다음과 같다. `sqrt()`는 제곱근을, `abs()`는 절대값을, `log10()`는 로그값을 산출해준다.
+
+```{r}
+sqrt(2)
+abs(-3)
+log10(100)
+```
+
+#### 벡터와 데이터 프레임
+
+직접 벡터를 만들어보자.
+
+```{r}
+a <- c(58, 26, 24)
+b <- c("이상일", "김세창", "김우형")
+c <- c(TRUE, TRUE, FALSE)
+```
+
+벡터 a는 숫자형(numeric), b는 문자형(character), c는 논리형(logical)으로, 세 개의 벡터가 서로 다른 유형을 가지고 있음을 Environment 창에서 확인할 수 있다.
+
+::: callout-note
+R에서 사용되는 데이터 유형에 대해서는 다음의 웹사이트를 참고할 수 있다. <https://tibble.tidyverse.org/articles/types.html>
+:::
+
+벡터를 `data.frame()`이라는 함수를 통해 결합하면 데이터 프레임을 만들 수 있다.
+
+```{r}
+df <- data.frame(a, b, c)
+df
+```
+
+우상의 Environment 창을 보면 뭔가 변화가 있음을 확인할 수 있을 것이다. Data가 생겼고 그 아래에 df가 생성되어 있다. "3 obs. of 3 variables"라는 말이 굉장히 중요하다. 이것은 df라는 데이터 프레임 객체가 3개의 관측개체(observations)와 3개의 변수(variables)로 구성되어 있다는 것을 의미한다. 데이터 프레임, 관측개체, 변수에 대해서는 강의에서 상세하게 다룬다.
+
+Environment 창에서 df를 클릭해보라. 그러면 왼편에 또 하나의 창이 생기면서 마치 엑셀과 같은 형식으로 데이터가 나타날 것이다. `View()` 함수를 실행해도 동일한 결과를 얻을 수 있다.
+
+```{r}
+View(df)
+```
+
+여기서 중요한 것은 새로 생긴 창이다. 이것을 보통 Editor 창이라고 부른다. 이제부터 Console은 부차적인 목적으로만 사용할 것이고 Editor 창이 주인공이 된다.
+
+::: {.callout-tip collapse="true"}
+## 참고: R의 다양한 내장 함수
+
+1.  통계 함수
+
+```{r}
+mean(c(1, 2, 3, 4)) # 벡터의 평균 계산
+median(1:10) # 벡터의 중앙값 계산
+var(rep(c(1:5), times = 2)) # 벡터의 분산 계산
+sd(seq(1, 10, 2)) # 벡터의 표준편차 계산
+quantile(0:100) # 벡터의 사분위수 계산
+```
+
+2.  데이터 탐색
+
+```{r}
+str(cars) # cars 데이터의 구조를 보여준다.
+summary(cars) # cars 데이터를 요약해준다.
+head(cars) # cars 데이터의 처음 6개 값을 보여준다.(세부 설정이 가능하다.)
+tail(cars, 10) # cars 데이터의 마지막 10개 값을 보여준다.
+```
+
+3.  데이터 시각화
+
+```{r}
+plot(cars) # 데이터 프레임을 가지고 그래프를 그려준다.
+plot(cars, type="l", main="cars") # 그래프의 형태와 제목을 지정할 수 있다.
+```
+
+이 외에도 다른 수많은 내장 함수들이 존재한다.
+:::
+
+::: {.callout-tip collapse="true"}
+## 참고: 궁금한 함수가 있다면?
+
+함수에 대해 궁금한 점이 있다면 알아볼 수 있는 방법들이 많이 있다. Editor나 Console에 아래의 둘 중 하나를 아무거나 입력후 실행하면 함수에 대한 정보를 확인할 수 있다.
+
+```{r}
+#| eval: false
+?sum # sum이라는 함수가 궁금할 때
+help(sum)
+```
+
+또 이미 발견한 사람도 있겠지만, 이 문서의 본문에 있는 함수들을 클릭하면 함수에 대한 정보가 담긴 페이지로 이동할 수 있다.
+:::
+
+## 프로젝트(project)와 스크립트(script)
+
+### 프로젝트 만들기
+
+#### R 프로젝트 만들기
+
+두 가지 방법이 있다.
+
+-   최상단 메뉴를 이용: File \> New Project
+
+-   상단 메뉴바 오른쪽 끝의 화살표 아이콘: New Project
+
+@fig-R-project 에 나타나 있는 절차를 통해 프로젝트를 생성한다. 각각 다음의 단계를 거친다.
+
+-   1단계: 과제 폴더(디렉토리)를 미리 만들어 두지 않았다면, New Directory를 선택한다(추천). 그렇지 않았다면 Existing Directory를 선택한다.
+
+-   2단계: New Project를 선택한다.
+
+-   3단계: 'Directory name:'에 과제를 위한 폴더명을 타이핑한다(예: AI_Class_2024). 'Create project as subdirectory of:'에 최상위 폴더(예: R_Projects)를 선택한다.
+
+![R 프로젝트의 생성 절차](https://r4ds.hadley.nz/diagrams/new-project.png){#fig-R-project}
+
+Output 창의 Files 탭을 누르면, 다양한 기본 파일들이 해당 폴더에 생성되었음을 확인할 수 있다. 가장 중요한 파일은 .RProj라는 확장자를 가진 파일이다. 나중에 R 외부에서 이 파일을 더블클릭하면 R 프로젝트를 열 수 있다.
+
+::: callout-tip
+R 외부의 파일 관리 시스템(윈도우즈의 경우 파일 탐색기)를 사용하지 말고, Output 창의 Files 탭을 사용하는 것이 훨씬 유용하다. 파일 탐색기에서 제공하는 거의 대부분의 기능을 제공한다.
+:::
+
+#### 옵션의 변경
+
+Rstudio의 기본 세팅값을 바꿀 수 있는 다양한 옵션이 존재한다. Tools \> Global Options를 선택하면 @fig-global-options 과 같은 화면을 볼 수 있을 것이다.
+
+-   왼쪽에서 Apearance를 선택한 후, 'Editor font size:'나 'Editor theme'을 변경하여 자신의 선호를 반영하라. 특히 많은 데이터 사이언티스트들이 다크 모드를 선호하기 때문에 다크 모드 테마 중 하나로 변경하는 것을 추천한다.
+
+![옵션의 변경](images/roption.png){#fig-global-options}
+
+### 스크립트 만들기
+
+#### 스크립트 파일 생성하고 저장하기
+
+스크립트 파일을 생성하는 세 가지 정도의 방법이 있다.
+
+-   File \> New File \> R Script 선택
+
+-   File 메뉴 바로 아래의 New File 아이콘을 누른 후 R Script 선택
+
+-   단축키(Ctrl + Shift + N) 실행 (Mac의 경우 Command + Shift + N)
+
+이렇게 하면 @fig-four-panes 과 같이 좌상에 Editor 창이 생성된다. 그 안에서 그림에서 보는 바와 같이 코드를 작성하게 된다.
+
+![네 개의 창 (https://docs.posit.co/ide/user/ide/guide/ui/ui-panes.html)](https://docs.posit.co/ide/user/ide/guide/ui/images/rstudio-panes-labeled.jpeg){#fig-four-panes}
+
+스크립트 파일에 이름을 부여하고 저장한다.
+
+-   File \> Save 선택
+
+-   Save current document 아이콘 클릭
+
+-   단축키(Ctrl + S) 실행 (Mac의 경우 Command + S)
+
+#### 스크립트 파일에서의 실행
+
+앞에서 Console에서 했던 모든 일을 동일하게 할 수 있다. 단 실행 방식이 조금 다르다. 앞에서 생성한 df 데이터 프레임의 a 벡터(변수)의 평균값을 구하기 위해 이전과 동일하게 입력한다. 그런데 프롬프트가 없고, \[enter\]를 눌러도 실행되지 않는다.
+
+```{r}
+#| eval: false
+mean(df$a)
+```
+
+우선 실행할 코드 라인 혹은 코드의 영역을 지정해야 한다. 두 가지 방법이 있다.
+
+-   실행할 코드 라인 혹은 코드 블록에 커서를 위치시킨다.
+
+-   왼쪽 마우스 버튼을 누른 상태에서 커서를 이동시켜 실행할 영역 전체를 선택한다.
+
+영역이 지정되면 실행하면 되는데, 여기에도 두 가지 방법이 있다.
+
+-   단축키(Ctrl + Enter) 실행 (Mac의 경우 Command + Enter)
+
+-   Editor 창의 우상에 있는 'Run the current line or selection' 아이콘을 클릭(@fig-run-script 참조)
+
+![스크립트 파일에서의 실행(<https://docs.posit.co/ide/user/ide/guide/code/execution.html>)](https://docs.posit.co/ide/user/ide/guide/code/images/run-current-line.png){#fig-run-script}
+
+이전의 실행을 반복하고자 할 때는 다음과 같이 하면 된다.
+
+-   단축키(Ctrl + Alt +P) 실행 (Mac의 경우 Option + Command + P)
+
+-   Editor 창의 우상에 있는 'Re-run the previous code region' 아이콘을 클릭(@fig-run-script 참조)
+
+#### 코멘트
+
+코드에 대한 코멘트를 스크립트 파일 곳곳에 남겨두면 나중에 코드 작성의 의도를 보다 쉽게 파악할 수 있다. 이와 관련하여 두 가지 사항을 알아두면 유용하다.
+
+첫째, \# 표시 뒤의 것은 R이 실행하지 않기 때문에 중간중간에 \# 표시를 하고 그 뒤에 자신의 코멘트를 남겨두는 것을 권한다.
+
+```{r}
+#| eval: false
+mean(df$a) # 세 사람의 나이 평균을 구함. 첫 번째 사람 나이가 엄청나게 많음.
+```
+
+둘째, 코드가 길어지면, 그것을 몇 개의 섹션으로 나누고 그것에 코멘트를 달아 줄 수 있다. 단축키(Crtl + Shift + R, Mac은 Command + Shift + R)를 실행하여 섹션 라벨(Section label)을 달 수 있고, Editor 창의 왼쪽 하단에 있는 작은 아이콘을 이용해 섹션을 빠르게 이동할 수 있다.
+
+::: callout-note
+![](images/githublogo.png)
+
+작성한 코드 등 작업물들을 온라인 상에서 관리하고 다른 사람들과 공유하기 위해 Github 사용을 추천한다. 컴퓨터에 [Git](https://git-scm.com/)을 설치하고 [Github](https://github.com)에 접속하여 회원가입을 하면 Github를 사용할 수 있다. Github의 간단한 기능만을 익혀두어도 나중에 Quarto를 통하여 자신만의 웹사이트를 간단하게 제작할 수 있다.
+:::

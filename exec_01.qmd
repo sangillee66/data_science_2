@@ -1,0 +1,293 @@
+---
+title: "R과 RStudio 소개"
+author: 이상일(서울대학교 지리교육과)
+date-modified: last-modified
+number-sections: true
+format: 
+  html: 
+    toc: true
+code-link: true
+code-copy: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+---
+
+## 실습 개요 {.unnumbered}
+
+이 실습은 R과 RStudio의 기본기를 다지는 것이다. 이 실습을 통해 다음과 같은 과제를 수행할 것이다.
+
+1.  R과 RStudio 설치
+
+2.  RStudio 둘러보기
+
+3.  프로젝트와 스크립트
+
+## R과 RStudio 설치
+
+프로그램을 다운로드하기 위해 다음의 웹사이트로 이동한다. 여기는 RStudio를 만든 [posit](https://posit.co/)(과거에는 회사명 자체도 RStudio였음)이라는 회사가 관리하는 RStudio Desktop 다운로드 페이지이다.
+
+<https://posit.co/download/rstudio-desktop/>
+
+그러면 @fig-install-rstudio 와 같이 R과 RStudio를 설치할 수 있는 화면이 나타날 것이다.
+
+![다운로드 화면](images/clipboard-607613883.png){#fig-install-rstudio}
+
+### R의 설치
+
+왼쪽의 다운로드 바를 클릭하면 [CRAN(The Comprehensive R Archive Network)](https://cran.rstudio.com/)으로 이동한다. 조교의 도움을 받아 자신의 운영체계에 맞는 R의 최신 버전을 다운로드하고 자신의 디바이스에 설치한다. 이 다큐먼트 작성 시점 기준으로 R의 최신 버전은 4.3.2이다.
+
+::: callout-note
+CRAN은 R의 핵심 소프트웨어 저장소(software repository)이다. R 프로그램 자체의 과거와 현재의 버전들 뿐만 아니라 수많은 R 패키지(package)(현재 대략 20,000개)가 모여 있는 곳이다. 1997년 Kurt Hornik와 Friedrich Leisch에 의해 처음 만들어졌으며, 현재에도 Hornik와 많은 자원봉사자들에 의해 운영되고 있다. 자세한 사항은 [Wikipedia](https://en.wikipedia.org/wiki/R_package#Comprehensive_R_Archive_Network_(CRAN))를 참조할 수 있다.
+:::
+
+### RStudio의 설치
+
+R의 지배적인 IDE(Integrated Development Environment, 통합개발환경)인 RStudio를 설치한다. 다시 원래의 다운로드 페이지로 돌아와, 오른편의 다운로드 바를 클릭하면 윈도우즈용 RStudio의 파일을 다운로드할 수 있다. 스크롤 다운하면 다른 운영체계를 위한 RStudio를 다운로드할 수 있다. 조교의 도움을 받아 자신의 디바이스에 설치한다. 이 다큐먼트 작성 시점 기준으로 RStudio의 최신 버전은 2024년 1월 29일에 발표된 2023.12.1+402이다.
+
+## RStudio 둘러보기
+
+### 창(pane, 패인)
+
+Studio를 실행하면 아마도 대부분의 경우 @fig-3-panes 와 같은 화면을 보게 될 것이다. 크게 세 개의 창으로 구성되어 있음을 알 수 있다.
+
+![세 개의 창](https://r4ds.hadley.nz/diagrams/rstudio/console.png){#fig-3-panes}
+
+왼편에 가장 크게 나타나 있는 것을 Console 창(pane)이라고 부르고, 우하의 창은 Output 창 혹은 File 창이라고 부른다. 우상에도 또 다른 창이 하나 보이는데 보통 Environment 창이라고 부른다.
+
+::: callout-note
+개별 창은 여러 개의 탭(tab)으로 구성되어 있는데, 탭의 기능이 매우 다양하기 때문에 소속 탭의 모든 기능을 포괄하는 일관성 있는 창 이름을 붙이는 것이 매우 어렵다. 예를 들어 Output 창의 경우 Plots와 Viewer 탭은 결과물을 보여주는 것이라 할 수 있지만 나머지 탭은 꼭 그렇지도 않다.
+:::
+
+### Console 창에서 놀아보기
+
+여기서는 Console 창을 통해 R의 가장 기본적인 다음의 개념들에 대해 알아보고자 한다. Console 창은 R에서 CLI(command-line interface, 명령줄(어) 인터페이스) 역할을 하는 가장 핵심적인 부분이다. 사용자가 프로그램을 통해 컴퓨터와 상호작용하는 인터페이스이다.
+
+-   프롬프트(prompt): 명령 프롬프트(command prompt)라고도 불리는 것으로, CLI에서 명령어 대기 상태를 나타내는 일종의 부호이다. R에서는 `>`를 사용한다.
+
+-   할당(assignment): 값을 식별자(identifier)를 가진 객체로 전환하는 과정을 의미한다. 프로그래밍 언어는 할당을 위한 고유한 연산자(operator)를 가지고 있는데, R은 `<-`을 사용한다. `=`도 동일한 기능을 하는데, 권장하지는 않는다.
+
+-   객체(object): 값을 품고 있는, 식별자를 가진, 메모리 상의 기본 단위
+
+-   함수(function): 특정 동작을 수행하는 코드 블록을 의미한다. 인풋을 함수에 적용하면 함수의 고유한 동작을 통해 아웃풋이 산출된다.
+
+-   벡터(vector): 숫자의 일차원적 집합으로 보통 개별 행(row) 혹은 개별 열(column)을 의미한다.
+
+-   데이터 프레임(data frame): 하나 이상의 벡터를 모아 둔 숫자의 2차원적 집합으로, 다수의 행과 다수의 열로 이루어진 테이블을 의미한다. 이것이 보통 우리가 데이터셋이라고 부르는 것이다.
+
+#### 프롬프트, 할당, 객체
+
+콘솔 창에 R 프롬프트인 `>`가 나타나 있을 것이다. 아래와 같이 숫자 1을 타이핑하고 실행을 위해 \[enter\] 키를 누른다.
+
+```{r}
+1
+```
+
+간단한 연산을 해본다. 사실 R은 기본적으로 계산기이다.
+
+```{r}
+1 + 2
+```
+
+이제 할당 연산자(`<-`)를 활용하여 할당을 해보자.
+
+```{r}
+a <- 1
+```
+
+우상의 환경 창을 보면 뭔가 생성된 것을 확인할 수 있을 것이다. a라는 객체가 생성되었으며 그것은 1이라는 값을 품고 있다는 의미이다. 이제 a는 알파벳 소문자가 아니라 1이라는 숫자와 필연적으로 결합해 있는 객체이다. 다음과 같이 하면 이러한 사실을 명확히 확인할 수 있다.
+
+```{r}
+a
+```
+
+아래와 같이 하면 객체끼리의 연산이 가능하다.
+
+```{r}
+b <- 2
+c <- a + b
+c
+```
+
+#### 함수
+
+`sum()` 함수를 사용하여 동일한 연산을 할 수 있다. `sum()` 은 R에 기본적으로 내장되어 있는 Base R 함수 중 하나이다.
+
+```{r}
+sum(a, b)
+```
+
+::: callout-important
+지금부터 모든 함수명에는 항상 `()`를 연결하여 나타낼 것이다. 다른 객체명과의 혼동을 방지하기 위한 것도 있지만, 모든 함수는 `()` 속에 인풋(이것을 아규먼트(argument, 인자)라고 부른다)을 받아들이기 때문이다.
+:::
+
+R에는 수 많은 내장 함수가 있다. 그 중 몇가지만 실행하면 다음과 같다. `sqrt()`는 제곱근을, `abs()`는 절대값을, `log10()`는 로그값을 산출해준다.
+
+```{r}
+sqrt(2)
+abs(-3)
+log10(100)
+```
+
+#### 벡터와 데이터 프레임
+
+위에서 살펴본 숫자 하나하나는 큰 의미가 없다. 우리는 보통 숫자의 집합(array), 즉 벡터를 다룬다.
+
+```{r}
+a <- c(58, 26, 24)
+b <- c("이상일", "김세창", "김우형")
+c <- c(TRUE, TRUE, FALSE)
+```
+
+a, b, c는 모두 벡터이다. 우상의 Environment 창에서도 이러한 사실을 확인할 수 있다. 그런데, 이 세가지 벡터는 데이터의 유형(type)이라는 측면에서 서로 다르다. a는 숫자형(numeric), b는 문자형(character), c는 논리형(logical)이다. Environment 창을 보면, a에 대해서는 num, b에 대해서는 chr, c에 대해서는 logi라는 축약어가 붙어 있음을 알 수 있는데, 이것이 바로 벡터의 유형을 나타내고 있는 것이다. 사실 R에서 다루는 벡터의 유형은 10가지가 넘는다.
+
+::: callout-note
+R에서 사용되는 데이터 유형에 대해서는 다음의 웹사이트를 참고할 수 있다. <https://tibble.tidyverse.org/articles/types.html>
+:::
+
+벡터를 `data.frame()`이라는 함수를 통해 결합하면 데이터 프레임을 만들 수 있다.
+
+```{r}
+df <- data.frame(a, b, c)
+df
+```
+
+우상의 Environment 창을 보면 뭔가 변화가 있음을 확인할 수 있을 것이다. Data가 생겼고 그 아래에 df가 생성되어 있다. "3 obs. of 3 variables"라는 말이 굉장히 중요하다. 이것은 df라는 데이터 프레임 객체가 3개의 관측개체(observations)와 3개의 변수(variables)로 구성되어 있다는 것을 의미한다. 데이터 프레임, 관측개체, 변수에 대해서는 강의에서 상세하게 다룬다.
+
+Environment 창에서 df를 클릭해보라. 그러면 왼편에 또 하나의 창이 생기면서 마치 엑셀과 같은 형식으로 데이터가 나타날 것이다. `View()` 함수를 실행해도 동일한 결과를 얻을 수 있다.
+
+```{r}
+View(df)
+```
+
+여기서 중요한 것은 새로 생긴 창이다. 이것을 보통 Editor 창이라고 부른다. 이제부터 Console은 부차적인 목적으로만 사용할 것이고 Editor 창이 주인공이 된다.
+
+## 프로젝트(project)와 스크립트(script)
+
+### 프로젝트 만들기
+
+#### R 프로젝트의 개념
+
+RStudio에서 프로젝트란 한 단위의 R 과업을 의미한다. 매우 단순한 과업도 있겠지만, 보통 데이터를 읽고, 정돈하고, 변형하고, 시각화하고, 모델링하는 등의 다양한 활동이 개입된다. 하나의 일관된 목적을 위해 이러한 다양한 일을 한다면, 이것들을 한데 모아 함께 관리하는 것이 좋을 것이다. 프로젝트는 하나의 과업을 위해 당신이 행한 모든 것이 체계적으로 정돈되어 있는 가상의 방이다. 좀 이질적인 과업을 하게 된다면 기존의 프로젝트 속에서 하기 보다는 또 다른 프로젝트를 만들어 그 속에서 하는 것이 효과적일 것이다.
+
+RStudio의 프로젝트는 실질적으로 하나의 폴더를 의미한다. 하나의 폴더 속에 모든 활동과 그것의 인풋 및 아웃풋이 모두 저장되고, RStudio는 그것을 체계적으로 관리할 수 있게 해주는 툴을 제공한다.
+
+다음과 같은 관행을 추천한다.
+
+-   디바이스에 모든 R 프로젝트를 포괄하는 최상위 폴더를 만든다. 걸맞는 폴더명(예: R_Projects)을 부여한다. 이것은 R 외부에서 미리 해둔다. 물론 Output 창의 Files 탭을 이용하면 R 내부에서도 할 수 있다.
+
+-   최상위 폴더 아래에 개별 R 프로젝트를 위한 폴더를 만든다. 과업에 걸맞는 폴더명(예: AI_Class_2024)을 부여한다. 이것을 R 외부에서 미리 해둘 수도 있고, R 내부에서 프로젝트를 생성할 때 할 수도 있다. 후자를 추천한다.
+
+#### R 프로젝트 만들기
+
+두 가지 방법이 있다.
+
+-   최상단 메뉴를 이용: File \> New Project
+
+-   상단 메뉴바 오른쪽 끝의 화살표 아이콘: New Project
+
+@fig-R-project 에 나타나 있는 절차를 통해 프로젝트를 생성한다. 각각 다음의 단계를 거친다.
+
+-   1단계: 과제 폴더(디렉토리)를 미리 만들어 두지 않았다면, New Directory를 선택한다(추천). 그렇지 않았다면 Existing Directory를 선택한다.
+
+-   2단계: New Project를 선택한다.
+
+-   3단계: 'Directory name:'에 과제를 위한 폴더명을 타이핑한다(예: AI_Class_2024). 'Create project as subdirectory of:'에 최상위 폴더(예: R_Projects)를 선택한다.
+
+![R 프로젝트의 생성 절차](https://r4ds.hadley.nz/diagrams/new-project.png){#fig-R-project}
+
+Output 창의 Files 탭을 누르면, 다양한 기본 파일들이 해당 폴드에 생성되었음을 확인할 수 있다. 가장 중요한 파일은 .RProj라는 확장자를 가진 파일이다. 나중에 R 외부에서 이 파일을 더블클릭하면 R 프로젝트를 열 수 있다.
+
+::: callout-tip
+R 외부의 파일 관리 시스템(윈도우즈의 경우 파일 탐색기)를 사용하지 말고, Output 창의 Files 탭을 사용하는 것이 훨씬 유용하다. 파일 탐색기에서 제공하는 거의 대부분의 기능을 제공한다.
+:::
+
+#### 옵션의 변경
+
+Rstudio의 기본 세팅값을 바꿀 수 있는 다양한 옵션이 존재한다. Tools \> Global Options를 선택하면 @fig-global-options 과 같은 화면을 볼 수 있을 것이다. 다음의 두 가지를 해보라.
+
+-   그림에서 보는 것처럼, 가운데 Workspace 부분을 그림과 동일하게 변경하라. 이유는 묻지 마세요.
+
+-   왼쪽에서 Apearance를 선택한 후, 'Editor font size:'나 'Editor theme'을 변경하여 자신의 선호를 반영하라.
+
+![옵션의 변경](https://r4ds.hadley.nz/diagrams/rstudio/clean-slate.png){#fig-global-options}
+
+### 스크립트 만들기
+
+#### Console에서 Script Editor로
+
+Console은 명령어를 입력하고 그 결과를 볼 수 있는 곳이다. 이것은 Base R의 기본 기능을 RStudio가 충실하게 구현한 것이다. 그런데 제법 복잡한 R 프로젝트를 수행하고자 할 때 Console을 이용하는 방식은 제한점이 많다.
+
+-   다양하고 복잡한 R 명령어를 실행하고 그 결과를 보기에는 공간이 협소하다.
+
+-   Console에서 행한 것은 저장되지 않는다. 보다 정확하게 말하면, 산출물은 저장될 수 있지만, 그러한 산출물을 얻는데 동원데 일련의 코드는 저장되지 않는다. RStudio를 나갔다가 다시 들어오면 객체, 플롯 등의 산출물을 그대로 남아 있지만 어떤 과정을 거쳐 그러한 결과물을 산출했는지에 대한 것을 남아 있지 않다. 이런 점은 상당한 기간이 지난 후에는 더 큰 문제로 다가온다.
+
+이러한 의미에서 R을 가지고 행한 것을 모두 저장하는, 일종의 노트북 같은 것이 필요하다. 이것을 R 스크립트(script)라고 부르는데, 좌상의 Editor 창에서 스크립트를 다루고, .R이라는 화장자를 가진 파일로 저장한다.
+
+#### 스크립트 파일 생성하고 저장하기
+
+스크립트 파일을 생성하는 세 가지 정도의 방법이 있다.
+
+-   File \> New File \> R Script 선택
+
+-   File 메뉴 바로 아래의 New File 아이콘을 누른 후 R Script 선택
+
+-   단축키(Ctrl + Shift + N) 실행
+
+이렇게 하면 @fig-four-panes 과 같이 좌상에 Editor 창이 생성된다. 그 안에서 그림에서 보는 바와 같이 코드를 작성하게 된다.
+
+![네 개의 창 (https://docs.posit.co/ide/user/ide/guide/ui/ui-panes.html)](https://docs.posit.co/ide/user/ide/guide/ui/images/rstudio-panes-labeled.jpeg){#fig-four-panes}
+
+스크립트 파일에 이름을 부여하고 저장한다.
+
+-   File \> Save 선택
+
+-   Save current document 아이콘 클릭
+
+-   단축키(Ctrl + S) 실행
+
+#### 스크립트 파일에서의 실행
+
+앞에서 Console에서 했던 모든 일을 동일하게 할 수 있다. 단 실행 방식이 조금 다르다. 앞에서 생성한 df 데이터 프레임의 a 벡터(변수)의 평균값을 구하기 위해 이전과 동일하게 입력한다. 그런데 프롬프트가 없고, \[enter\]를 눌러도 실행되지 않는다.
+
+```{r}
+#| eval: false
+mean(df$a)
+```
+
+우선 실행할 코드 라인 혹은 코드의 영역을 지정해야 한다. 두 가지 방법이 있다.
+
+-   실행할 코드 라인 혹은 코드 블록에 커서를 위치시킨다.
+
+-   왼쪽 마우스 버튼을 누른 상태에서 커서를 이동시켜 실행할 영역 전체를 선택한다.
+
+영역이 지정되면 실행하면 되는데, 여기에도 두 가지 방법이 있다.
+
+-   단축키(Ctrl + Enter) 실행
+
+-   Editor 창의 우상에 있는 'Run the current line or selection' 아이콘을 클릭(@fig-run-script 참조)
+
+![스크립트 파일에서의 실행(<https://docs.posit.co/ide/user/ide/guide/code/execution.html>)](https://docs.posit.co/ide/user/ide/guide/code/images/run-current-line.png){#fig-run-script}
+
+이전의 실행을 반복하고자 할 때는 다음과 같이 하면 된다.
+
+-   단축키(Ctrl + Alt +P) 실행
+
+-   Editor 창의 우상에 있는 'Re-run the previous code region' 아이콘을 클릭(@fig-run-script 참조)
+
+#### 코멘트
+
+코드에 대한 코멘트를 스크립트 파일 곳곳에 남겨두면 나중에 코드 작성의 의도를 보다 쉽게 파악할 수 있다. 이와 관련하여 두 가지 사항을 알아두면 유용하다.
+
+첫째, \# 표시 뒤의 것은 R이 실행하지 않기 때문에 중간중간에 \# 표시를 하고 그 뒤에 자신의 코멘트를 남겨두는 것을 권한다.
+
+```{r}
+#| eval: false
+mean(df$a) # 세 사람의 나이 평균을 구함. 첫 번째 사람 나이가 엄청나게 많음.
+```
+
+둘째, 코드가 길어지면, 그것을 몇 개의 섹션으로 나누고 그것에 코멘트를 달아 줄 수 있다. 단축키(Crtl + Shift + R)를 실행하여 섹션 라벨(Section label)을 달 수 있고, Editor 창의 왼쪽 하단에 있는 작은 아이콘을 이용해 섹션을 빠르게 이동할 수 있다.
+
+## 

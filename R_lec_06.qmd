@@ -1,0 +1,266 @@
+---
+title: "Data Exploration"
+author: Sang-Il Lee
+title-slide-attributes: 
+  data-background-image: R_6.gif
+  data-background-position: 85% 5%
+  data-background-size: 10%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: false
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+---
+
+# Basic Concepts
+
+## Exploration in a data science process
+
+![](images/clipboard-4075247197.png)
+
+## Exploration in a data science process
+
+-   Data exploration is a process of interacting with data to answer questions.
+-   A sequential process from data transformation and data visualization is central to data exploration.
+-   Data transformation is often a necessary prerequisite for data visualization.
+
+## 데이터 탐색의 절차
+
+-   질문에 답할 수 있는 그래픽(플롯, 지도 등)을 구상한다.
+
+-   구상한 그래픽에 부합하도록 데이터를 변형한다.
+
+-   변형한 데이터를 구상한 그래픽으로 시각화한다.
+
+-   그래픽으로부터 질문의 답을 구하고, 더 나아가 지식, 이해, 통찰을 이끌어낸다.
+
+# Three Examples
+
+## Data
+
+-   `gapminder` data set
+
+    ```{r}
+    #| echo: true
+    library(tidyverse)
+    library(gapminder)
+    gapminder
+    ```
+
+## Question 1
+
+아시아의 1957년과 2007년의 1인당 GDP는 얼마이며 순위는 어떠한가? 1인당 GDP의 순위가 상승하였는가?
+
+## Question 1
+::: panel-tabset
+
+## Result
+
+```{r}
+#| echo: false
+gapminder |> 
+  group_by(year, continent) |> 
+  summarize(
+    sum_pop = sum(pop),
+    sum_gdp = sum(pop * gdpPercap),
+    gdp_percap_cont = sum_gdp / sum_pop
+  ) |> 
+  filter(year %in% c(1957, 2007)) |> 
+  arrange(year, desc(gdp_percap_cont))
+```
+
+## Code
+
+```{r}
+#| echo: true
+#| eval: false
+gapminder |> 
+  group_by(year, continent) |> 
+  summarize(
+    sum_pop = sum(pop),
+    sum_gdp = sum(pop * gdpPercap),
+    gdp_percap_cont = sum_gdp / sum_pop
+  ) |> 
+  filter(year %in% c(1957, 2007)) |> 
+  arrange(year, desc(gdp_percap_cont))
+```
+
+:::
+
+## Question 2
+
+대륙별 최대국(인구가 가장 많은 나라)이 소속 대륙 전체에서 차지하는 비중(%)이 어느 정도이고 대륙별로 어느 정도의 차이가 있는지, 그리고 대륙별 최대국의 비중이 시간이 지남에 따라 어떠한 변화 양상을 보이고, 그러한 양상에 대륙별 차이가 있는지를 탐색
+
+## Question 2
+
+::: panel-tabset
+## Graph 1
+
+```{r}
+#| echo: false
+gapminder |> 
+  group_by(year, continent) |> 
+  mutate(
+    sum_cont = sum(pop),
+    country_prop = pop * 100 / sum_cont
+  ) |> 
+  slice_max(country_prop) |> 
+  ggplot() +
+  geom_line(aes(x = year, y = country_prop, color = continent))
+```
+
+## Code 1
+
+```{r}
+#| eval: false
+#| echo: true
+gapminder |> 
+  group_by(year, continent) |> 
+  mutate(
+    sum_cont = sum(pop),
+    country_prop = pop * 100 / sum_cont
+  ) |> 
+  slice_max(country_prop) |> 
+  ggplot() +
+  geom_line(aes(x = year, y = country_prop, color = continent))
+```
+
+## Code 2
+
+```{r}
+#| eval: false
+#| echo: true
+gapminder |> 
+  group_by(year, continent) |> 
+  mutate(
+    sum_cont = sum(pop),
+    country_prop = pop * 100 / sum_cont
+  ) |> 
+  slice_max(country_prop) |> 
+  ggplot() +
+  geom_line(aes(x = year, y = country_prop, color = continent), linewidth = 1) +
+  scale_x_continuous(breaks = seq(1952, 2007, 5)) +
+  labs(x = "Year", y = "% of Population", color = "Continents")
+```
+
+## Graph 2
+
+```{r}
+#| echo: false
+gapminder |> 
+  group_by(year, continent) |> 
+  mutate(
+    sum_cont = sum(pop),
+    country_prop = pop * 100 / sum_cont
+  ) |> 
+  slice_max(country_prop) |> 
+  ggplot() +
+  geom_line(aes(x = year, y = country_prop, color = continent), linewidth = 1) +
+  scale_x_continuous(breaks = seq(1952, 2007, 5)) +
+  labs(x = "Year", y = "% of Population", color = "Continents")
+```
+:::
+
+## Question 3
+
+-   1952\~2007년간의 연평균 인구성장률의 대륙간 차이와 대륙 내 국가간 편차를 동시에 탐색
+
+-   연평균 인구성장률(%)은 다음의 공식에 의거해 산출
+
+$$
+r=\frac{1}{n}\times\ln(\frac{P_n}{P_0})\times100
+$$
+
+## Question 3
+
+::: panel-tabset
+## Graph 1
+
+```{r}
+#| echo: false
+gapminder |> 
+  pivot_wider(
+    id_cols = c(country, continent),
+    names_from = year,
+    values_from = pop
+  ) |> 
+  mutate(
+    pgr = (1/(2007-1952))*log(`2007`/`1952`) * 100
+  ) |> 
+  ggplot(aes(x = continent, y = pgr)) +
+  geom_boxplot(aes(color = continent))
+  
+```
+
+## Code 1
+
+```{r}
+#| eval: false
+#| echo: true
+gapminder |> 
+  pivot_wider(
+    id_cols = c(country, continent),
+    names_from = year,
+    values_from = pop
+  ) |> 
+  mutate(
+    pgr = (1/(2007-1952))*log(`2007`/`1952`) * 100
+  ) |> 
+  ggplot(aes(x = continent, y = pgr)) +
+  geom_boxplot(aes(color = continent))
+```
+
+## Code 2
+
+```{r}
+#| eval: false
+#| echo: true
+gapminder |> 
+  pivot_wider(
+    id_cols = c(country, continent),
+    names_from = year,
+    values_from = pop
+  ) |> 
+  mutate(
+    pgr = (1/(2007-1952))*log(`2007`/`1952`) * 100
+  ) |> 
+  ggplot(aes(x = fct_reorder(continent, pgr, median), y = pgr)) +
+  geom_boxplot(aes(fill = continent)) +
+  labs(x = "Continents", y = "PGR(%), 1952-2007", fill = "Continents")
+  
+```
+
+## Graph 2
+
+```{r}
+#| echo: false
+gapminder |> 
+  pivot_wider(
+    id_cols = c(country, continent),
+    names_from = year,
+    values_from = pop
+  ) |> 
+  mutate(
+    pgr = (1/(2007-1952))*log(`2007`/`1952`) * 100
+  ) |> 
+  ggplot(aes(x = fct_reorder(continent, pgr, median), y = pgr)) +
+  geom_boxplot(aes(fill = continent)) +
+  labs(x = "Continents", y = "PGR(%), 1952-2007", fill = "Continents")
+  
+```
+:::

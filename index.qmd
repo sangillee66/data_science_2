@@ -1,11 +1,46 @@
 ---
-title: "Data_Science_2"
+title: "웹사이트 소개"
+date-modified: last-modified
+number-sections: false
+lightbox: true
 ---
 
-This is a Quarto website.
+## 웹사이트의 목적
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+-   이 웹사이트는 데이터사이언스( Data Science)를 위한 개인 공부방으로 디자인되었다 .
 
-```{r}
-1 + 1
-```
+-   하지만 서울대학교에서 내가 개설한 데이터 사인언스 관련 교과목의 보충 웹사이트로 활용될 수도 있다.
+
+    -   2024/1 M3450.001400 [**AI 융합교육을 위한 인문사회 컨텐츠 설계**](https://sangillee.snu.ac.kr/classes/2024_1_AI_Edu.html) (Designing Human and Social Education Contents for AI Convergence Education)
+
+## 웹사이트의 구조
+
+-   데이터 사이언스 관련 내용을 모두 10개의 하위 섹션으로 나누었다.
+
+-   각 하위 섹션은 세 개의 컨텐츠를 갖는다.
+
+    -   내용 강의
+
+    -   실습 강의
+
+    -   실습
+
+## 참고문헌
+
+-   Wickham, Hadley, Mine Çetinkaya-Rundel, and Garrett Grolemund, 2023, [*R for Data Science: Import, Tidy, Transform, Visualize, and Model Data*](https://r4ds.hadley.nz/)*,* 2nd edition, Boston: O’Reilly. 
+
+    -   이 사이트의 내용은 위의 책에 많은 토대를 두고 있다.
+
+-   Wickham, Hadley, and Garrett Grolemund. 2016. [*R for Data Science: Import, Tidy, Transform, Visualize, and Model Data*](https://r4ds.had.co.nz/index.html). 1st edition. Sebastopol, CA: O’Reilly.
+
+-   Bonnell, Jerry, and Mitsunori Ogihara. 2023. [*Exploring Data Science with R and the Tidyverse*](https://ds4world.cs.miami.edu/). 1st edition. Chapman; Hall/CRC.
+
+-   Irizarry, Rafael A. 2020. [*Introduction to Data Science: Data Analysis and Prediction Algorithms with R*](https://rafalab.dfci.harvard.edu/dsbook-part-1/). Boca Raton: CRC Press, Taylor & Francis Group.
+
+-   Ismay, Chester, and Albert Y. Kim. 2024. [*Statistical Inference via Data Science: A ModernDive into R and the Tidyverse: A ModernDive into R and the Tidyverse*](https://moderndive.com/). Boca Raton: Chapman; Hall/CRC. 
+
+-   Brendan R. E. Ansell, [Introduction to R - tidyverse](https://bookdown.org/ansellbr/WEHI_tidyR_course_book/), 웹북
+
+-   RStudio IDE User Guide (<https://docs.posit.co/ide/user/>)
+
+-   김기환, 2023, [R 프로그래밍(개정판)](https://kilhwan.github.io/rprogramming/), 웹북

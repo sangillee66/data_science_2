@@ -1,0 +1,201 @@
+---
+title: "R & Data Science"
+author: Sang-Il Lee
+title-slide-attributes: 
+  data-background-image: R_1.gif
+  data-background-position: 85% 5%
+  data-background-size: 20%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: false
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+---
+
+# R for Data Science
+
+## The Book
+
+![](images/clipboard-4118011220.png){fig-align="center"}
+
+## A data science process with R
+
+![](images/clipboard-3326006124.png)
+
+## A data science process with R
+
+![](images/clipboard-1690300635.png)
+
+# Operators, functions, and objects
+
+## Operators
+
+![](images/clipboard-1399978816.png)
+
+## Arithmatic operators
+
+|   Operator    |   Description    |   Example    |
+|:-------------:|:----------------:|:------------:|
+|      `+`      |     addition     |   `5+5=10`   |
+|      `-`      |   subtraction    |   `5-5=0`    |
+|      `*`      |  multiplication  |   `2*8=16`   |
+|      `/`      |     division     | `100/10=10`  |
+| `^` (or `**`) |  exponent/power  |   `5^2=25`   |
+|     `%%`      |      modulo      | `100%%15=10` |
+|     `%/%`     | integer division | `100%/%15=6` |
+
+## Relational and logical operators {.scrollable .smaller}
+
+| Type          | Operator    | Condition                                       |
+|---------------|-------------|-------------------------------------------------|
+| Relational    | `x < y`     | Where `x` less than `y`                         |
+|               | `x > y`     | Where `x` greater than `y`                      |
+|               | `x <= y`    | Where `x` less than or equal to `y`             |
+|               | `x >= y`    | Where `x` greater than or equal to `y`          |
+|               | `x == y`    | Where `x` (exactly) equals `y`                  |
+|               | `x != y`    | Where `x` is not equal to `y`                   |
+| Logical       | `!`         | Negation                                        |
+|               | `&`         | Logical "and" (`x >= 20 & x < 35`)              |
+|               | `|`         | Logical "or (`x == 20 | x > 45`)                |
+|               | `xor`       | Logical "exclusive or" (`xor(x == 20, x == 50`) |
+| Miscellaneous | `x %in% y`  | Where `x` is in `y`                             |
+|               | `!x %in% y` | Where `x` is not in `y`                         |
+
+## Assignment operators
+
+::: {layout-ncol="2"}
+![](images/clipboard-911363916.png)
+
+![](images/clipboard-1290193573.png)
+:::
+
+## Functions
+
+```{r}
+#| echo: true
+#| eval: false
+seq(from = 2, to = 100, by = 2)
+```
+
+![](images/clipboard-1402738689.png)
+
+## Some Base R vector functions {.scrollable .smaller}
+
+| Function             | Description                      |
+|----------------------|----------------------------------|
+| `round()`            | Round number values              |
+| `min()`, `max()`     | Minimum and maximum              |
+| `mean()`, `median()` | Arithmetic mean and median       |
+| `sum()`              | Sum                              |
+| `sd()`, `var()`      | Standard deviation and variance  |
+| `sqrt()`             | Square root                      |
+| `summary()`          | Numerical summary                |
+| `str()`              | Overview of the object structure |
+| `any()`, `all()`     | Test vector elements             |
+| `all.equal()`        | Test for near equality           |
+| `sort()`             | Sort a vector                    |
+| `order()`            | Obtain ordering of a vector      |
+
+## Data types
+
+![](images/clipboard-2205001184.png)
+
+## Vectors & data frames
+
+```{r}
+#| echo: true
+library(tidyverse)
+a <- c(58, 26, 24)
+b <- c(58L, 26L, 24L)
+c <- c(TRUE, TRUE, FALSE)
+d <- c("이상일", "김세창", "김우형")
+df <- tibble(a, b, c, d)
+df
+```
+
+# Packages and Tidyverse
+
+## Packages: what are they?
+
+![](images/clipboard-3555057991.png)
+
+## Packages: how to install them
+
+![](images/clipboard-1002522383.png){fig-align="center"}
+
+## Tidyverse: a tidy universe
+
+![](images/clipboard-3736095484.png){fig-align="center"}
+
+## Tidyverse: core component packages
+
+![](images/clipboard-1556071055.png){fig-align="center"}
+
+## Tidyverse: philosophy {.smaller}
+
+-   Human-centeredness
+
+    -   For an end-user programmer
+
+-   Consistency
+
+    -   The smallest possible set of key ideas, used as comprehensively as possible
+
+-   Composability
+
+    -   Many simple pieces, composed for a larger task using operators such as \|\> and +
+
+-   Inclusiveness
+
+    -   Towards a diverse, open, and friendly community
+
+(<https://design.tidyverse.org/unifying.html>)
+
+# Pipe Operator
+
+## magrittr
+
+::: {layout-ncol="2" layout-valign="center"}
+![](images/clipboard-30645075.png)
+
+![](images/clipboard-4078158871.png)
+:::
+
+## Basic principle
+
+![](images/clipboard-3095511909.png){fig-align="center"}
+
+## Basic principle
+
+![](images/Pipe_baking_magrittr_backAssign.gif){fig-align="center"}
+
+## Native pipe operator
+
+::: {layout-ncol="2" layout-valign="center"}
+![](images/clipboard-2382832838.png)
+
+![](images/clipboard-39249103.png)
+:::
+
+## Pipe operator for EDA
+
+![](images/clipboard-174079750.png){fig-align="center"}
+
+## No error, no gain!
+
+![](images/clipboard-229605073.png){fig-align="center"}

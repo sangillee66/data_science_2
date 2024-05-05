@@ -1,19 +1,76 @@
 project:
   type: website
+  output-dir: docs
 
 website:
-  title: "Data_Science_2"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+  title: "Data Science"
+  sidebar: 
+    style: floating
+    contents: 
+      - index.qmd
+      - text: "---"    
+      - section: "데이터사이언스 강의"
+        contents:   
+          - lectures.qmd
+      - text: "---"    
+      - section: "R과 데이터사이언스"
+        contents:   
+          - exec_01.qmd
+          - exec_02.qmd
+          - exec_03.qmd
+          - exec_04.qmd
+          - exec_05.qmd
+          - exec_06.qmd
+          - exec_07.qmd
+          - exec_08.qmd
+          - exec_09.qmd
+      - text: "---"    
+      - section: "R 프레젠테이션"
+        contents: 
+          - R_lec_01.qmd
+          - R_lec_02.qmd
+          - R_lec_03.qmd
+          - R_lec_04.qmd
+          - R_lec_05.qmd
+          - R_lec_06.qmd
+          - R_lec_07.qmd
+      - text: "---"    
+      - section: "R 실습"
+        contents: 
+          - lab_01.qmd
+          - lab_02.qmd
+          - lab_03.qmd
+          - lab_04.qmd
+          - lab_05.qmd
+          - lab_06.qmd
+          - lab_07.qmd
+
+  bread-crumbs: false
+  back-to-top-navigation: true
+  page-navigation: true
+  page-footer: 
+    left: "Copyright 2024, Sang-Il Lee"
+    right: 
+      - icon: house
+        href: https://sangillee.snu.ac.kr/
+      - icon: envelope
+        href: mailto:si_lee@snu.ac.kr
+      - icon: github
+        href: https://github.com/sangillee66
+    border: true
+  repo-url: https://github.com/sangillee66/data_science
+  repo-actions: [issue]
 
 format:
   html:
-    theme: cosmo
+    theme: 
+      light: flatly
+      dark: darkly
     css: styles.css
     toc: true
+#    embed-resources: true
+
+execute:
+  freeze: auto
 
 editor: visual
-

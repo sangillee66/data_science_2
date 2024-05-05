@@ -1,0 +1,210 @@
+---
+title: "Data Transformation"
+author: Sang-Il Lee
+title-slide-attributes: 
+  data-background-image: R_3.gif
+  data-background-position: 85% 5%
+  data-background-size: 20%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: false
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+---
+
+# Basic Concepts
+
+## A data science process with R: 3rd step
+
+![](images/clipboard-4049944078.png)
+
+## `dplyr` package
+
+![](images/clipboard-3059639685.png){fig-align="center"}
+
+## `dplyr` basics
+
+-   The first argument is always a data frame.
+
+-   The subsequent arguments typically describe which columns to operate on, using variable names (without quotes).
+
+-   The output is always a data frame.
+
+## Types of `dplyr` functions
+
+Functions are operated on:
+
+-   Rows
+
+-   Columns
+
+-   Groups
+
+-   Tables
+
+## 
+
+![](images/clipboard-2728894062.png){fig-align="center"}
+
+# Functions Operate on Rows
+
+## Four functions
+
+-   `filter()`: 특정 변수(들)에 의거한 조건을 만족하는 행(들)을 추출
+
+-   `arrange()`: 특정 변수(들)에 의거해 행(들)의 순서를 변경
+
+-   `distinct()`: 특정 변수(들)에 의거해 (중복을 제거한) 고유한 행(들)을 추출
+
+-   `slice()`: `filter()` 함수처럼 특정 행(들)을 추출
+
+    -   특정 변수와 관계 없이, 행의 위치에 의거해 특정 행(들)을 추출
+
+    -   특정 변수에 따른, 행의 위치에 의거해 행(들)을 추출
+
+## `filter()`
+
+![](images/clipboard-565233092.png)
+
+## `filter()`
+
+![](images/clipboard-2723506167.png)
+
+## `filter()`
+
+![](images/clipboard-409657186.png){fig-align="center"}
+
+## `arrange()`
+
+![](images/clipboard-3074305878.png)
+
+## `arrange()`
+
+![](images/clipboard-1840428146.png){fig-align="center"}
+
+## `distinct()`
+
+![](images/clipboard-3425030843.png)
+
+## `distinct()`
+
+![](images/clipboard-370656711.png){fig-align="center"}
+
+## `slice()`
+
+![](images/clipboard-1830339037.png)
+
+## `slice()`
+
+![](images/clipboard-1031657585.png){fig-align="center"}
+
+# Functions Operate on Columns
+
+## Four functions
+
+-   `select()`: 변수(들) 중 일부를 추출
+
+-   `mutate()`: 변수(들)를 변형해 새로운 변수를 생성
+
+-   `rename()`: 변수(들)의 이름을 변경
+
+-   `relocate()`: 변수(들)의 위치(순서)를 변경
+
+## `select()`
+
+![](images/clipboard-3651470406.png)
+
+## `select()`
+
+![](images/clipboard-2864021695.png){fig-align="center"}
+
+## `mutate()`
+
+![](images/clipboard-1943055285.png)
+
+## 
+
+![](images/clipboard-417835741.png){fig-align="center"}
+
+## `rename()`
+
+![](images/clipboard-654990545.png)
+
+## 
+
+![](images/clipboard-3953189394.png){fig-align="center"}
+
+## `rename()`
+
+![](images/clipboard-3019777280.png){fig-align="center"}
+
+## `relocate()`
+
+![](images/clipboard-1813959402.png)
+
+## 
+
+![](images/clipboard-2066290782.png){fig-align="center"}
+
+# Functions Operate on Groups
+
+## Four functions
+
+-   `group_by()`: 변수(들)에 의거해 전체 행(들)을 그룹으로 분할
+
+-   `summarize()`: 그룹별로 변수(들)의 통계량을 산출하여 새로운 변수(들)로 저장
+
+-   `count()`: 그룹별로 해당 관측개체의 빈도수를 계산
+
+-   `across()`: 그룹별로 여러 변수에 걸쳐 동일한 통계량을 산출하고 새로운 변수들로 저장
+
+## `group_by()`
+
+![](images/clipboard-1542658472.png)
+
+## `group_by()`
+
+![](images/clipboard-1927744566.png){fig-align="center"}
+
+## `summarize()`
+
+![](images/clipboard-1592063625.png)
+
+## `group_by()` + `summarize()`
+
+![](images/clipboard-1318711495.png)
+
+## `group_by()` + `summarize()`
+
+![](images/clipboard-293917068.png){fig-align="center"}
+
+## `count()`
+
+![](images/clipboard-2066641215.png)
+
+## `count()`
+
+![](images/clipboard-171754169.png){fig-align="center"}
+
+## `across()`
+
+![](images/clipboard-2112397168.png)
+
+## 
+
+![](images/clipboard-2406373084.png){fig-align="center"}

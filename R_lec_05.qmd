@@ -1,0 +1,236 @@
+---
+title: "Data Visualization"
+author: Sang-Il Lee
+title-slide-attributes: 
+  data-background-image: R_4.gif
+  data-background-position: 85% 5%
+  data-background-size: 20%
+  data-background-opacity: "1e"
+date-modified: last-modified
+number-sections: false
+format: 
+  revealjs:
+#    footer: <https://sangillee.snu.ac.kr>
+    chalkboard: false
+    slide-number: true
+    pointer:
+      pointerSize: 20
+    embed-resources: false
+revealjs-plugins:
+  - pointer
+code-link: true
+execute: 
+  warning: false
+  error: false
+  freeze: auto
+editor: visual
+# suppress-bibliography: true
+---
+
+# Basic Concepts
+
+## A data science process with R: 4th step
+
+![](images/clipboard-1040421420.png)
+
+## `ggplot2` package
+
+![](images/clipboard-3146270133.png){fig-align="center"}
+
+## Grammar of graphics
+
+![](images/clipboard-3968277018.png){fig-align="center"}
+
+## Eight components of `ggplot2`
+
+![<https://initiation.doana-r.com/06-ggplot2#1>](https://sangillee.snu.ac.kr/data_science/images/clipboard-3014854163.png){fig-align="center"}
+
+# Core Components
+
+## Aesthetics & Geometries
+
+-   심미성(aesthetics) 혹은 심미성 매핑(aesthetic mapping)
+
+    -   그래프의 외견을 규정
+
+    -   시각 변수 혹은 속성: color, size, shape 등
+
+-   기하(geometries) 혹은 기하 객체(geometric objects)
+
+    -   그래프의 전체 구조 혹은 형식을 규정
+
+    -   그래프의 유형: bar chart, line chart 등
+
+## Aesthetics & Geometries
+
+::: panel-tabset
+## Code
+
+```{r}
+#| eval: false
+#| echo: true
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(aes(color = continent)) +
+  geom_smooth(color = "black")
+```
+
+## Result
+
+```{r}
+#| eval: true
+#| echo: false
+library(tidyverse)
+library(gapminder)
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(aes(color = continent)) +
+  geom_smooth(color = "black")
+```
+:::
+
+## Aesthetics
+
+-   x-axis, y-axis
+
+-   color, fill
+
+-   shape
+
+-   size
+
+-   alpha
+
+-   position
+
+## Geometries
+
+-   `geom_point()`
+
+-   `geom_line()`
+
+-   `geom_bar(), geom_col()`
+
+-   `geom_histogram(), geom_density()`
+
+-   `geom_smooth()`
+
+-   `geom_boxplot(), geom_violin()`
+
+-   `geom_text(), geom_label()`
+
+# Other Components
+
+## Scale
+
+-   심미성의 구체적 구현
+
+-   x-axis, y-axis
+
+    -   `scale_x_continuous()`, `scale_x_discrete()`
+
+-   color and fill
+
+    -   `scale_color_brewer()`, `scale_fill_brewer()`
+    -   `scale_color_manual()`, `scale_fill_manual()`
+
+-   others
+
+    -   `scale_shape()`, `scale_size()`
+
+    -   `scale_linetype()`, `scale_linewidth()`
+
+## Facet
+
+-   다면생성(faceting) 과정을 통해, 하나의 플롯을 여러 개의 하위 플롯으로 분할
+
+-   두 가지 중요 함수
+
+    -   `facet_wrap()`
+
+    -   `facet_grid()`
+
+## Facet
+
+::: panel-tabset
+## Normal
+
+```{r}
+#| echo: false
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = log(gdpPercap), y = log(lifeExp))) +
+  geom_point(aes(size = pop)) +
+  geom_smooth()
+```
+
+## Faceting
+
+```{r}
+#| echo: false
+gapminder |> 
+  filter(year == 2007) |> 
+  ggplot(aes(x = log(gdpPercap), y = log(lifeExp))) +
+  geom_point(aes(size = pop)) +
+  geom_smooth() +
+  facet_wrap(~continent)
+```
+:::
+
+## Statistical transformation
+
+![<https://r4ds.hadley.nz/layers>](images/clipboard-3826441672.png){fig-align="center"}
+
+## Coordinates
+
+-   그래픽 요소들의 위치 결정에 기준이 되는 준거 체계
+
+-   두 가지 중요 함수
+
+    -   `coord_flip()`
+
+    -   `coord_fixed()`
+
+## Theme
+
+-   그래프의 전체적인 외양(테마)를 수정
+
+    -   8개 테마 제공
+
+-   그래프의 세부 구성 요소를 수정
+
+    -   `theme()`
+
+## Theme
+
+![<https://r4ds.hadley.nz/communication>](images/clipboard-57653269.png){fig-align="center"}
+
+## Theme
+
+-   수 많은 옵션 <https://ggplot2.tidyverse.org/reference/theme.html>
+
+    -   axis 관련
+
+    -   legend 관련
+
+    -   plot.title 관련
+
+# ggplot2 Extensions
+
+<https://exts.ggplot2.tidyverse.org/>
+
+## Major extensions
+
+-   `patchwork`
+
+-   `ggplotly`
+
+-   `gganimate`
+
+-   `GGally`
+
+-   `ggcorrplot`
+
+-   `tidyterra`
