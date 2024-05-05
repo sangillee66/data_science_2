@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="이상일(서울대학교 지리교육과)">
+<title>Data Science - 데이터 불러오기와 정리하기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exec_04.html" rel="next">
+<link href="./exec_02.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link rel="stylesheet" href="styles.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title">데이터 불러오기와 정리하기</h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">웹사이트 소개</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">데이터사이언스 강의</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">강의노트</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">R과 데이터사이언스</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R과 RStudio 소개</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R과 데이터사이언스: 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_03.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">데이터 불러오기와 정리하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 시각화하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 탐색하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 수집하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터로 소통하기: Quarto 입문</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터로 소통하기: 대시보드 만들기</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">R 프레젠테이션</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R &amp; RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R &amp; Data Science</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Import and Tidying</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Transformation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Visualization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Exploration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Collection</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">R 실습</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab01: R과 RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab02: R과 데이터사이언스</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab03: 데이터 불러오기와 정리하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab04: 데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab05: 데이터 시각화하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab06: 데이터 탐색하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab07: 데이터 수집하기</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94" id="toc-실습-개요" class="nav-link active" data-scroll-target="#%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94">실습 개요</a></li>
+  <li>
+<a href="#%ED%8B%B0%EB%B8%94tibble" id="toc-티블tibble" class="nav-link" data-scroll-target="#%ED%8B%B0%EB%B8%94tibble"><span class="header-section-number">1</span> 티블(tibble)</a>
+  <ul class="collapse">
+<li><a href="#%EC%99%9C-%ED%8B%B0%EB%B8%94%EC%9D%B8%EA%B0%80" id="toc-왜-티블인가" class="nav-link" data-scroll-target="#%EC%99%9C-%ED%8B%B0%EB%B8%94%EC%9D%B8%EA%B0%80"><span class="header-section-number">1.1</span> 왜 티블인가?</a></li>
+  <li><a href="#%ED%8B%B0%EB%B8%94-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0" id="toc-티블-생성하기" class="nav-link" data-scroll-target="#%ED%8B%B0%EB%B8%94-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0"><span class="header-section-number">1.2</span> 티블 생성하기</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0" id="toc-데이터-불러오기" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><span class="header-section-number">2</span> 데이터 불러오기</a>
+  <ul class="collapse">
+<li><a href="#readr-%ED%8C%A8%ED%82%A4%EC%A7%80" id="toc-readr-패키지" class="nav-link" data-scroll-target="#readr-%ED%8C%A8%ED%82%A4%EC%A7%80"><span class="header-section-number">2.1</span> <code>readr</code> 패키지</a></li>
+  <li><a href="#%EC%97%91%EC%85%80-%ED%8C%8C%EC%9D%BC" id="toc-엑셀-파일" class="nav-link" data-scroll-target="#%EC%97%91%EC%85%80-%ED%8C%8C%EC%9D%BC"><span class="header-section-number">2.2</span> 엑셀 파일</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%EB%A6%AC%ED%95%98%EA%B8%B0" id="toc-데이터-정리하기" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%EB%A6%AC%ED%95%98%EA%B8%B0"><span class="header-section-number">3</span> 데이터 정리하기</a>
+  <ul class="collapse">
+<li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%8A%98%EC%9D%B4%EA%B8%B0" id="toc-데이터-늘이기" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%8A%98%EC%9D%B4%EA%B8%B0"><span class="header-section-number">3.1</span> 데이터 늘이기</a></li>
+  <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%84%93%ED%9E%88%EA%B8%B0" id="toc-데이터-넓히기" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%84%93%ED%9E%88%EA%B8%B0"><span class="header-section-number">3.2</span> 데이터 넓히기</a></li>
+  <li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B2%B0%ED%95%A9%ED%95%98%EA%B8%B0" id="toc-데이터-결합하기" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B2%B0%ED%95%A9%ED%95%98%EA%B8%B0"><span class="header-section-number">3.3</span> 데이터 결합하기</a></li>
+  </ul>
+</li>
+  <li><a href="#fig-nycflights-1" id="toc-fig-nycflights-1" class="nav-link" data-scroll-target="#fig-nycflights-1"><span class="header-section-number">4</span> </a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sangillee66/data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">데이터 불러오기와 정리하기</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>이상일(서울대학교 지리교육과) </p>
+          </div>
+  </div>
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 25, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header><section id="실습-개요" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="실습-개요">실습 개요</h2>
+<p>이 실습은 R로 데이터사이언스를 하는 과정 중 데이터 불러오기(importing)와 데이터 정리하기(tidying)에 집중한다. 본격적으로 해당 주제를 다루기 전에 tidyverse의 공식 데이터 프레임 형식인 티블(tibble)에 대해 간단히 배운다.</p>
+<p>모든 실습의 시작은 <code>tidyverse</code> 패키지를 불러오는 것이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="티블tibble" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="티블tibble">
+<span class="header-section-number">1</span> 티블(tibble)</h2>
+<section id="왜-티블인가" class="level3" data-number="1.1"><h3 data-number="1.1" class="anchored" data-anchor-id="왜-티블인가">
+<span class="header-section-number">1.1</span> 왜 티블인가?</h3>
+<p>데이터 프레임은 가장 널리 사용되는 데이터 형식이고, 일반적인 상황이라면 거의 대부분 데이터 프레임을 가지고 데이터사이언스를 한다. Base R은 전통적으로 <code>data.frame</code> 객체를 통해 데이터 프레임을 관리해왔다. <code>tibble</code>은 이러한 <code>data.frame</code>의 현대적 개량 버전으로 이해하면 되고, 조금의 차이는 있지만 대동소이하다. 이 새로운 데이터 프레임 형식은 <code>tidyverse</code> 패키지의 핵심 패키지 중 하나인 <a href="https://tibble.tidyverse.org/"><code>tibble</code></a> 패키지에서 지원된다.</p>
+</section><section id="티블-생성하기" class="level3" data-number="1.2"><h3 data-number="1.2" class="anchored" data-anchor-id="티블-생성하기">
+<span class="header-section-number">1.2</span> 티블 생성하기</h3>
+<section id="기존-데이터를-티블-포맷으로-변환하기" class="level4" data-number="1.2.1"><h4 data-number="1.2.1" class="anchored" data-anchor-id="기존-데이터를-티블-포맷으로-변환하기">
+<span class="header-section-number">1.2.1</span> 기존 데이터를 티블 포맷으로 변환하기</h4>
+<p>Base R에 포함되어 있는 <code>iris</code>라는 데이터 프레임을 사용한다. 아래의 코드를 실행하면 <code>iris</code> 데이터가 <code>data.frame</code> 형식으로 저장되어 있음을 알 수 있다. Base R의 <code><a href="https://rdrr.io/r/base/class.html">class()</a></code> 함수의 쓰임새를 확인하라.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">iris</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span>  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 150
+Columns: 5
+$ Sepal.Length &lt;dbl&gt; 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9, 5.4, 4.…
+$ Sepal.Width  &lt;dbl&gt; 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.…
+$ Petal.Length &lt;dbl&gt; 1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.…
+$ Petal.Width  &lt;dbl&gt; 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.…
+$ Species      &lt;fct&gt; setosa, setosa, setosa, setosa, setosa, setosa, setosa, s…</code></pre>
+</div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<p><code><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble()</a></code> 함수를 이용하여 <code>tibble</code> 객체로 전환한다. 그러면 <code>data.frame</code> 객체가 <code>tibble</code> 객체로 전환된 것을 알 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">iris_tbl</span> <span class="op">&lt;-</span> <span class="va">iris</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">iris_tbl</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+</div>
+</section><section id="티블-객체를-직접-생성하기" class="level4" data-number="1.2.2"><h4 data-number="1.2.2" class="anchored" data-anchor-id="티블-객체를-직접-생성하기">
+<span class="header-section-number">1.2.2</span> 티블 객체를 직접 생성하기</h4>
+<p><code>tibble</code> 객체를 직접 생성하는 방식은 두 가지로 나뉜다.</p>
+<ul>
+<li><p>열-단위 방식(보다 일반적): 우선 열-벡터를 만들고 그것을 결합해 최종적인 <code>tibble</code> 객체를 만든다. <code><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble()</a></code> 함수를 이용한다.</p></li>
+<li><p>행-단위 방식: 우선 행-벡터를 만들고 그것을 결합해 최종적인 <code>tibble</code> 객체를 만든다. <code><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble()</a></code> 함수를 이용한다. <code>tribble</code>은 전치티블(<strong>tr</strong>ansposed t<strong>ibble</strong>)의 약자이다.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, </span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"h"</span>, <span class="st">"m"</span>, <span class="st">"g"</span><span class="op">)</span>,</span>
+<span>  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.08</span>, <span class="fl">0.83</span>, <span class="fl">0.60</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      x y         z
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+1     1 h      0.08
+2     2 m      0.83
+3     5 g      0.6 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span></span>
+<span>  <span class="op">~</span><span class="va">x</span>, <span class="op">~</span><span class="va">y</span>, <span class="op">~</span><span class="va">z</span>,</span>
+<span>  <span class="fl">1</span>, <span class="st">"h"</span>, <span class="fl">0.08</span>,</span>
+<span>  <span class="fl">2</span>, <span class="st">"m"</span>, <span class="fl">0.83</span>,</span>
+<span>  <span class="fl">5</span>, <span class="st">"g"</span>, <span class="fl">0.60</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+      x y         z
+  &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+1     1 h      0.08
+2     2 m      0.83
+3     5 g      0.6 </code></pre>
+</div>
+</div>
+</section></section></section><section id="데이터-불러오기" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="데이터-불러오기">
+<span class="header-section-number">2</span> 데이터 불러오기</h2>
+<section id="readr-패키지" class="level3" data-number="2.1"><h3 data-number="2.1" class="anchored" data-anchor-id="readr-패키지">
+<span class="header-section-number">2.1</span> <code>readr</code> 패키지</h3>
+<section id="파일-형식" class="level4" data-number="2.1.1"><h4 data-number="2.1.1" class="anchored" data-anchor-id="파일-형식">
+<span class="header-section-number">2.1.1</span> 파일 형식</h4>
+<p><a href="https://readr.tidyverse.org/"><code>readr</code></a> 패키지는 다양한 함수를 이용해 다양한 형식의 데이터를 불러올 수 있게 도와준다.</p>
+<ul>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv()</a></code>: 콤마분리(comma-separated values, CSV) 형식의 파일</p></li>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv2()</a></code>: 세미콜론분리(semicolon-separated) 형식의 파일</p></li>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_tsv()</a></code>: 탭구분(tab-delimited) 형식의 파일</p></li>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_delim()</a></code>: 여타의 구분 형식의 파일</p></li>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_fwf.html">read_fwf()</a></code>: 고정폭(fixed-width) 형식의 파일</p></li>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_table.html">read_table()</a></code>: 공백구분 형식의 파일</p></li>
+<li><p><code><a href="https://readr.tidyverse.org/reference/read_log.html">read_log()</a></code>: 아파치 형식(Apache-style)의 로그 파일</p></li>
+</ul></section><section id="read_csv-함수의-활용" class="level4" data-number="2.1.2"><h4 data-number="2.1.2" class="anchored" data-anchor-id="read_csv-함수의-활용">
+<span class="header-section-number">2.1.2</span> <code>read_csv()</code> 함수의 활용</h4>
+<p>지난번 실습에서 사용한 데이터를 면밀히 살펴본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">students</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://pos.it/r4ds-students-csv"</span><span class="op">)</span></span>
+<span><span class="va">students</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  `Student ID` `Full Name`      favourite.food     mealPlan            AGE  
+         &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;               &lt;chr&gt;
+1            1 Sunil Huffmann   Strawberry yoghurt Lunch only          4    
+2            2 Barclay Lynn     French fries       Lunch only          5    
+3            3 Jayendra Lyne    N/A                Breakfast and lunch 7    
+4            4 Leon Rossini     Anchovies          Lunch only          &lt;NA&gt; 
+5            5 Chidiegwu Dunkel Pizza              Breakfast and lunch five 
+6            6 Güvenç Attila    Ice cream          Lunch only          6    </code></pre>
+</div>
+</div>
+<p>다음의 몇 가지 점이 불만족스럽다.</p>
+<ul>
+<li><p>변수명: 특히 <code>Student ID</code>와 <code>Full Name</code> 변수명은 규칙에 어긋난다. 변수명 속에 공란이 있으면 좋지 않다. 이런 이름을 비구문명(non-syntactic name)이라고 하고, ``로 둘러싸여 표시된다. 나중에 문제를 일으킬 수 있다.</p></li>
+<li><p>변수 형식: <code>mealPlan</code>은 문자형(chr)이 아니라 팩트형(fct)이, <code>AGE</code>는 문자형(chr)이 아니라 수치형(dbl)이 적절하다.</p></li>
+<li><p>결측치(NA): <code>favourite.food</code>의 ’N/A’는 형식에 맞지 않아 결측치가 아니라 문자로 취급된다. 따라서 ’N/A’가 결측치임을 알려주어야 한다.</p></li>
+</ul>
+<p>아래의 코드는 이러한 점을 반영하여 csv 파일을 다시 불러오기 한 것이다. 조교의 도움을 받아 각 아규먼트(<code>skip</code>, <code>col_names</code>, <code>col_types</code>, <code>na</code>)가 어떤 역할을 했는지 생각해 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">students</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span></span>
+<span>  <span class="st">"https://pos.it/r4ds-students-csv"</span>, </span>
+<span>  skip <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>  col_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"student_id"</span>, <span class="st">"full_name"</span>, <span class="st">"favorite_food"</span>, <span class="st">"meal_plan"</span>, <span class="st">"age"</span><span class="op">)</span>,</span>
+<span>  col_types <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/cols.html">cols</a></span><span class="op">(</span></span>
+<span>    meal_plan <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/parse_factor.html">col_factor</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    age <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/parse_number.html">col_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  na <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"N/A"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">students</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  student_id full_name        favorite_food      meal_plan             age
+       &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;              &lt;fct&gt;               &lt;dbl&gt;
+1          1 Sunil Huffmann   Strawberry yoghurt Lunch only              4
+2          2 Barclay Lynn     French fries       Lunch only              5
+3          3 Jayendra Lyne    &lt;NA&gt;               Breakfast and lunch     7
+4          4 Leon Rossini     Anchovies          Lunch only             NA
+5          5 Chidiegwu Dunkel Pizza              Breakfast and lunch    NA
+6          6 Güvenç Attila    Ice cream          Lunch only              6</code></pre>
+</div>
+</div>
+</section></section><section id="엑셀-파일" class="level3" data-number="2.2"><h3 data-number="2.2" class="anchored" data-anchor-id="엑셀-파일">
+<span class="header-section-number">2.2</span> 엑셀 파일</h3>
+<section id="readxl-패키지" class="level4" data-number="2.2.1"><h4 data-number="2.2.1" class="anchored" data-anchor-id="readxl-패키지">
+<span class="header-section-number">2.2.1</span> <code>readxl</code> 패키지</h4>
+<p>가장 널리 사용되는 스프레드시트(spreadsheet) 형식인 엑셀 파일을 불러들이기 위해서는 <a href="https://readxl.tidyverse.org/"><code>readxl</code></a>이라는 패키지가 필요하다. <code>tidyverse</code>의 핵심 패키지는 아니지만 일종의 친척 패키지라 할 수는 있다. <code>tidyverse</code>에 포함되어 있지 않기 때문에 따로 인스톨하고 <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> 함수를 통해 불러와야 한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>가장 널리 사용되는 명령어는 다음의 세 가지이다.</p>
+<ul>
+<li><p><code><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xls()</a></code>: xls 포맷의 엑셀 파일 불러오기</p></li>
+<li><p><code><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx()</a></code>: xlsx 포맷의 엑셀 파일 불러오기</p></li>
+<li><p><code><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel()</a></code>: xls, xlsx 포맷의 엑셀 파일 불러오기</p></li>
+</ul></section><section id="read_excel-함수의-활용" class="level4" data-number="2.2.2"><h4 data-number="2.2.2" class="anchored" data-anchor-id="read_excel-함수의-활용">
+<span class="header-section-number">2.2.2</span> <code>read_excel()</code> 함수의 활용</h4>
+<p><code>World Population Prospects 2022</code> 데이터를 직접 다운받아 실습을 진행하고자 한다. 이 데이터셋은 매우 중요하다. 다음의 절차에 따라 해당 엑셀 파일을 다운로드한다.</p>
+<ul>
+<li><p>WPP 웹사이트(<a href="https://population.un.org/wpp/" class="uri">https://population.un.org/wpp/</a>)에 접속한다.</p></li>
+<li><p>Download Data Files를 클릭한다.</p></li>
+<li><p>다음의 파일을 클릭한다: Compact (most used: estimates and medium projections) (XLSX, 24.07 MB)</p></li>
+<li><p>엑셀 파일(WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1)을 다운로드하여 자신의 프로젝트 폴더에 저장한다.</p></li>
+</ul>
+<p>R 바깥에서 다운로드한 파일을 열어 어떠한 정보가 어떠한 방식으로 수록되어 있는지 살펴본다. 데이터 불러오기를 위해 다음의 네 가지 사항에 유의해야 함을 이해한다.</p>
+<ul>
+<li><p>16번 행까지는 불필요한 영역이다.</p></li>
+<li><p>17번 행을 변수명으로 사용할 경우 많은 문제점이 발생한다.</p></li>
+<li><p>결측치는 공란이거나 ‘…’ 기호로 표시되어 있다.</p></li>
+<li><p>첫 번째 워킹시트(Estimates)에는 1950~2021의 데이터가, 두 번째 워킹시트(Medium variant)에는 2022~2100년의 데이터가 수록되어 있다. 나중에 결합해야한다.</p></li>
+</ul>
+<p>우선 엑셀 파일을 그대로 불러와 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span></span>
+<span>  <span class="st">"WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1.xlsx"</span>, </span>
+<span>  sheet <span class="op">=</span> <span class="st">"Estimates"</span> </span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20,608 × 65
+   ...1  ...2  ...3  ...4  `United Nations`  ...6  ...7  ...8  ...9  ...10 ...11
+   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+ 1 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  Population Divis… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 2 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  Department of Ec… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 3 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;              &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 4 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  World Population… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 5 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  File GEN/01/REV1… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 6 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  Estimates, 1950 … &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 7 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  POP/DB/WPP/Rev.2… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 8 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  © July 2022 by U… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+ 9 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  Suggested citati… &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+10 &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;              &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+# ℹ 20,598 more rows
+# ℹ 54 more variables: ...12 &lt;chr&gt;, ...13 &lt;chr&gt;, ...14 &lt;chr&gt;, ...15 &lt;chr&gt;,
+#   ...16 &lt;chr&gt;, ...17 &lt;chr&gt;, ...18 &lt;chr&gt;, ...19 &lt;chr&gt;, ...20 &lt;chr&gt;,
+#   ...21 &lt;chr&gt;, ...22 &lt;chr&gt;, ...23 &lt;chr&gt;, ...24 &lt;chr&gt;, ...25 &lt;chr&gt;,
+#   ...26 &lt;chr&gt;, ...27 &lt;chr&gt;, ...28 &lt;chr&gt;, ...29 &lt;chr&gt;, ...30 &lt;chr&gt;,
+#   ...31 &lt;chr&gt;, ...32 &lt;chr&gt;, ...33 &lt;chr&gt;, ...34 &lt;chr&gt;, ...35 &lt;chr&gt;,
+#   ...36 &lt;chr&gt;, ...37 &lt;chr&gt;, ...38 &lt;chr&gt;, ...39 &lt;chr&gt;, ...40 &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>끔찍할 것이다. 위의 네 가지 사항을 감안하여 다음과 같은 코드를 실행한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">new_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"index"</span>, <span class="st">"variant"</span>, <span class="st">"region_name"</span>, <span class="st">"notes"</span>, <span class="st">"location_code"</span>, </span>
+<span>                <span class="st">"ISO3"</span>, <span class="st">"ISO2"</span>, <span class="st">"SDMX"</span>, <span class="st">"type"</span>, <span class="st">"parent_code"</span>, <span class="st">"year"</span>, <span class="st">"pop_jan_total"</span>, </span>
+<span>                <span class="st">"pop_jul_total"</span>, <span class="st">"pop_jul_male"</span>, <span class="st">"pop_jul_female"</span>, <span class="st">"pop_den"</span>, <span class="st">"sex_ratio"</span>, </span>
+<span>                <span class="st">"median_age"</span>, <span class="st">"natural_change"</span>, <span class="st">"RNC"</span>, <span class="st">"pop_change"</span>, <span class="st">"PGR"</span>, </span>
+<span>                <span class="st">"dubling_time"</span>, <span class="st">"births"</span>, <span class="st">"births_by_f1519"</span>, <span class="st">"CBR"</span>, <span class="st">"TFR"</span>, <span class="st">"NRR"</span>, </span>
+<span>                <span class="st">"mean_age_childbearing"</span>, <span class="st">"sex_ratio_birth"</span>, <span class="st">"deaths_total"</span>, </span>
+<span>                <span class="st">"deaths_male"</span>, <span class="st">"deaths_female"</span>, <span class="st">"CDR"</span>, <span class="st">"life_exp_total"</span>, </span>
+<span>                <span class="st">"life_exp_male"</span>, <span class="st">"life_exp_female"</span>, <span class="st">"life_exp_15_total"</span>, </span>
+<span>                <span class="st">"life_exp_15_male"</span>, <span class="st">"life_exp_15_female"</span>, <span class="st">"life_exp_65_total"</span>, </span>
+<span>                <span class="st">"life_exp_65_male"</span>, <span class="st">"life_exp_65_female"</span>, <span class="st">"life_exp_80_total"</span>, </span>
+<span>                <span class="st">"life_exp_80_male"</span>, <span class="st">"life_exp_80_female"</span>, <span class="st">"infant_deaths"</span>, </span>
+<span>                <span class="st">"IMR"</span>, <span class="st">"live_births"</span>, <span class="st">"under_five_deaths"</span>, <span class="st">"mort_under_five"</span>, </span>
+<span>                <span class="st">"mort_bf_40_total"</span>, <span class="st">"mort_bf_40_male"</span>, <span class="st">"mort_bf_40_female"</span>, <span class="st">"mort_bf_60_total"</span>, </span>
+<span>                <span class="st">"mort_bf_60_male"</span>, <span class="st">"mort_bf_60_female"</span>, <span class="st">"mort_bt_1550_total"</span>, </span>
+<span>                <span class="st">"mort_bt_1550_male"</span>, <span class="st">"mort_bt_1550_female"</span>, <span class="st">"mort_bt_1560_total"</span>, </span>
+<span>                <span class="st">"mort_bt_1560_male"</span>, <span class="st">"mort_bt_1560_female"</span>, <span class="st">"net_migrants"</span>, <span class="st">"NMR"</span><span class="op">)</span></span>
+<span><span class="va">wpp_2022_estimates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span></span>
+<span>  <span class="st">"WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1.xlsx"</span>,</span>
+<span>  sheet <span class="op">=</span> <span class="st">"Estimates"</span>,</span>
+<span>  skip <span class="op">=</span> <span class="fl">17</span>, </span>
+<span>  col_names <span class="op">=</span> <span class="va">new_names</span>,</span>
+<span>  col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"guess"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="st">"text"</span>, <span class="st">"guess"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"text"</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"guess"</span>, <span class="fl">58</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  na <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"..."</span>, <span class="st">""</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">wpp_2022_future</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span></span>
+<span>  <span class="st">"WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT_REV1.xlsx"</span>,</span>
+<span>  sheet <span class="op">=</span> <span class="st">"Medium variant"</span>,</span>
+<span>  skip <span class="op">=</span> <span class="fl">17</span>, </span>
+<span>  col_names <span class="op">=</span> <span class="va">new_names</span>,</span>
+<span>  col_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"guess"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="st">"text"</span>, <span class="st">"guess"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"text"</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"guess"</span>, <span class="fl">58</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  na <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"..."</span>, <span class="st">""</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">wpp_2022</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">wpp_2022_estimates</span>, <span class="va">wpp_2022_future</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="va">wpp_2022</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>조교의 도움을 받아 코드의 어떤 부분이 어떤 동작을 한 것인지 따져본다.</p>
+<p>그런데, 해야할 일이 한가지 더 남아있다. 많은 변수 중에 데이터 탐색이라는 측면에서 가장 중요한 것은 <code>type</code>이다. 다음을 통해 <code>type</code> 변수에 어떤 내용이 담겨 있는지 확인한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wpp_2022</span> <span class="op">|&gt;</span>    </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">type</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 1
+  type             
+  &lt;chr&gt;            
+1 World            
+2 Label/Separator  
+3 SDG region       
+4 Development Group
+5 Special other    
+6 Income Group     
+7 Region           
+8 Subregion        
+9 Country/Area     </code></pre>
+</div>
+</div>
+<p>이 변수를 통해 세계 전체(World), 국가군(SDG region, Region 등), 국가별(Country/Area)로 데이터를 활용할 수 있다는 것을 인지한다. 그런데, “Label/Separator”는 엑셀 내에서 분할선 역할만 하는 것으로 무의미하다. 이를 제거한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">wpp_2022</span> <span class="op">&lt;-</span> <span class="va">wpp_2022</span> <span class="op">|&gt;</span>    </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">type</span> <span class="op">!=</span> <span class="st">"Label/Separator"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이제 모든 과정이 끝났다. 나중에 사용하기 위해, <code>writexl</code> 패키지의 <code><a href="https://docs.ropensci.org/writexl/reference/write_xlsx.html">write_xlsx()</a></code> 함수를 이용하여 엑셀 파일로 저장해 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/">writexl</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://docs.ropensci.org/writexl/reference/write_xlsx.html">write_xlsx</a></span><span class="op">(</span><span class="va">wpp_2022</span>, <span class="st">"wpp_2022.xlsx"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>그런데, 저장된 파일을 <code><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel()</a></code> 함수로 다시 불러 들이면 컬럼 형식에 대한 정보가 사라져 버리는 등의 에러가 발생한다. 이런 점 때문에 다음과 같은 대안이 존재한다. <a href="https://readr.tidyverse.org/"><code>readr</code></a> 패키지의 <code><a href="https://readr.tidyverse.org/reference/read_rds.html">write_rds()</a></code> 함수로 저장하고, 다시 <code><a href="https://readr.tidyverse.org/reference/read_rds.html">read_rds()</a></code> 함수로 불러들이면 정확히 동일한 것을 얻을 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html">write_rds</a></span><span class="op">(</span><span class="va">wpp_2022</span>, <span class="st">"wpp_2022.rds"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html">read_rds</a></span><span class="op">(</span><span class="st">"wpp_2022.rds"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 43,186 × 65
+   index variant   region_name notes location_code ISO3  ISO2   SDMX type 
+   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;
+ 1     1 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 2     2 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 3     3 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 4     4 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 5     5 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 6     6 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 7     7 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 8     8 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+ 9     9 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+10    10 Estimates WORLD       &lt;NA&gt;            900 &lt;NA&gt;  &lt;NA&gt;      1 World
+# ℹ 43,176 more rows
+# ℹ 56 more variables: parent_code &lt;dbl&gt;, year &lt;dbl&gt;, pop_jan_total &lt;dbl&gt;,
+#   pop_jul_total &lt;dbl&gt;, pop_jul_male &lt;dbl&gt;, pop_jul_female &lt;dbl&gt;,
+#   pop_den &lt;dbl&gt;, sex_ratio &lt;dbl&gt;, median_age &lt;dbl&gt;, natural_change &lt;dbl&gt;,
+#   RNC &lt;dbl&gt;, pop_change &lt;dbl&gt;, PGR &lt;dbl&gt;, dubling_time &lt;dbl&gt;, births &lt;dbl&gt;,
+#   births_by_f1519 &lt;dbl&gt;, CBR &lt;dbl&gt;, TFR &lt;dbl&gt;, NRR &lt;dbl&gt;,
+#   mean_age_childbearing &lt;dbl&gt;, sex_ratio_birth &lt;dbl&gt;, deaths_total &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</section></section></section><section id="데이터-정리하기" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="데이터-정리하기">
+<span class="header-section-number">3</span> 데이터 정리하기</h2>
+<p>여기서는 데이터 늘이기(lengthening data), 데이터 넓히기(widening data), 데이터 결합하기(joining data)를 다룬다.</p>
+<section id="데이터-늘이기" class="level3" data-number="3.1"><h3 data-number="3.1" class="anchored" data-anchor-id="데이터-늘이기">
+<span class="header-section-number">3.1</span> 데이터 늘이기</h3>
+<p>실습을 위해 <code>tidyverse</code> 패키지에 포함되어 있는 <code>who2</code> 데이터를 사용한다. 이것은 WHO(world Health Organization, 세계보건기구)에서 제공한 데이터로서 1980~2013년 전세계 209개국의 결핵 환자수에 대한 데이터이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">who2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 7,240
+Columns: 58
+$ country    &lt;chr&gt; "Afghanistan", "Afghanistan", "Afghanistan", "Afghanistan",…
+$ year       &lt;dbl&gt; 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989,…
+$ sp_m_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_m_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sp_f_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_m_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ sn_f_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_m_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_014   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_1524  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_2534  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_3544  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_4554  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_5564  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ ep_f_65    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_014  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_1524 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_2534 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_3544 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_4554 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_5564 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_m_65   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_014  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_1524 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_2534 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_3544 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_4554 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_5564 &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ rel_f_65   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+</div>
+</div>
+<p><code>country</code>와 <code>year</code>은 분명한 변수이지만 나머지 56개 변수는 무엇인지 알 수 없다. 그런데 잘 살펴보면, 변수명에 어떤 패턴이 있다는 것을 알 수 있다. 모두 세 부분으로 나뉘어져 있는데, 첫 번째 부분은 진단법(sp, rel, ep)과 관련되어 있고, 두 번째 부분은 성(m, f)과 관련되어 있고, 세 번째 부분은 연령(014, 1524, 2534, 3544, 4554, 5564, 65)과 관련되어 있다. 56개 변수의 셀 값은 모두 케이스(환자수)를 의미한다. 이 지저분한 데이터를 <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> 함수를 이용해 정돈된 데이터로 만들어 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">who2</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>    cols <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">country</span>, <span class="va">year</span><span class="op">)</span>,</span>
+<span>    names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"diagnosis"</span>, <span class="st">"gender"</span>, <span class="st">"age"</span><span class="op">)</span>, </span>
+<span>    names_sep <span class="op">=</span> <span class="st">"_"</span>,</span>
+<span>    values_to <span class="op">=</span> <span class="st">"count"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 405,440 × 6
+   country      year diagnosis gender age   count
+   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+ 1 Afghanistan  1980 sp        m      014      NA
+ 2 Afghanistan  1980 sp        m      1524     NA
+ 3 Afghanistan  1980 sp        m      2534     NA
+ 4 Afghanistan  1980 sp        m      3544     NA
+ 5 Afghanistan  1980 sp        m      4554     NA
+ 6 Afghanistan  1980 sp        m      5564     NA
+ 7 Afghanistan  1980 sp        m      65       NA
+ 8 Afghanistan  1980 sp        f      014      NA
+ 9 Afghanistan  1980 sp        f      1524     NA
+10 Afghanistan  1980 sp        f      2534     NA
+# ℹ 405,430 more rows</code></pre>
+</div>
+</div>
+<p>조교의 도움을 받아 각 아규먼트가 어떤 역할을 하는지 이해한다. 그리고 정돈된 데이터를 만들기 위해 왜 데이터 ’늘이기’를 해야하는지 생각해 본라.</p>
+</section><section id="데이터-넓히기" class="level3" data-number="3.2"><h3 data-number="3.2" class="anchored" data-anchor-id="데이터-넓히기">
+<span class="header-section-number">3.2</span> 데이터 넓히기</h3>
+<p>실습을 위해 <code>tidyverse</code> 패키지에 포함되어 있는 <code>cms_patient_experience</code> 데이터를 사용한다. 이것은 미국의 <a href="https://www.cms.gov/">Centers of Medicare and Meicaid Services</a>가 제공한 데이터이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cms_patient_experience</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 5
+   org_pac_id org_nm                           measure_cd measure_title prf_rate
+   &lt;chr&gt;      &lt;chr&gt;                            &lt;chr&gt;      &lt;chr&gt;            &lt;dbl&gt;
+ 1 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       63
+ 2 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       87
+ 3 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       86
+ 4 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       57
+ 5 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       85
+ 6 0446157747 USC CARE MEDICAL GROUP INC       CAHPS_GRP… CAHPS for MI…       24
+ 7 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       59
+ 8 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       85
+ 9 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       83
+10 0446162697 ASSOCIATION OF UNIVERSITY PHYSI… CAHPS_GRP… CAHPS for MI…       63
+# ℹ 490 more rows</code></pre>
+</div>
+</div>
+<p>이 데이터도 정돈된 데이터가 아니다. 자세히 살펴보면 다음과 같은 사실을 알 수 있다.</p>
+<ul>
+<li><p><code>org_pac_id</code>와 <code>org_nm</code> 변수는 의료조직의 식별자와 이름이다.</p></li>
+<li><p>의료조직별로 6개씩의 열을 차지하고 있는데, 6개의 열은 <code>measure_cd</code>와 <code>measure_title</code>에 나타나 있는 것과 같은 6개의 서로 다른 조사 항목을 나타낸다.</p></li>
+<li><p>마지막의 <code>prf_rate</code>는 조사 항목별 점수이다.</p></li>
+</ul>
+<p><code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> 함수를 이용하여, 행에는 개별 의료조직이, 열에는 개별 조사 항목이 나타나는 정돈된 데이터를 만들어 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cms_patient_experience</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span></span>
+<span>    id_cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"org"</span><span class="op">)</span>,</span>
+<span>    names_from <span class="op">=</span> <span class="va">measure_cd</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="va">prf_rate</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 95 × 8
+   org_pac_id org_nm CAHPS_GRP_1 CAHPS_GRP_2 CAHPS_GRP_3 CAHPS_GRP_5 CAHPS_GRP_8
+   &lt;chr&gt;      &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1 0446157747 USC C…          63          87          86          57          85
+ 2 0446162697 ASSOC…          59          85          83          63          88
+ 3 0547164295 BEAVE…          49          NA          75          44          73
+ 4 0749333730 CAPE …          67          84          85          65          82
+ 5 0840104360 ALLIA…          66          87          87          64          87
+ 6 0840109864 REX H…          73          87          84          67          91
+ 7 0840513552 SCL H…          58          83          76          58          78
+ 8 0941545784 GRITM…          46          86          81          54          NA
+ 9 1052612785 COMMU…          65          84          80          58          87
+10 1254237779 OUR L…          61          NA          NA          65          NA
+# ℹ 85 more rows
+# ℹ 1 more variable: CAHPS_GRP_12 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>이에 어떤 의료조직이 어떤 항목에서 얼마의 점수를 받았는지를 일목요연하게 알아 볼 수 있다. 조교의 도움을 받아 각 아규먼트가 어떤 역할을 하는지 이해한다. 정돈된 데이터를 만들기 위해 이번에는 왜 데이터 ’넓히기’를 해야하는지 생각해 보라.</p>
+</section><section id="데이터-결합하기" class="level3" data-number="3.3"><h3 data-number="3.3" class="anchored" data-anchor-id="데이터-결합하기">
+<span class="header-section-number">3.3</span> 데이터 결합하기</h3>
+<section id="조인join의-종류" class="level4" data-number="3.3.1"><h4 data-number="3.3.1" class="anchored" data-anchor-id="조인join의-종류">
+<span class="header-section-number">3.3.1</span> 조인(join)의 종류</h4>
+<p>여기서는 데이트 프레임을 결합하여 새로운 데이터 프레임을 생성하는 과정에 대해 살펴본다. <code>tidyverse</code> 패키지에 포함되어 있는 <code>dplyr</code> 패키지는 다양한 종류의 조인(join) 함수를 제공한다.</p>
+<ul>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code>: 첫 번째 변수는 그대로 둔 상태에서 두 번째 변수를 결합함으로써 두 번째 변수의 열을 가져옴</p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code>: 두 번째 변수는 그대로 둔 상태에서 첫 번째 변수를 결합함으로써 첫 번째 변수의 열을 가져옴</p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">right_join()</a></code>: 두 변수 모두에 존재하는 열을 취함</p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join()</a></code>: 최소한 한 변수에 존재하는 열을 모두 취함</p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">semi_join()</a></code>: 첫 번째 변수의 행 중 두 번째 변수에 대응하는 행이 있는 것만 취함</p></li>
+<li><p><code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">anti_join()</a></code>: 첫 번째 변수의 행 중 두 번째 변수에 대응하는 행이 없는 것만 취함</p></li>
+</ul>
+<p>이들 중 <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code>이 가장 많이 사용되기 때문에 그것에 집중한다.</p>
+</section><section id="left_join-함수의-활용" class="level4" data-number="3.3.2"><h4 data-number="3.3.2" class="anchored" data-anchor-id="left_join-함수의-활용">
+<span class="header-section-number">3.3.2</span> <code>left_join()</code> 함수의 활용</h4>
+<p>실습을 위해 <a href="https://github.com/tidyverse/nycflights13"><code>nycflights13</code></a> 패키지의 데이터를 사용한다. 이 패키지에는 다섯 개의 데이터 프레임이 포함되어 있다. 지난 번에는 첫 번째 데이터만 사용했다.</p>
+<ul>
+<li><p><code>flights</code>: 2013년 NYC를 출발한 모든 항공기</p></li>
+<li><p><code>weather</code>: 공항별 시간별 기상 상황</p></li>
+<li><p><code>planes</code>: 항공기별 건조 정보</p></li>
+<li><p><code>airports</code>: 공항명과 위치</p></li>
+<li><p><code>airlines</code>: 항공사</p></li>
+</ul>
+<p>그리고 이 6개의 데이터 프레임은 <a href="#fig-nycflights13-1" class="quarto-xref">Figure&nbsp;1</a> 처럼 공통키(common key)를 통해 서로 연결되어 있다.</p>
+<div id="fig-nycflights13-1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-nycflights13-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://r4ds.hadley.nz/diagrams/relational.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nycflights13-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: <code>nycflights13</code> 데이터(<a href="https://github.com/tidyverse/nycflights13" class="uri">https://github.com/tidyverse/nycflights13</a>)
+</figcaption></figure>
+</div>
+<p><code>flights</code> 데이터의 변수가 너무 많기 때문에 조인을 위한 공통키를 중심으로 변수를 줄인다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights2</span> <span class="op">&lt;-</span> <span class="va">flights</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">time_hour</span>, <span class="va">origin</span>, <span class="va">dest</span>, <span class="va">tailnum</span>, <span class="va">carrier</span><span class="op">)</span></span>
+<span><span class="va">flights2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 6
+    year time_hour           origin dest  tailnum carrier
+   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  
+ 1  2013 2013-01-01 05:00:00 EWR    IAH   N14228  UA     
+ 2  2013 2013-01-01 05:00:00 LGA    IAH   N24211  UA     
+ 3  2013 2013-01-01 05:00:00 JFK    MIA   N619AA  AA     
+ 4  2013 2013-01-01 05:00:00 JFK    BQN   N804JB  B6     
+ 5  2013 2013-01-01 06:00:00 LGA    ATL   N668DN  DL     
+ 6  2013 2013-01-01 05:00:00 EWR    ORD   N39463  UA     
+ 7  2013 2013-01-01 06:00:00 EWR    FLL   N516JB  B6     
+ 8  2013 2013-01-01 06:00:00 LGA    IAD   N829AS  EV     
+ 9  2013 2013-01-01 06:00:00 JFK    MCO   N593JB  B6     
+10  2013 2013-01-01 06:00:00 LGA    ORD   N3ALAA  AA     
+# ℹ 336,766 more rows</code></pre>
+</div>
+</div>
+<p><code>flights2</code> 데이터를 중심으로 나머지 4개의 데이터와 조인한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">airlines</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 2
+   carrier name                       
+   &lt;chr&gt;   &lt;chr&gt;                      
+ 1 9E      Endeavor Air Inc.          
+ 2 AA      American Airlines Inc.     
+ 3 AS      Alaska Airlines Inc.       
+ 4 B6      JetBlue Airways            
+ 5 DL      Delta Air Lines Inc.       
+ 6 EV      ExpressJet Airlines Inc.   
+ 7 F9      Frontier Airlines Inc.     
+ 8 FL      AirTran Airways Corporation
+ 9 HA      Hawaiian Airlines Inc.     
+10 MQ      Envoy Air                  
+11 OO      SkyWest Airlines Inc.      
+12 UA      United Air Lines Inc.      
+13 US      US Airways Inc.            
+14 VX      Virgin America             
+15 WN      Southwest Airlines Co.     
+16 YV      Mesa Airlines Inc.         </code></pre>
+</div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights2</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">airlines</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 7
+    year time_hour           origin dest  tailnum carrier name                  
+   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;                 
+ 1  2013 2013-01-01 05:00:00 EWR    IAH   N14228  UA      United Air Lines Inc. 
+ 2  2013 2013-01-01 05:00:00 LGA    IAH   N24211  UA      United Air Lines Inc. 
+ 3  2013 2013-01-01 05:00:00 JFK    MIA   N619AA  AA      American Airlines Inc.
+ 4  2013 2013-01-01 05:00:00 JFK    BQN   N804JB  B6      JetBlue Airways       
+ 5  2013 2013-01-01 06:00:00 LGA    ATL   N668DN  DL      Delta Air Lines Inc.  
+ 6  2013 2013-01-01 05:00:00 EWR    ORD   N39463  UA      United Air Lines Inc. 
+ 7  2013 2013-01-01 06:00:00 EWR    FLL   N516JB  B6      JetBlue Airways       
+ 8  2013 2013-01-01 06:00:00 LGA    IAD   N829AS  EV      ExpressJet Airlines I…
+ 9  2013 2013-01-01 06:00:00 JFK    MCO   N593JB  B6      JetBlue Airways       
+10  2013 2013-01-01 06:00:00 LGA    ORD   N3ALAA  AA      American Airlines Inc.
+# ℹ 336,766 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">weather</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26,115 × 15
+   origin  year month   day  hour  temp  dewp humid wind_dir wind_speed
+   &lt;chr&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+ 1 EWR     2013     1     1     1  39.0  26.1  59.4      270      10.4 
+ 2 EWR     2013     1     1     2  39.0  27.0  61.6      250       8.06
+ 3 EWR     2013     1     1     3  39.0  28.0  64.4      240      11.5 
+ 4 EWR     2013     1     1     4  39.9  28.0  62.2      250      12.7 
+ 5 EWR     2013     1     1     5  39.0  28.0  64.4      260      12.7 
+ 6 EWR     2013     1     1     6  37.9  28.0  67.2      240      11.5 
+ 7 EWR     2013     1     1     7  39.0  28.0  64.4      240      15.0 
+ 8 EWR     2013     1     1     8  39.9  28.0  62.2      250      10.4 
+ 9 EWR     2013     1     1     9  39.9  28.0  62.2      260      15.0 
+10 EWR     2013     1     1    10  41    28.0  59.6      260      13.8 
+# ℹ 26,105 more rows
+# ℹ 5 more variables: wind_gust &lt;dbl&gt;, precip &lt;dbl&gt;, pressure &lt;dbl&gt;,
+#   visib &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights2</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">weather</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">origin</span>, <span class="va">time_hour</span>, <span class="va">temp</span>, <span class="va">wind_speed</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 8
+    year time_hour           origin dest  tailnum carrier  temp wind_speed
+   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+ 1  2013 2013-01-01 05:00:00 EWR    IAH   N14228  UA       39.0       12.7
+ 2  2013 2013-01-01 05:00:00 LGA    IAH   N24211  UA       39.9       15.0
+ 3  2013 2013-01-01 05:00:00 JFK    MIA   N619AA  AA       39.0       15.0
+ 4  2013 2013-01-01 05:00:00 JFK    BQN   N804JB  B6       39.0       15.0
+ 5  2013 2013-01-01 06:00:00 LGA    ATL   N668DN  DL       39.9       16.1
+ 6  2013 2013-01-01 05:00:00 EWR    ORD   N39463  UA       39.0       12.7
+ 7  2013 2013-01-01 06:00:00 EWR    FLL   N516JB  B6       37.9       11.5
+ 8  2013 2013-01-01 06:00:00 LGA    IAD   N829AS  EV       39.9       16.1
+ 9  2013 2013-01-01 06:00:00 JFK    MCO   N593JB  B6       37.9       13.8
+10  2013 2013-01-01 06:00:00 LGA    ORD   N3ALAA  AA       39.9       16.1
+# ℹ 336,766 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">planes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3,322 × 9
+   tailnum  year type              manufacturer model engines seats speed engine
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;        &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; 
+ 1 N10156   2004 Fixed wing multi… EMBRAER      EMB-…       2    55    NA Turbo…
+ 2 N102UW   1998 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+ 3 N103US   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+ 4 N104UW   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+ 5 N10575   2002 Fixed wing multi… EMBRAER      EMB-…       2    55    NA Turbo…
+ 6 N105UW   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+ 7 N107US   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+ 8 N108UW   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+ 9 N109UW   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+10 N110UW   1999 Fixed wing multi… AIRBUS INDU… A320…       2   182    NA Turbo…
+# ℹ 3,312 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights2</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">planes</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">tailnum</span>, <span class="va">type</span>, <span class="va">engines</span>, <span class="va">seats</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 9
+    year time_hour           origin dest  tailnum carrier type     engines seats
+   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt; &lt;int&gt;
+ 1  2013 2013-01-01 05:00:00 EWR    IAH   N14228  UA      Fixed w…       2   149
+ 2  2013 2013-01-01 05:00:00 LGA    IAH   N24211  UA      Fixed w…       2   149
+ 3  2013 2013-01-01 05:00:00 JFK    MIA   N619AA  AA      Fixed w…       2   178
+ 4  2013 2013-01-01 05:00:00 JFK    BQN   N804JB  B6      Fixed w…       2   200
+ 5  2013 2013-01-01 06:00:00 LGA    ATL   N668DN  DL      Fixed w…       2   178
+ 6  2013 2013-01-01 05:00:00 EWR    ORD   N39463  UA      Fixed w…       2   191
+ 7  2013 2013-01-01 06:00:00 EWR    FLL   N516JB  B6      Fixed w…       2   200
+ 8  2013 2013-01-01 06:00:00 LGA    IAD   N829AS  EV      Fixed w…       2    55
+ 9  2013 2013-01-01 06:00:00 JFK    MCO   N593JB  B6      Fixed w…       2   200
+10  2013 2013-01-01 06:00:00 LGA    ORD   N3ALAA  AA      &lt;NA&gt;          NA    NA
+# ℹ 336,766 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">airports</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,458 × 8
+   faa   name                             lat    lon   alt    tz dst   tzone    
+   &lt;chr&gt; &lt;chr&gt;                          &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    
+ 1 04G   Lansdowne Airport               41.1  -80.6  1044    -5 A     America/…
+ 2 06A   Moton Field Municipal Airport   32.5  -85.7   264    -6 A     America/…
+ 3 06C   Schaumburg Regional             42.0  -88.1   801    -6 A     America/…
+ 4 06N   Randall Airport                 41.4  -74.4   523    -5 A     America/…
+ 5 09J   Jekyll Island Airport           31.1  -81.4    11    -5 A     America/…
+ 6 0A9   Elizabethton Municipal Airport  36.4  -82.2  1593    -5 A     America/…
+ 7 0G6   Williams County Airport         41.5  -84.5   730    -5 A     America/…
+ 8 0G7   Finger Lakes Regional Airport   42.9  -76.8   492    -5 A     America/…
+ 9 0P2   Shoestring Aviation Airfield    39.8  -76.6  1000    -5 U     America/…
+10 0S9   Jefferson County Intl           48.1 -123.    108    -8 A     America/…
+# ℹ 1,448 more rows</code></pre>
+</div>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights2</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">airports</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html">join_by</a></span><span class="op">(</span><span class="va">origin</span> <span class="op">==</span> <span class="va">faa</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 13
+    year time_hour           origin dest  tailnum carrier name         lat   lon
+   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;
+ 1  2013 2013-01-01 05:00:00 EWR    IAH   N14228  UA      Newark Li…  40.7 -74.2
+ 2  2013 2013-01-01 05:00:00 LGA    IAH   N24211  UA      La Guardia  40.8 -73.9
+ 3  2013 2013-01-01 05:00:00 JFK    MIA   N619AA  AA      John F Ke…  40.6 -73.8
+ 4  2013 2013-01-01 05:00:00 JFK    BQN   N804JB  B6      John F Ke…  40.6 -73.8
+ 5  2013 2013-01-01 06:00:00 LGA    ATL   N668DN  DL      La Guardia  40.8 -73.9
+ 6  2013 2013-01-01 05:00:00 EWR    ORD   N39463  UA      Newark Li…  40.7 -74.2
+ 7  2013 2013-01-01 06:00:00 EWR    FLL   N516JB  B6      Newark Li…  40.7 -74.2
+ 8  2013 2013-01-01 06:00:00 LGA    IAD   N829AS  EV      La Guardia  40.8 -73.9
+ 9  2013 2013-01-01 06:00:00 JFK    MCO   N593JB  B6      John F Ke…  40.6 -73.8
+10  2013 2013-01-01 06:00:00 LGA    ORD   N3ALAA  AA      La Guardia  40.8 -73.9
+# ℹ 336,766 more rows
+# ℹ 4 more variables: alt &lt;dbl&gt;, tz &lt;dbl&gt;, dst &lt;chr&gt;, tzone &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p><code>airports</code>의 경우만 왜 <code><a href="https://dplyr.tidyverse.org/reference/join_by.html">join_by()</a></code>라는 아규먼트가 필요한지 생각해 본다.</p>
+</section></section></section><section id="fig-nycflights-1" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="fig-nycflights-1">
+<span class="header-section-number">4</span> </h2>
+
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./exec_02.html" class="pagination-link  aria-label=" r="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">R과 데이터사이언스: 개요</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exec_04.html" class="pagination-link" aria-label="데이터 변형하기">
+        <span class="nav-page-text">데이터 변형하기</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2024, Sang-Il Lee</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sangillee66/data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://sangillee.snu.ac.kr/">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:si_lee@snu.ac.kr">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sangillee66">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

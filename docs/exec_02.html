@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="이상일(서울대학교 지리교육과)">
+<title>Data Science - R과 데이터사이언스: 개요</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exec_03.html" rel="next">
+<link href="./exec_01.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link rel="stylesheet" href="styles.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title">R과 데이터사이언스: 개요</h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">웹사이트 소개</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">데이터사이언스 강의</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">강의노트</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">R과 데이터사이언스</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R과 RStudio 소개</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">R과 데이터사이언스: 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 불러오기와 정리하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 시각화하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 탐색하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 수집하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터로 소통하기: Quarto 입문</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터로 소통하기: 대시보드 만들기</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">R 프레젠테이션</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R &amp; RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R &amp; Data Science</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Import and Tidying</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Transformation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Visualization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Exploration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Collection</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">R 실습</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab01: R과 RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab02: R과 데이터사이언스</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab03: 데이터 불러오기와 정리하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab04: 데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab05: 데이터 시각화하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab06: 데이터 탐색하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab07: 데이터 수집하기</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94" id="toc-실습-개요" class="nav-link active" data-scroll-target="#%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94">실습 개요</a></li>
+  <li>
+<a href="#%ED%8C%A8%ED%82%A4%EC%A7%80%EC%99%80-tidyverse-%ED%8C%A8%ED%82%A4%EC%A7%80" id="toc-패키지와-tidyverse-패키지" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80%EC%99%80-tidyverse-%ED%8C%A8%ED%82%A4%EC%A7%80"><span class="header-section-number">1</span> 패키지와 tidyverse 패키지</a>
+  <ul class="collapse">
+<li><a href="#%ED%8C%A8%ED%82%A4%EC%A7%80" id="toc-패키지" class="nav-link" data-scroll-target="#%ED%8C%A8%ED%82%A4%EC%A7%80"><span class="header-section-number">1.1</span> 패키지</a></li>
+  <li><a href="#tidyverse-%ED%8C%A8%ED%82%A4%EC%A7%80" id="toc-tidyverse-패키지" class="nav-link" data-scroll-target="#tidyverse-%ED%8C%A8%ED%82%A4%EC%A7%80"><span class="header-section-number">1.2</span> <code>tidyverse</code> 패키지</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0" id="toc-시각화하기" class="nav-link" data-scroll-target="#%EC%8B%9C%EA%B0%81%ED%99%94%ED%95%98%EA%B8%B0"><span class="header-section-number">2</span> 시각화하기</a>
+  <ul class="collapse">
+<li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0" id="toc-데이터-살펴보기" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0"><span class="header-section-number">2.1</span> 데이터 살펴보기</a></li>
+  <li><a href="#%EA%B7%B8%EB%9E%98%ED%94%84-%EB%A7%8C%EB%93%A4%EA%B8%B0" id="toc-그래프-만들기" class="nav-link" data-scroll-target="#%EA%B7%B8%EB%9E%98%ED%94%84-%EB%A7%8C%EB%93%A4%EA%B8%B0"><span class="header-section-number">2.2</span> 그래프 만들기</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EB%B3%80%ED%98%95%ED%95%98%EA%B8%B0" id="toc-변형하기" class="nav-link" data-scroll-target="#%EB%B3%80%ED%98%95%ED%95%98%EA%B8%B0"><span class="header-section-number">3</span> 변형하기</a>
+  <ul class="collapse">
+<li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-1" id="toc-데이터-살펴보기-1" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-1"><span class="header-section-number">3.1</span> 데이터 살펴보기</a></li>
+  <li><a href="#%EC%A3%BC%EC%9A%94-%ED%95%A8%EC%88%98" id="toc-주요-함수" class="nav-link" data-scroll-target="#%EC%A3%BC%EC%9A%94-%ED%95%A8%EC%88%98"><span class="header-section-number">3.2</span> 주요 함수</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EC%A0%95%EB%A6%AC%ED%95%98%EA%B8%B0" id="toc-정리하기" class="nav-link" data-scroll-target="#%EC%A0%95%EB%A6%AC%ED%95%98%EA%B8%B0"><span class="header-section-number">4</span> 정리하기</a>
+  <ul class="collapse">
+<li><a href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-2" id="toc-데이터-살펴보기-2" class="nav-link" data-scroll-target="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-2"><span class="header-section-number">4.1</span> 데이터 살펴보기</a></li>
+  <li><a href="#%EC%A3%BC%EC%9A%94-%ED%95%A8%EC%88%98-1" id="toc-주요-함수-1" class="nav-link" data-scroll-target="#%EC%A3%BC%EC%9A%94-%ED%95%A8%EC%88%98-1"><span class="header-section-number">4.2</span> 주요 함수</a></li>
+  </ul>
+</li>
+  <li><a href="#%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0" id="toc-불러오기" class="nav-link" data-scroll-target="#%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"><span class="header-section-number">5</span> 불러오기</a></li>
+  <li><a href="#%ED%8C%8C%EC%9D%B4%ED%94%84-%EC%97%B0%EC%82%B0%EC%9E%90pipe-operator" id="toc-파이프-연산자pipe-operator" class="nav-link" data-scroll-target="#%ED%8C%8C%EC%9D%B4%ED%94%84-%EC%97%B0%EC%82%B0%EC%9E%90pipe-operator"><span class="header-section-number">6</span> 파이프 연산자(pipe operator)</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><span class="header-section-number">7</span> </a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sangillee66/data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">R과 데이터사이언스: 개요</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>이상일(서울대학교 지리교육과) </p>
+          </div>
+  </div>
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 1, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header><section id="실습-개요" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="실습-개요">실습 개요</h2>
+<p>이 실습은 R로 데이터사이언스를 하는 과정을 개괄적으로 이해하기 위한 것이다. 특히 <a href="#fig-R_DS-process2" class="quarto-xref">Figure&nbsp;1</a> 에 나타나 있는 데이터사이언스 과정 중 특히 네 부분, 데이터 불러오기(importing), 정리하기(tidying), 변형하기(transforming), 시각화하기(visualizing)에 초첨을 맞춘다. 보통 데이터 정리하기와 변형하기를 합쳐 데이터와 씨름하기(wrangling)이라고 부르고, 정리하기와 시각화하기를 합쳐 탐색하기(exploring)라고 한다. 데이터를 살펴보기 위해 모델링을 사용하는 경우, 일부 모델링하기도 탐색하기에 포함되는 것으로 볼 수도 있다.</p>
+<div id="fig-R_DS-process2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-R_DS-process2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://r4ds.hadley.nz/diagrams/data-science/whole-game.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-R_DS-process2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: 데이터사이언스의 과정(<a href="https://r4ds.hadley.nz/whole-game" class="uri">https://r4ds.hadley.nz/whole-game</a>)
+</figcaption></figure>
+</div>
+<p>데이터사이언스의 다양한 과업을 수행하기 위해 Base R의 함수들이 사용되고 있지만, 보통은 이와 함께 다양한 패키지(package)들이 널리 사용되고 있다. 따라서 본 실습에서는 우선 패키지의 사용과 관련된 부분을 다루고 뒤를 이어 데이터사이언스의 네 과제가 어떻게 이루어지는지 대략적으로 다룰 것이다.</p>
+<ol type="1">
+<li>패키지와 tidyverse</li>
+<li>데이터 시각화하기</li>
+<li>데이터 변형하기</li>
+<li>데이터 정리하기</li>
+<li>데이터 불러오기</li>
+</ol></section><section id="패키지와-tidyverse-패키지" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="패키지와-tidyverse-패키지">
+<span class="header-section-number">1</span> 패키지와 tidyverse 패키지</h2>
+<section id="패키지" class="level3" data-number="1.1"><h3 data-number="1.1" class="anchored" data-anchor-id="패키지">
+<span class="header-section-number">1.1</span> 패키지</h3>
+<p>패키지는 유사한 과업을 수행하는데 도움을 주는 함수들의 묶음 정도로 정의할 수 있다. 현재 <a href="https://cran.rstudio.com/">CRAN(The Comprehensive R Archive Network)</a>에는 20,000개 정도의 패키지가 등록되어 있다고 한다. CRAN에 패키지를 등록하는게 쉽지 않은 일이기 때문에 GitHub과 같은 곳을 통해 접근 가능한 패키지까지 합치면 도채체 몇 개의 R 패키지가 세상에 존재하는지 알기 어렵다.</p>
+<p>패키지를 사용하기 우선 패키지가 사용자의 디바이스에 물리적으로 인스톨되어 있어야 하고, R 세션에서 패키지를 불러와야 한다. 패키지를 인스톨하는 방법은 두 가지 이다. 스크립트 내에서 패키지를 반복해서 인스톨하는 것은 합리적이지 않기 때문에 전자의 관행을 추천한다.</p>
+<ul>
+<li><p>Output 창의 Packages 탭 선택: Install 아이콘 클릭하고 패키지 이름 입력</p></li>
+<li><p>스크립트 내에서 인스톨하기: <code>install.packages("패키지명")</code></p></li>
+</ul>
+<p>쌍따옴표 속에 패키지 이름을 타이핑해야 한다. 한번 인스톨이 되면 업데이트하지 않는 한 새롭게 패키지를 인스톨할 필요가 없다. 인스톨된 패키지를 사용하려면 스크립트 내에서 다음과 같이 타이핑하고 실행한다.</p>
+<ul>
+<li><code><a href="https://rdrr.io/r/base/library.html">library(패키지명)</a></code></li>
+</ul>
+<p>괄호 속에 패키지명을 기입해야 한다.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>함수에서는 반드시 패키지명을 쌍따옴표로 싸야하지만, <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>함수에서는 그렇지 않다. 불러온 패키지는 R 세션이 유지되는 동안 내내 사용할 수 있지만, R 세션을 끝내고 다시 시작하면 다시 <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>함수를 이용해 다시 불러와야 한다. 그래서 R 스크립트 파일의 시작 부분에는 패키지를 불러오는 코드를 위치시키고, 다시 스크립트 파일을 열 때마다 그 부분을 재실행하는 것이 좋은 습관이다.</p>
+</div>
+</div>
+</section><section id="tidyverse-패키지" class="level3" data-number="1.2"><h3 data-number="1.2" class="anchored" data-anchor-id="tidyverse-패키지">
+<span class="header-section-number">1.2</span> <code>tidyverse</code> 패키지</h3>
+<p>데이터사이언스 과정의 각 단계는 특징적인 과업으로 구성되어 있고, 거기에 맞춰 특징적인 함수들을 장착한 패키지들이 개발되어 왔다. 그런데 최근 RStudio는 데이터사이언스와 밀접히 관련된 패키지들을 모아 일종의 엄브렐러 패키지인 <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>를 만들어 제공하고 있다. <a href="https://www.tidyverse.org/"><code>tidyverse</code></a> 패키지는 패키지의 패키지인데, 핵심적인 구성 패키지에 다음과 같은 것들이 있다.</p>
+<ul>
+<li><p><a href="https://ggplot2.tidyverse.org/"><code>ggplot2</code></a>: 시각화하기</p></li>
+<li><p><a href="https://dplyr.tidyverse.org/"><code>dplyr</code></a>: 변형하기</p></li>
+<li><p><a href="https://tidyr.tidyverse.org/"><code>tidyr</code></a>:정리하기</p></li>
+<li><p><a href="https://readr.tidyverse.org/"><code>readr</code></a>: 불러오기</p></li>
+<li><p><a href="https://tibble.tidyverse.org/"><code>tibble</code></a>: 데이터 프레임 관련</p></li>
+<li><p><a href="https://stringr.tidyverse.org/"><code>stringr</code></a>: 문자열 처리 관련</p></li>
+<li><p><a href="https://forcats.tidyverse.org/"><code>forcats</code></a>: 범주 변수(팩터) 처리 관련</p></li>
+<li><p><a href="https://lubridate.tidyverse.org/"><code>lubracate</code></a>: 시간 변수 처리 관련</p></li>
+<li><p><a href="https://purrr.tidyverse.org/"><code>purrr</code></a>: 함수형 프로그래밍(functional programming) 관련</p></li>
+</ul>
+<p><a href="https://www.tidyverse.org/"><code>tidyverse</code></a> 패키지를 사용하는 것의 장점은 이 패키지만 불러오면 구성 패키지까지 한꺼번에 사용할 수 있게 된다는 점이다. 스크립트 내에서 다음과 같은 코드를 실행한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="시각화하기" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="시각화하기">
+<span class="header-section-number">2</span> 시각화하기</h2>
+<section id="데이터-살펴보기" class="level3" data-number="2.1"><h3 data-number="2.1" class="anchored" data-anchor-id="데이터-살펴보기">
+<span class="header-section-number">2.1</span> 데이터 살펴보기</h3>
+<p>이 실습을 위해 남극 파머군도(Palmer Archipelago)에 서식하는 펭귄 성체의 신체 계측 데이터를 사용한다. 이 데이터는 <a href="https://allisonhorst.github.io/palmerpenguins/"><code>palmerpenguins</code></a>라는 패키지에 포함되어 있으므로 해당 패키지를 불러온다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allisonhorst.github.io/palmerpenguins/">palmerpenguins</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이제 이 페키지에 포함되어 있는 <code>penguins</code>라는 이름의 데이터를 불러온다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">penguins</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+ 1 Adelie  Torgersen           39.1          18.7               181        3750
+ 2 Adelie  Torgersen           39.5          17.4               186        3800
+ 3 Adelie  Torgersen           40.3          18                 195        3250
+ 4 Adelie  Torgersen           NA            NA                  NA          NA
+ 5 Adelie  Torgersen           36.7          19.3               193        3450
+ 6 Adelie  Torgersen           39.3          20.6               190        3650
+ 7 Adelie  Torgersen           38.9          17.8               181        3625
+ 8 Adelie  Torgersen           39.2          19.6               195        4675
+ 9 Adelie  Torgersen           34.1          18.1               193        3475
+10 Adelie  Torgersen           42            20.2               190        4250
+# ℹ 334 more rows
+# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>데이터를 자세히 살펴보면 몇 가지를 알 수 있다.</p>
+<ul>
+<li><p>티블(<code>tibble</code>)이라는 형식의 데이터 프레임이다. 티블은 <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>의 공식 데이터 프레임 포맷이다.</p></li>
+<li><p>관측개체는 344개, 변수는 8개이다.</p></li>
+<li><p><code>species</code>, <code>island</code>, <code>sex</code> 변수의 유형은 팩트형(<code>fctr</code>)이고, <code>bill_length_mm</code>, <code>bill_depth_mm</code>은 실수형(<code>dbl</code>)이고, 나머지는 정수형(<code>int</code>)이다.</p></li>
+</ul>
+<p>변수가 많아지면 전체 데이터를 조망하기 어렵기 때문에, 최초의 <a href="https://www.tidyverse.org/"><code>tidyverse</code></a> 함수인 <code><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse()</a></code>를 사용하여 데이터의 행과 열을 바꾸어 보자.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">penguins</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 344
+Columns: 8
+$ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adel…
+$ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torgersen, Torgerse…
+$ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2, 34.1, …
+$ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6, 18.1, …
+$ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195, 193, 190, 186…
+$ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 3625, 4675, 3475, …
+$ sex               &lt;fct&gt; male, female, female, NA, female, male, female, male…
+$ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007…</code></pre>
+</div>
+</div>
+</section><section id="그래프-만들기" class="level3" data-number="2.2"><h3 data-number="2.2" class="anchored" data-anchor-id="그래프-만들기">
+<span class="header-section-number">2.2</span> 그래프 만들기</h3>
+<p>이 <code>penguins</code> 데이터와 <code>ggplot2()</code> 패키지를 이용하여 “펭귄의 날개 길이와 몸무게의 관계”를 표현하는 그래프를 작성해 보자. <code>ggplot2()</code>의 문법에 대한 사항은 따로 공부할 기회가 있으므로 여기서는 제작 과정을 한 번 따라가 본다.</p>
+<section id="플롯-객체의-지정" class="level4" data-number="2.2.1"><h4 data-number="2.2.1" class="anchored" data-anchor-id="플롯-객체의-지정">
+<span class="header-section-number">2.2.1</span> 플롯 객체의 지정</h4>
+<p><code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot()</a></code>이라는 함수를 통해 플롯 제작을 개시하는 단계이며, 어떤 데이터를 사용할지를 지정한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="exec_02_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="플롯의-심미성-지정" class="level4" data-number="2.2.2"><h4 data-number="2.2.2" class="anchored" data-anchor-id="플롯의-심미성-지정">
+<span class="header-section-number">2.2.2</span> 플롯의 심미성 지정</h4>
+<p>데이터가 어떤 시각적 속성으로 표현될 것인가를 지정한다. 여기서는 간단히 어떤 변수들이 x-축과 y-축에 나타나는지만 지정한다. <code>mapping = aes()</code> 아규먼트가 핵심이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">penguins</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">flipper_length_mm</span>, y <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="exec_02_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="플롯의-기하-속성-지정" class="level4" data-number="2.2.3"><h4 data-number="2.2.3" class="anchored" data-anchor-id="플롯의-기하-속성-지정">
+<span class="header-section-number">2.2.3</span> 플롯의 기하 속성 지정</h4>
+<p>데이터가 어떤 기하학적 속성으로 표현될 것인가를 지정한다. <code>geom</code> 아규먼트가 핵심인데, <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point()</a></code>는 데이터를 포인트라고 하는 기하학적 속성으로 표현한다는 것을 지정한 것으로 결국 산포도(scatterplot)을 산출하게 된다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">penguins</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">flipper_length_mm</span>, y <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="exec_02_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="심미성의-첨가" class="level4" data-number="2.2.4"><h4 data-number="2.2.4" class="anchored" data-anchor-id="심미성의-첨가">
+<span class="header-section-number">2.2.4</span> 심미성의 첨가</h4>
+<p>이러한 관련성이 펭귄의 종족에 따라 다르게 나타나는지를 탐색하기 위해 <code>color</code> 라는 심미성을 <code>species</code>라는 변수에 적용한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">penguins</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">flipper_length_mm</span>, y <span class="op">=</span> <span class="va">body_mass_g</span>, color <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="exec_02_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="기하-레이어의-첨가" class="level4" data-number="2.2.5"><h4 data-number="2.2.5" class="anchored" data-anchor-id="기하-레이어의-첨가">
+<span class="header-section-number">2.2.5</span> 기하 레이어의 첨가</h4>
+<p>두 변수의 관련성을 보여주는 선형 기하를 첨가한다. 여기서는 <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth()</a></code>를 이용하여 OLS 회귀선을 첨가한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">penguins</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">flipper_length_mm</span>, y <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="exec_02_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="라벨링-등-마무리-작업" class="level4" data-number="2.2.6"><h4 data-number="2.2.6" class="anchored" data-anchor-id="라벨링-등-마무리-작업">
+<span class="header-section-number">2.2.6</span> 라벨링 등 마무리 작업</h4>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">penguins</span>,</span>
+<span>  mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">flipper_length_mm</span>, y <span class="op">=</span> <span class="va">body_mass_g</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Body mass and flipper length"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Dimensions for Adelie, Chinstrap, and Gentoo Penguins"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Flipper length (mm)"</span>, y <span class="op">=</span> <span class="st">"Body mass (g)"</span>,</span>
+<span>    color <span class="op">=</span> <span class="st">"Species"</span>, shape <span class="op">=</span> <span class="st">"Species"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="exec_02_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section></section><section id="변형하기" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="변형하기">
+<span class="header-section-number">3</span> 변형하기</h2>
+<p>변형하기와 관련된 함수들은 대부분 <a href="https://dplyr.tidyverse.org/"><code>dplyr</code></a> 패키지에 포함되어 있다.</p>
+<section id="데이터-살펴보기-1" class="level3" data-number="3.1"><h3 data-number="3.1" class="anchored" data-anchor-id="데이터-살펴보기-1">
+<span class="header-section-number">3.1</span> 데이터 살펴보기</h3>
+<p>이 실습을 위해 미국 교통통계국(U.S. Bureau of Transportation)이 제공하는 데이터를 사용하는데, 이것은 2013년 한 해 동안 미국 뉴욕시를 출발한 336,776대의 항공기에 대한 정보를 담고 있다. 이 데이터는 <a href="https://github.com/tidyverse/nycflights13"><code>nycflights13</code></a> 이라는 패키지에 포함되어 있으므로 해당 패키지를 불러온다. 그리고 나서 패키지에 포함되어 있는 <code>flights</code>라는 이름의 데이터를 불러온다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">flights</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 336,776
+Columns: 19
+$ year           &lt;int&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2…
+$ month          &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ day            &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ dep_time       &lt;int&gt; 517, 533, 542, 544, 554, 554, 555, 557, 557, 558, 558, …
+$ sched_dep_time &lt;int&gt; 515, 529, 540, 545, 600, 558, 600, 600, 600, 600, 600, …
+$ dep_delay      &lt;dbl&gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -1…
+$ arr_time       &lt;int&gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849,…
+$ sched_arr_time &lt;int&gt; 819, 830, 850, 1022, 837, 728, 854, 723, 846, 745, 851,…
+$ arr_delay      &lt;dbl&gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -1…
+$ carrier        &lt;chr&gt; "UA", "UA", "AA", "B6", "DL", "UA", "B6", "EV", "B6", "…
+$ flight         &lt;int&gt; 1545, 1714, 1141, 725, 461, 1696, 507, 5708, 79, 301, 4…
+$ tailnum        &lt;chr&gt; "N14228", "N24211", "N619AA", "N804JB", "N668DN", "N394…
+$ origin         &lt;chr&gt; "EWR", "LGA", "JFK", "JFK", "LGA", "EWR", "EWR", "LGA",…
+$ dest           &lt;chr&gt; "IAH", "IAH", "MIA", "BQN", "ATL", "ORD", "FLL", "IAD",…
+$ air_time       &lt;dbl&gt; 227, 227, 160, 183, 116, 150, 158, 53, 140, 138, 149, 1…
+$ distance       &lt;dbl&gt; 1400, 1416, 1089, 1576, 762, 719, 1065, 229, 944, 733, …
+$ hour           &lt;dbl&gt; 5, 5, 5, 5, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6…
+$ minute         &lt;dbl&gt; 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 0…
+$ time_hour      &lt;dttm&gt; 2013-01-01 05:00:00, 2013-01-01 05:00:00, 2013-01-01 0…</code></pre>
+</div>
+</div>
+</section><section id="주요-함수" class="level3" data-number="3.2"><h3 data-number="3.2" class="anchored" data-anchor-id="주요-함수">
+<span class="header-section-number">3.2</span> 주요 함수</h3>
+<p>여기서는 가장 널리 사용되는 6개 함수에 대해서만 개략적으로 다룬다. 그 6개 함수는 <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code>, <code>summerize()</code>이다. 조교의 도움을 받아 각 함수가 무슨 일을 한 것인지 이해한다.</p>
+<section id="select-함수" class="level4" data-number="3.2.1"><h4 data-number="3.2.1" class="anchored" data-anchor-id="select-함수">
+<span class="header-section-number">3.2.1</span> <code>select()</code> 함수</h4>
+<p>열(변수) 중 일부를 솎아낸다. 즉, 변수의 갯수를 줄인다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">year</span>, <span class="va">month</span>, <span class="va">day</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 3
+    year month   day
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;
+ 1  2013     1     1
+ 2  2013     1     1
+ 3  2013     1     1
+ 4  2013     1     1
+ 5  2013     1     1
+ 6  2013     1     1
+ 7  2013     1     1
+ 8  2013     1     1
+ 9  2013     1     1
+10  2013     1     1
+# ℹ 336,766 more rows</code></pre>
+</div>
+</div>
+</section><section id="filter-함수" class="level4" data-number="3.2.2"><h4 data-number="3.2.2" class="anchored" data-anchor-id="filter-함수">
+<span class="header-section-number">3.2.2</span> <code>filter()</code> 함수</h4>
+<p>특정 열(변수)에 의거해 조건을 만족하는 행을 솎아낸다. 즉 관측개체의 갯수를 줄인다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">month</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">day</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 842 × 19
+    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+ 1  2013     1     1      517            515         2      830            819
+ 2  2013     1     1      533            529         4      850            830
+ 3  2013     1     1      542            540         2      923            850
+ 4  2013     1     1      544            545        -1     1004           1022
+ 5  2013     1     1      554            600        -6      812            837
+ 6  2013     1     1      554            558        -4      740            728
+ 7  2013     1     1      555            600        -5      913            854
+ 8  2013     1     1      557            600        -3      709            723
+ 9  2013     1     1      557            600        -3      838            846
+10  2013     1     1      558            600        -2      753            745
+# ℹ 832 more rows
+# ℹ 11 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+#   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+#   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</div>
+</div>
+</section><section id="arrange-함수" class="level4" data-number="3.2.3"><h4 data-number="3.2.3" class="anchored" data-anchor-id="arrange-함수">
+<span class="header-section-number">3.2.3</span> <code>arrange()</code> 함수</h4>
+<p>특정 열(변수)에 의거해 행의 순서를 바꾼다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">year</span>, <span class="va">month</span>, <span class="va">day</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 19
+    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+ 1  2013     1     1      517            515         2      830            819
+ 2  2013     1     1      533            529         4      850            830
+ 3  2013     1     1      542            540         2      923            850
+ 4  2013     1     1      544            545        -1     1004           1022
+ 5  2013     1     1      554            600        -6      812            837
+ 6  2013     1     1      554            558        -4      740            728
+ 7  2013     1     1      555            600        -5      913            854
+ 8  2013     1     1      557            600        -3      709            723
+ 9  2013     1     1      557            600        -3      838            846
+10  2013     1     1      558            600        -2      753            745
+# ℹ 336,766 more rows
+# ℹ 11 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+#   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+#   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</div>
+</div>
+</section><section id="mutate-함수" class="level4" data-number="3.2.4"><h4 data-number="3.2.4" class="anchored" data-anchor-id="mutate-함수">
+<span class="header-section-number">3.2.4</span> <code>mutate()</code> 함수</h4>
+<p>기존의 열(변수)을 변형하여 새로운 열(변수)을 생성한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">flights</span>,</span>
+<span>    gain <span class="op">=</span> <span class="va">dep_delay</span> <span class="op">-</span> <span class="va">arr_delay</span>,</span>
+<span>    speed <span class="op">=</span> <span class="va">distance</span> <span class="op">/</span> <span class="va">air_time</span> <span class="op">*</span> <span class="fl">60</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 21
+    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+ 1  2013     1     1      517            515         2      830            819
+ 2  2013     1     1      533            529         4      850            830
+ 3  2013     1     1      542            540         2      923            850
+ 4  2013     1     1      544            545        -1     1004           1022
+ 5  2013     1     1      554            600        -6      812            837
+ 6  2013     1     1      554            558        -4      740            728
+ 7  2013     1     1      555            600        -5      913            854
+ 8  2013     1     1      557            600        -3      709            723
+ 9  2013     1     1      557            600        -3      838            846
+10  2013     1     1      558            600        -2      753            745
+# ℹ 336,766 more rows
+# ℹ 13 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+#   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+#   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;, gain &lt;dbl&gt;, speed &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section><section id="group_by-함수" class="level4" data-number="3.2.5"><h4 data-number="3.2.5" class="anchored" data-anchor-id="group_by-함수">
+<span class="header-section-number">3.2.5</span> <code>group_by()</code> 함수</h4>
+<p>열(변수)(범주형 변수, categorical variables)에 의거해 전체 행을 그룹으로 분할한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">month</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 336,776 × 19
+# Groups:   month [12]
+    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;     &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;
+ 1  2013     1     1      517            515         2      830            819
+ 2  2013     1     1      533            529         4      850            830
+ 3  2013     1     1      542            540         2      923            850
+ 4  2013     1     1      544            545        -1     1004           1022
+ 5  2013     1     1      554            600        -6      812            837
+ 6  2013     1     1      554            558        -4      740            728
+ 7  2013     1     1      555            600        -5      913            854
+ 8  2013     1     1      557            600        -3      709            723
+ 9  2013     1     1      557            600        -3      838            846
+10  2013     1     1      558            600        -2      753            745
+# ℹ 336,766 more rows
+# ℹ 11 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
+#   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
+#   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
+</div>
+</div>
+</section><section id="summerize-함수" class="level4" data-number="3.2.6"><h4 data-number="3.2.6" class="anchored" data-anchor-id="summerize-함수">
+<span class="header-section-number">3.2.6</span> <code>summerize()</code> 함수</h4>
+<p>열(변수)의 통계량을 산출하여 새로운 열(변수)에 저장한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="va">flights</span>, delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">dep_delay</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  delay
+  &lt;dbl&gt;
+1  12.6</code></pre>
+</div>
+</div>
+<p>위의 <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 함수와 결합하면, 그룹별로 열(변수)의 통계량을 산출하여 새로운 열(변수)에 저장할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">by_day</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">year</span>, <span class="va">month</span>, <span class="va">day</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="va">by_day</span>, delay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">dep_delay</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 365 × 4
+# Groups:   year, month [12]
+    year month   day delay
+   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
+ 1  2013     1     1 11.5 
+ 2  2013     1     2 13.9 
+ 3  2013     1     3 11.0 
+ 4  2013     1     4  8.95
+ 5  2013     1     5  5.73
+ 6  2013     1     6  7.15
+ 7  2013     1     7  5.42
+ 8  2013     1     8  2.55
+ 9  2013     1     9  2.28
+10  2013     1    10  2.84
+# ℹ 355 more rows</code></pre>
+</div>
+</div>
+</section></section></section><section id="정리하기" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="정리하기">
+<span class="header-section-number">4</span> 정리하기</h2>
+<p>정리하기와 관련된 함수들은 대부분 <a href="https://tidyr.tidyverse.org/"><code>tidyr</code></a> 패키지에 포함되어 있다. 많은 함수가 있지만 가장 중요한 두 개의 함수에만 집중한다.</p>
+<section id="데이터-살펴보기-2" class="level3" data-number="4.1"><h3 data-number="4.1" class="anchored" data-anchor-id="데이터-살펴보기-2">
+<span class="header-section-number">4.1</span> 데이터 살펴보기</h3>
+<p>이 실습에서는 <code>tidyverse</code>에 포함되어 있는 매우 단순한 데이터를 사용한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">table4a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  country     `1999` `2000`
+  &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+1 Afghanistan    745   2666
+2 Brazil       37737  80488
+3 China       212258 213766</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">table2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 4
+   country      year type            count
+   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;
+ 1 Afghanistan  1999 cases             745
+ 2 Afghanistan  1999 population   19987071
+ 3 Afghanistan  2000 cases            2666
+ 4 Afghanistan  2000 population   20595360
+ 5 Brazil       1999 cases           37737
+ 6 Brazil       1999 population  172006362
+ 7 Brazil       2000 cases           80488
+ 8 Brazil       2000 population  174504898
+ 9 China        1999 cases          212258
+10 China        1999 population 1272915272
+11 China        2000 cases          213766
+12 China        2000 population 1280428583</code></pre>
+</div>
+</div>
+</section><section id="주요-함수-1" class="level3" data-number="4.2"><h3 data-number="4.2" class="anchored" data-anchor-id="주요-함수-1">
+<span class="header-section-number">4.2</span> 주요 함수</h3>
+<section id="pivot_longer-함수" class="level4" data-number="4.2.1"><h4 data-number="4.2.1" class="anchored" data-anchor-id="pivot_longer-함수">
+<span class="header-section-number">4.2.1</span> <code>pivot_longer()</code> 함수</h4>
+<p><code>table4a</code>에서 1999과 2000은 변수명일 수 없다. <code>year</code>라는 변수의 속성이어야 한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span></span>
+<span>  <span class="va">table4a</span>, </span>
+<span>  cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">`1999`</span>, <span class="va">`2000`</span><span class="op">)</span>,</span>
+<span>  names_to <span class="op">=</span> <span class="st">"year"</span>,</span>
+<span>  values_to <span class="op">=</span> <span class="st">"cases"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  country     year   cases
+  &lt;chr&gt;       &lt;chr&gt;  &lt;dbl&gt;
+1 Afghanistan 1999     745
+2 Afghanistan 2000    2666
+3 Brazil      1999   37737
+4 Brazil      2000   80488
+5 China       1999  212258
+6 China       2000  213766</code></pre>
+</div>
+</div>
+</section><section id="pivot_wider-함수" class="level4" data-number="4.2.2"><h4 data-number="4.2.2" class="anchored" data-anchor-id="pivot_wider-함수">
+<span class="header-section-number">4.2.2</span> <code>pivot_wider()</code> 함수</h4>
+<p><code>table2</code>에서 <code>type</code> 변수는 두 개의 변수명을 포함하고 있다. 즉, <code>cases</code>와 <code>population</code>은 속성값이라기 보다는 변수명이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span></span>
+<span>  <span class="va">table2</span>, </span>
+<span>  names_from <span class="op">=</span> <span class="st">"type"</span>,</span>
+<span>  values_from <span class="op">=</span> <span class="st">"count"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  country      year  cases population
+  &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+1 Afghanistan  1999    745   19987071
+2 Afghanistan  2000   2666   20595360
+3 Brazil       1999  37737  172006362
+4 Brazil       2000  80488  174504898
+5 China        1999 212258 1272915272
+6 China        2000 213766 1280428583</code></pre>
+</div>
+</div>
+</section></section></section><section id="불러오기" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="불러오기">
+<span class="header-section-number">5</span> 불러오기</h2>
+<p>불러오기와 관련된 함수들은 대부분 <a href="https://readr.tidyverse.org/"><code>readr</code></a> 패키지에 포함되어 있다. 여러 유형의 파일을 불러오기 위해 여러 함수가 존재하지만, 콤마분리값(comma-separated values, CSV) 형식의 데이터를 불러오는 함수(<code><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv()</a></code>)만 실습한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">students</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"https://pos.it/r4ds-students-csv"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">students</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6
+Columns: 5
+$ `Student ID`   &lt;dbl&gt; 1, 2, 3, 4, 5, 6
+$ `Full Name`    &lt;chr&gt; "Sunil Huffmann", "Barclay Lynn", "Jayendra Lyne", "Leo…
+$ favourite.food &lt;chr&gt; "Strawberry yoghurt", "French fries", "N/A", "Anchovies…
+$ mealPlan       &lt;chr&gt; "Lunch only", "Lunch only", "Breakfast and lunch", "Lun…
+$ AGE            &lt;chr&gt; "4", "5", "7", NA, "five", "6"</code></pre>
+</div>
+</div>
+</section><section id="파이프-연산자pipe-operator" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="파이프-연산자pipe-operator">
+<span class="header-section-number">6</span> 파이프 연산자(pipe operator)</h2>
+<p>우리는 이전 실습에서 할당 연산자(<code>&lt;-</code>)에 대해 배웠다. 오늘 살펴본 다양한 변형의 결과를 다른 데이터 프레임에 담고 싶으면 다음과 같이 할당 연산자를 사용할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights_day1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">month</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">day</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">flights_day1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 842
+Columns: 19
+$ year           &lt;int&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2…
+$ month          &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ day            &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ dep_time       &lt;int&gt; 517, 533, 542, 544, 554, 554, 555, 557, 557, 558, 558, …
+$ sched_dep_time &lt;int&gt; 515, 529, 540, 545, 600, 558, 600, 600, 600, 600, 600, …
+$ dep_delay      &lt;dbl&gt; 2, 4, 2, -1, -6, -4, -5, -3, -3, -2, -2, -2, -2, -2, -1…
+$ arr_time       &lt;int&gt; 830, 850, 923, 1004, 812, 740, 913, 709, 838, 753, 849,…
+$ sched_arr_time &lt;int&gt; 819, 830, 850, 1022, 837, 728, 854, 723, 846, 745, 851,…
+$ arr_delay      &lt;dbl&gt; 11, 20, 33, -18, -25, 12, 19, -14, -8, 8, -2, -3, 7, -1…
+$ carrier        &lt;chr&gt; "UA", "UA", "AA", "B6", "DL", "UA", "B6", "EV", "B6", "…
+$ flight         &lt;int&gt; 1545, 1714, 1141, 725, 461, 1696, 507, 5708, 79, 301, 4…
+$ tailnum        &lt;chr&gt; "N14228", "N24211", "N619AA", "N804JB", "N668DN", "N394…
+$ origin         &lt;chr&gt; "EWR", "LGA", "JFK", "JFK", "LGA", "EWR", "EWR", "LGA",…
+$ dest           &lt;chr&gt; "IAH", "IAH", "MIA", "BQN", "ATL", "ORD", "FLL", "IAD",…
+$ air_time       &lt;dbl&gt; 227, 227, 160, 183, 116, 150, 158, 53, 140, 138, 149, 1…
+$ distance       &lt;dbl&gt; 1400, 1416, 1089, 1576, 762, 719, 1065, 229, 944, 733, …
+$ hour           &lt;dbl&gt; 5, 5, 5, 5, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6…
+$ minute         &lt;dbl&gt; 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 0…
+$ time_hour      &lt;dttm&gt; 2013-01-01 05:00:00, 2013-01-01 05:00:00, 2013-01-01 0…</code></pre>
+</div>
+</div>
+<p>앞으로 할당 연산자보다 훨씬 더 빈번하게 사용하게 될 연산자를 소개하려고 한다. 그것은 파이프 연산자(pipe operator)라는 것으로, <code>%&gt;%</code> 혹은 <code>|&gt;</code>로 표시하는 것이다. 원래 이 연산자의 원리는 <a href="https://magrittr.tidyverse.org/"><code>magrittr</code></a> 패키지에서 처음 소개되었는데, 차츰 R 커뮤니티에 파급되더니 급기야는 대세로 자리잡았다. 그래서 특정 패키지를 깔지 않아도 파이프 연산자를 사용할 수 있게 하기 위해 Base R에 도입되었고(이것을 원파이프 연산자(native pipe operator)라고 부른다), 부호로 <code>%&gt;%</code> 대신 <code>|&gt;</code>를 사용한다. 둘 사이에 차이는 거의 없지만, 후자가 점점 표준이 되고 있기 때문에 본 수업에서는 그것을 사용한다. 다음의 두 가지에 유의한다.</p>
+<ul>
+<li>현재 RStudio의 디폴트는 <code>%&gt;%</code>로 설정되어 있다. 이것을 Tools &gt; Global Options &gt; Code에 가서 ’Use native pipe operator, |&gt; (requires R 4.1+)’를 선택해 주어야 한다. 아래의 <a href="#fig-pipe-operator" class="quarto-xref">Figure&nbsp;2</a> 를 참고하라.</li>
+</ul>
+<div id="fig-pipe-operator" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pipe-operator-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://r4ds.hadley.nz/screenshots/rstudio-pipe-options.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pipe-operator-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: 파이프 연산자(https://r4ds.hadley.nz/data-transform)
+</figcaption></figure>
+</div>
+<ul>
+<li>단축키는 Crtl + Shift + M이다. 다른 건 몰라도 이 단축키만은 반드시 기억해야 한다.</li>
+</ul>
+<p>다음의 두 코드를 비교해 보라. 먼저 파이프 연산자를 사용하지 않은 경우이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">flights</span>, <span class="va">dest</span> <span class="op">==</span> <span class="st">"IAH"</span><span class="op">)</span></span>
+<span><span class="va">flights2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">flights1</span>, speed <span class="op">=</span> <span class="va">distance</span> <span class="op">/</span> <span class="va">air_time</span> <span class="op">*</span> <span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">flights3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">flights2</span>, <span class="va">year</span><span class="op">:</span><span class="va">day</span>, <span class="va">dep_time</span>, <span class="va">carrier</span>, <span class="va">flight</span>, <span class="va">speed</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">flights3</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">speed</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7,198 × 7
+    year month   day dep_time carrier flight speed
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt; &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt;
+ 1  2013     7     9      707 UA         226  522.
+ 2  2013     8    27     1850 UA        1128  521.
+ 3  2013     8    28      902 UA        1711  519.
+ 4  2013     8    28     2122 UA        1022  519.
+ 5  2013     6    11     1628 UA        1178  515.
+ 6  2013     8    27     1017 UA         333  515.
+ 7  2013     8    27     1205 UA        1421  515.
+ 8  2013     8    27     1758 UA         302  515.
+ 9  2013     9    27      521 UA         252  515.
+10  2013     8    28      625 UA         559  515.
+# ℹ 7,188 more rows</code></pre>
+</div>
+</div>
+<p>다음은 파이프 연산자를 사용한 경우이다. 동일한 결과를 가져다 주지만 훨신 더 간결하고 직관적이고 이해하기 쉽다. 파이프 연산자의 사용 원리는 뒤에서 자세히 배운다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">flights</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">dest</span> <span class="op">==</span> <span class="st">"IAH"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>speed <span class="op">=</span> <span class="va">distance</span> <span class="op">/</span> <span class="va">air_time</span> <span class="op">*</span> <span class="fl">60</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">year</span><span class="op">:</span><span class="va">day</span>, <span class="va">dep_time</span>, <span class="va">carrier</span>, <span class="va">flight</span>, <span class="va">speed</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">speed</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7,198 × 7
+    year month   day dep_time carrier flight speed
+   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt; &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt;
+ 1  2013     7     9      707 UA         226  522.
+ 2  2013     8    27     1850 UA        1128  521.
+ 3  2013     8    28      902 UA        1711  519.
+ 4  2013     8    28     2122 UA        1022  519.
+ 5  2013     6    11     1628 UA        1178  515.
+ 6  2013     8    27     1017 UA         333  515.
+ 7  2013     8    27     1205 UA        1421  515.
+ 8  2013     8    27     1758 UA         302  515.
+ 9  2013     9    27      521 UA         252  515.
+10  2013     8    28      625 UA         559  515.
+# ℹ 7,188 more rows</code></pre>
+</div>
+</div>
+</section><section id="section" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="section">
+<span class="header-section-number">7</span> </h2>
+
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./exec_01.html" class="pagination-link  aria-label=" r="" rstudio="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">R과 RStudio 소개</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exec_03.html" class="pagination-link" aria-label="데이터 불러오기와 정리하기">
+        <span class="nav-page-text">데이터 불러오기와 정리하기</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2024, Sang-Il Lee</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sangillee66/data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://sangillee.snu.ac.kr/">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:si_lee@snu.ac.kr">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sangillee66">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

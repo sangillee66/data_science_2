@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="이상일(서울대학교 지리교육과)">
+<title>Data Science - 데이터 변형하기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./exec_05.html" rel="next">
+<link href="./exec_03.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><link rel="stylesheet" href="styles.css">
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title">데이터 변형하기</h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Data Science</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">웹사이트 소개</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">데이터사이언스 강의</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">강의노트</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">R과 데이터사이언스</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R과 RStudio 소개</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R과 데이터사이언스: 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 불러오기와 정리하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_04.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 시각화하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 탐색하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터 수집하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터로 소통하기: Quarto 입문</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exec_09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">데이터로 소통하기: 대시보드 만들기</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">R 프레젠테이션</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R &amp; RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R &amp; Data Science</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Import and Tidying</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Transformation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Visualization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Exploration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R_lec_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Collection</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">R 실습</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab01: R과 RStudio</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab02: R과 데이터사이언스</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab03: 데이터 불러오기와 정리하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab04: 데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab05: 데이터 시각화하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab06: 데이터 탐색하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lab_07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab07: 데이터 수집하기</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94" id="toc-실습-개요" class="nav-link active" data-scroll-target="#%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94">실습 개요</a></li>
+  <li>
+<a href="#%ED%96%89-%ED%95%A8%EC%88%98" id="toc-행-함수" class="nav-link" data-scroll-target="#%ED%96%89-%ED%95%A8%EC%88%98"><span class="header-section-number">1</span> 행 함수</a>
+  <ul class="collapse">
+<li><a href="#filter-%ED%95%A8%EC%88%98" id="toc-filter-함수" class="nav-link" data-scroll-target="#filter-%ED%95%A8%EC%88%98"><span class="header-section-number">1.1</span> <code>filter()</code> 함수</a></li>
+  <li><a href="#slice-%ED%95%A8%EC%88%98" id="toc-slice-함수" class="nav-link" data-scroll-target="#slice-%ED%95%A8%EC%88%98"><span class="header-section-number">1.2</span> <code>slice()</code> 함수</a></li>
+  <li><a href="#arrange-%ED%95%A8%EC%88%98" id="toc-arrange-함수" class="nav-link" data-scroll-target="#arrange-%ED%95%A8%EC%88%98"><span class="header-section-number">1.3</span> <code>arrange()</code> 함수</a></li>
+  <li><a href="#distinct-%ED%95%A8%EC%88%98" id="toc-distinct-함수" class="nav-link" data-scroll-target="#distinct-%ED%95%A8%EC%88%98"><span class="header-section-number">1.4</span> <code>distinct()</code> 함수</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EC%97%B4-%ED%95%A8%EC%88%98" id="toc-열-함수" class="nav-link" data-scroll-target="#%EC%97%B4-%ED%95%A8%EC%88%98"><span class="header-section-number">2</span> 열 함수</a>
+  <ul class="collapse">
+<li><a href="#select-%ED%95%A8%EC%88%98" id="toc-select-함수" class="nav-link" data-scroll-target="#select-%ED%95%A8%EC%88%98"><span class="header-section-number">2.1</span> <code>select()</code> 함수</a></li>
+  <li><a href="#mutate-%ED%95%A8%EC%88%98" id="toc-mutate-함수" class="nav-link" data-scroll-target="#mutate-%ED%95%A8%EC%88%98"><span class="header-section-number">2.2</span> <code>mutate()</code> 함수</a></li>
+  <li><a href="#rename-%ED%95%A8%EC%88%98" id="toc-rename-함수" class="nav-link" data-scroll-target="#rename-%ED%95%A8%EC%88%98"><span class="header-section-number">2.3</span> <code>rename()</code> 함수</a></li>
+  <li><a href="#relocate-%ED%95%A8%EC%88%98" id="toc-relocate-함수" class="nav-link" data-scroll-target="#relocate-%ED%95%A8%EC%88%98"><span class="header-section-number">2.4</span> <code>relocate()</code> 함수</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%EA%B7%B8%EB%A3%B9-%ED%95%A8%EC%88%98" id="toc-그룹-함수" class="nav-link" data-scroll-target="#%EA%B7%B8%EB%A3%B9-%ED%95%A8%EC%88%98"><span class="header-section-number">3</span> 그룹 함수</a>
+  <ul class="collapse">
+<li><a href="#group_by-%ED%95%A8%EC%88%98" id="toc-group_by-함수" class="nav-link" data-scroll-target="#group_by-%ED%95%A8%EC%88%98"><span class="header-section-number">3.1</span> <code>group_by()</code> 함수</a></li>
+  <li><a href="#summarize-%ED%95%A8%EC%88%98" id="toc-summarize-함수" class="nav-link" data-scroll-target="#summarize-%ED%95%A8%EC%88%98"><span class="header-section-number">3.2</span> <code>summarize()</code> 함수</a></li>
+  <li><a href="#count-%ED%95%A8%EC%88%98" id="toc-count-함수" class="nav-link" data-scroll-target="#count-%ED%95%A8%EC%88%98"><span class="header-section-number">3.3</span> <code>count()</code> 함수</a></li>
+  <li><a href="#across-%ED%95%A8%EC%88%98" id="toc-across-함수" class="nav-link" data-scroll-target="#across-%ED%95%A8%EC%88%98"><span class="header-section-number">3.4</span> <code>across()</code> 함수</a></li>
+  <li><a href="#c_across-%ED%95%A8%EC%88%98" id="toc-c_across-함수" class="nav-link" data-scroll-target="#c_across-%ED%95%A8%EC%88%98"><span class="header-section-number">3.5</span> <code>c_across()</code> 함수</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/sangillee66/data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">데이터 변형하기</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>이상일(서울대학교 지리교육과) </p>
+          </div>
+  </div>
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 1, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header><section id="실습-개요" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="실습-개요">실습 개요</h2>
+<p>이 실습은 R로 데이터사이언스를 하는 과정 중 데이터 변형하기(transforming)를 다룬다. 데이터 변형하기와 관련된 대부분의 함수는 <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>의 핵심 패키지 중의 하나인 <a href="https://dplyr.tidyverse.org/"><code>dplyr</code></a> 에서 제공된다. 데이터 변형하기와 관련된 함수는 크게 네 개로 범주화된다.</p>
+<ul>
+<li><p>행 함수: 행(관측개체)에 작동하는 함수, 즉 행의 변화를 야기하는 함수</p></li>
+<li><p>열 함수: 열(변수)에 작동하는 함수, 즉 열의 변화를 야기하는 함수</p></li>
+<li><p>그룹 함수: 그룹에 작동하는 함수</p></li>
+<li><p>데이터 프레임 함수: 데이터 프레임에 작동하는 함수</p></li>
+</ul>
+<p>이번 실습에서는 행 함수, 열 함수, 그룹 함수에 집중한다. 모든 실습의 시작은 <a href="https://www.tidyverse.org/"><code>tidyverse</code></a> 패키지를 불러오는 것이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>사용할 데이터는 World Bank가 <a href="https://www.gapminder.org/">gapmider.org</a>를 통해 무료로 배포하는 것으로 <a href="https://cran.r-project.org/web/packages/gapminder/readme/README.html"><code>gapmider</code></a> 패키지에 포함되어 있다. <a href="https://cran.r-project.org/web/packages/gapminder/readme/README.html"><code>gapmider</code></a> 패키지를 인스톨하고 불러온다. 데이터가 어떻게 구성되어 있는지 살펴본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jennybc/gapminder">gapminder</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html">View</a></span><span class="op">(</span><span class="va">gapminder</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="행-함수" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="행-함수">
+<span class="header-section-number">1</span> 행 함수</h2>
+<section id="filter-함수" class="level3" data-number="1.1"><h3 data-number="1.1" class="anchored" data-anchor-id="filter-함수">
+<span class="header-section-number">1.1</span> <code>filter()</code> 함수</h3>
+<p>특정 열(변수)과 관련된 조건을 만족하는 행을 선정한다. 행의 길이가 준다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">==</span> <span class="st">"Europe"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 360 × 6
+   country continent  year lifeExp     pop gdpPercap
+   &lt;fct&gt;   &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;     &lt;dbl&gt;
+ 1 Albania Europe     1952    55.2 1282697     1601.
+ 2 Albania Europe     1957    59.3 1476505     1942.
+ 3 Albania Europe     1962    64.8 1728137     2313.
+ 4 Albania Europe     1967    66.2 1984060     2760.
+ 5 Albania Europe     1972    67.7 2263554     3313.
+ 6 Albania Europe     1977    68.9 2509048     3533.
+ 7 Albania Europe     1982    70.4 2780097     3631.
+ 8 Albania Europe     1987    72   3075321     3739.
+ 9 Albania Europe     1992    71.6 3326498     2497.
+10 Albania Europe     1997    73.0 3428038     3193.
+# ℹ 350 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">&gt;</span> <span class="fl">50000000</span> <span class="op">&amp;</span> <span class="va">gdpPercap</span> <span class="op">&gt;</span> <span class="fl">30000</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 6
+  country        continent  year lifeExp       pop gdpPercap
+  &lt;fct&gt;          &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+1 France         Europe     2007    80.7  61083916    30470.
+2 Germany        Europe     2002    78.7  82350671    30036.
+3 Germany        Europe     2007    79.4  82400996    32170.
+4 Japan          Asia       2007    82.6 127467972    31656.
+5 United Kingdom Europe     2007    79.4  60776238    33203.
+6 United States  Americas   1992    76.1 256894189    32004.
+7 United States  Americas   1997    76.8 272911760    35767.
+8 United States  Americas   2002    77.3 287675526    39097.
+9 United States  Americas   2007    78.2 301139947    42952.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">lifeExp</span> <span class="op">&gt;</span> <span class="fl">82</span> <span class="op">|</span> <span class="va">gdpPercap</span> <span class="op">&gt;</span> <span class="fl">40000</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 6
+  country          continent  year lifeExp       pop gdpPercap
+  &lt;fct&gt;            &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+1 Hong Kong, China Asia       2007    82.2   6980412    39725.
+2 Ireland          Europe     2007    78.9   4109086    40676.
+3 Japan            Asia       2007    82.6 127467972    31656.
+4 Kuwait           Asia       2007    77.6   2505559    47307.
+5 Norway           Europe     2007    80.2   4627926    49357.
+6 Singapore        Asia       2007    80.0   4553009    47143.
+7 United States    Americas   2007    78.2 301139947    42952.</code></pre>
+</div>
+</div>
+</section><section id="slice-함수" class="level3" data-number="1.2"><h3 data-number="1.2" class="anchored" data-anchor-id="slice-함수">
+<span class="header-section-number">1.2</span> <code>slice()</code> 함수</h3>
+<p><code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> 함수와 마찬가지로 행의 숫자를 줄인다. <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice()</a></code> 함수는 <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_head()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_tail()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min()</a></code>과 같은 패밀리 함수가 더 널리 사용된다. 그런데 이 함수들은 작동 방식에 따라 두 가지로 구분된다.</p>
+<ul>
+<li><p>특정 열(변수)과 관계 없이, 행의 위치에 의거해 행을 선정: <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_head()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_tail()</a></code></p></li>
+<li><p>특정 열(변수)에 따른, 행의 위치에 의거해 행을 선정: <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max()</a></code>, <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min()</a></code></p></li>
+</ul>
+<p>몇 번째에서 몇 번째 사이의 행만을 골라낸다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  country     continent  year lifeExp      pop gdpPercap
+  &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+1 Afghanistan Asia       1952    28.8  8425333      779.
+2 Afghanistan Asia       1957    30.3  9240934      821.
+3 Afghanistan Asia       1962    32.0 10267083      853.
+4 Afghanistan Asia       1967    34.0 11537966      836.
+5 Afghanistan Asia       1972    36.1 13079460      740.</code></pre>
+</div>
+</div>
+<p>가장 앞에 위치한 몇 개(<code>n</code>)의 행만을 골라낸다. 실질적으로 위와 동일하다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  country     continent  year lifeExp      pop gdpPercap
+  &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+1 Afghanistan Asia       1952    28.8  8425333      779.
+2 Afghanistan Asia       1957    30.3  9240934      821.
+3 Afghanistan Asia       1962    32.0 10267083      853.
+4 Afghanistan Asia       1967    34.0 11537966      836.
+5 Afghanistan Asia       1972    36.1 13079460      740.</code></pre>
+</div>
+</div>
+<p>가장 뒤에 위치한 몇 개(<code>n</code>)의 행만을 골라낸다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_tail</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  country  continent  year lifeExp      pop gdpPercap
+  &lt;fct&gt;    &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+1 Zimbabwe Africa     1987    62.4  9216418      706.
+2 Zimbabwe Africa     1992    60.4 10704340      693.
+3 Zimbabwe Africa     1997    46.8 11404948      792.
+4 Zimbabwe Africa     2002    40.0 11926563      672.
+5 Zimbabwe Africa     2007    43.5 12311143      470.</code></pre>
+</div>
+</div>
+<p>특정 열(변수)에 따라 값이 가장 큰 몇 개(<code>n</code>)의 행만을 골라낸다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">gdpPercap</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  country       continent  year lifeExp       pop gdpPercap
+  &lt;fct&gt;         &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+1 Norway        Europe     2007    80.2   4627926    49357.
+2 Kuwait        Asia       2007    77.6   2505559    47307.
+3 Singapore     Asia       2007    80.0   4553009    47143.
+4 United States Americas   2007    78.2 301139947    42952.
+5 Ireland       Europe     2007    78.9   4109086    40676.</code></pre>
+</div>
+</div>
+<p>특정 열(변수)에 따라 값이 가장 작은 것들 중 주어진 비중(<code>prop</code>)에 해당하는 행만을 골라낸다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span> <span class="op">&amp;</span> <span class="va">continent</span> <span class="op">==</span> <span class="st">"Asia"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_min</a></span><span class="op">(</span><span class="va">lifeExp</span>, prop <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  country     continent  year lifeExp      pop gdpPercap
+  &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+1 Afghanistan Asia       2007    43.8 31889923      975.
+2 Iraq        Asia       2007    59.5 27499638     4471.
+3 Cambodia    Asia       2007    59.7 14131858     1714.</code></pre>
+</div>
+</div>
+</section><section id="arrange-함수" class="level3" data-number="1.3"><h3 data-number="1.3" class="anchored" data-anchor-id="arrange-함수">
+<span class="header-section-number">1.3</span> <code>arrange()</code> 함수</h3>
+<p>특정 열(변수)과 관련된 조건에 의거해 행의 순서를 바꾼다. 행의 길이에는 변화가 없다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">lifeExp</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country      continent  year lifeExp     pop gdpPercap
+   &lt;fct&gt;        &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;     &lt;dbl&gt;
+ 1 Rwanda       Africa     1992    23.6 7290203      737.
+ 2 Afghanistan  Asia       1952    28.8 8425333      779.
+ 3 Gambia       Africa     1952    30    284320      485.
+ 4 Angola       Africa     1952    30.0 4232095     3521.
+ 5 Sierra Leone Africa     1952    30.3 2143249      880.
+ 6 Afghanistan  Asia       1957    30.3 9240934      821.
+ 7 Cambodia     Asia       1977    31.2 6978607      525.
+ 8 Mozambique   Africa     1952    31.3 6446316      469.
+ 9 Sierra Leone Africa     1957    31.6 2295678     1004.
+10 Burkina Faso Africa     1952    32.0 4469979      543.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/desc.html">desc()</a></code> 도우미 함수(helper function)는 내림차순으로 행을 배열한다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">lifeExp</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country      continent  year lifeExp     pop gdpPercap
+   &lt;fct&gt;        &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;     &lt;dbl&gt;
+ 1 Rwanda       Africa     1992    23.6 7290203      737.
+ 2 Afghanistan  Asia       1952    28.8 8425333      779.
+ 3 Gambia       Africa     1952    30    284320      485.
+ 4 Angola       Africa     1952    30.0 4232095     3521.
+ 5 Sierra Leone Africa     1952    30.3 2143249      880.
+ 6 Afghanistan  Asia       1957    30.3 9240934      821.
+ 7 Cambodia     Asia       1977    31.2 6978607      525.
+ 8 Mozambique   Africa     1952    31.3 6446316      469.
+ 9 Sierra Leone Africa     1957    31.6 2295678     1004.
+10 Burkina Faso Africa     1952    32.0 4469979      543.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+</section><section id="distinct-함수" class="level3" data-number="1.4"><h3 data-number="1.4" class="anchored" data-anchor-id="distinct-함수">
+<span class="header-section-number">1.4</span> <code>distinct()</code> 함수</h3>
+<p>특정 열(변수)에 의거해 중복이 없이 고유한 행만을 골라낸다. 행의 길이가 준다.</p>
+<p><code>gapminder</code> 데이터와 관련하여 다음의 코드는 어떤 정보를 우리에게 주는지 생각해 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">country</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 142 × 1
+   country    
+   &lt;fct&gt;      
+ 1 Afghanistan
+ 2 Albania    
+ 3 Algeria    
+ 4 Angola     
+ 5 Argentina  
+ 6 Australia  
+ 7 Austria    
+ 8 Bahrain    
+ 9 Bangladesh 
+10 Belgium    
+# ℹ 132 more rows</code></pre>
+</div>
+</div>
+<p><code>.keep_all</code> 아규먼트를 이용하면 나머지 열도 함께 나타낼 수 있다. 나머지 열의 값이 무엇인지 생각해 본다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">continent</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  country     continent  year lifeExp      pop gdpPercap
+  &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+1 Afghanistan Asia       1952    28.8  8425333      779.
+2 Albania     Europe     1952    55.2  1282697     1601.
+3 Algeria     Africa     1952    43.1  9279525     2449.
+4 Argentina   Americas   1952    62.5 17876956     5911.
+5 Australia   Oceania    1952    69.1  8691212    10040.</code></pre>
+</div>
+</div>
+</section></section><section id="열-함수" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="열-함수">
+<span class="header-section-number">2</span> 열 함수</h2>
+<section id="select-함수" class="level3" data-number="2.1"><h3 data-number="2.1" class="anchored" data-anchor-id="select-함수">
+<span class="header-section-number">2.1</span> <code>select()</code> 함수</h3>
+<p>열(변수)의 일부를 선택한다. 열의 길이가 준다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">country</span>, <span class="va">gdpPercap</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 3
+    year country     gdpPercap
+   &lt;int&gt; &lt;fct&gt;           &lt;dbl&gt;
+ 1  1952 Afghanistan      779.
+ 2  1957 Afghanistan      821.
+ 3  1962 Afghanistan      853.
+ 4  1967 Afghanistan      836.
+ 5  1972 Afghanistan      740.
+ 6  1977 Afghanistan      786.
+ 7  1982 Afghanistan      978.
+ 8  1987 Afghanistan      852.
+ 9  1992 Afghanistan      649.
+10  1997 Afghanistan      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p>열(변수)의 일부를 선택하지 않는다. 역시 열의 길이가 준다. 실질적으로 위와 동일하다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">lifeExp</span>, <span class="va">continent</span>, <span class="va">pop</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 3
+   country      year gdpPercap
+   &lt;fct&gt;       &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan  1952      779.
+ 2 Afghanistan  1957      821.
+ 3 Afghanistan  1962      853.
+ 4 Afghanistan  1967      836.
+ 5 Afghanistan  1972      740.
+ 6 Afghanistan  1977      786.
+ 7 Afghanistan  1982      978.
+ 8 Afghanistan  1987      852.
+ 9 Afghanistan  1992      649.
+10 Afghanistan  1997      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p><code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with()</a></code>, <code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains()</a></code>와 같은 도우미 함수를 잘 활용하면 효율적으로 필요한 변수만을 선정할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"c"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 2
+   country     continent
+   &lt;fct&gt;       &lt;fct&gt;    
+ 1 Afghanistan Asia     
+ 2 Afghanistan Asia     
+ 3 Afghanistan Asia     
+ 4 Afghanistan Asia     
+ 5 Afghanistan Asia     
+ 6 Afghanistan Asia     
+ 7 Afghanistan Asia     
+ 8 Afghanistan Asia     
+ 9 Afghanistan Asia     
+10 Afghanistan Asia     
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+</section><section id="mutate-함수" class="level3" data-number="2.2"><h3 data-number="2.2" class="anchored" data-anchor-id="mutate-함수">
+<span class="header-section-number">2.2</span> <code>mutate()</code> 함수</h3>
+<p>기존의 열(변수)에 기반하여 새로운 변수를 생성한다. 열의 길이가 는다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    gdp_billion <span class="op">=</span> <span class="va">gdpPercap</span> <span class="op">*</span> <span class="va">pop</span> <span class="op">/</span> <span class="fl">10</span><span class="op">^</span><span class="fl">9</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 7
+   country     continent  year lifeExp      pop gdpPercap gdp_billion
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.        6.57
+ 2 Afghanistan Asia       1957    30.3  9240934      821.        7.59
+ 3 Afghanistan Asia       1962    32.0 10267083      853.        8.76
+ 4 Afghanistan Asia       1967    34.0 11537966      836.        9.65
+ 5 Afghanistan Asia       1972    36.1 13079460      740.        9.68
+ 6 Afghanistan Asia       1977    38.4 14880372      786.       11.7 
+ 7 Afghanistan Asia       1982    39.9 12881816      978.       12.6 
+ 8 Afghanistan Asia       1987    40.8 13867957      852.       11.8 
+ 9 Afghanistan Asia       1992    41.7 16317921      649.       10.6 
+10 Afghanistan Asia       1997    41.8 22227415      635.       14.1 
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p>여러개의 변수를 동시에 생성할 수 있다. <code><a href="https://dplyr.tidyverse.org/reference/row_number.html">row_number()</a></code> 도우미 함수는 값에 순위를 부여하는 것이고, <code>.keep = "used"</code>는 결과에 변수 생성에 동원된 변수만을 포함시키게 해 준다.<br></p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    gdpPercap_rank <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html">row_number</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span>,</span>
+<span>    lifeExp_highlow <span class="op">=</span> <span class="va">lifeExp</span> <span class="op">&gt;</span> <span class="fl">30000</span>,</span>
+<span>    .keep <span class="op">=</span> <span class="st">"used"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 142 × 4
+   lifeExp gdpPercap gdpPercap_rank lifeExp_highlow
+     &lt;dbl&gt;     &lt;dbl&gt;          &lt;int&gt; &lt;lgl&gt;          
+ 1    43.8      975.             19 FALSE          
+ 2    76.4     5937.             70 FALSE          
+ 3    72.3     6223.             72 FALSE          
+ 4    42.7     4797.             64 FALSE          
+ 5    75.3    12779.            101 FALSE          
+ 6    81.2    34435.            130 FALSE          
+ 7    79.8    36126.            132 FALSE          
+ 8    75.6    29796.            122 FALSE          
+ 9    64.1     1391.             30 FALSE          
+10    79.4    33693.            128 FALSE          
+# ℹ 132 more rows</code></pre>
+</div>
+</div>
+</section><section id="rename-함수" class="level3" data-number="2.3"><h3 data-number="2.3" class="anchored" data-anchor-id="rename-함수">
+<span class="header-section-number">2.3</span> <code>rename()</code> 함수</h3>
+<p>변수의 이름을 바꾼다. 열의 길이에는 변화가 없다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span></span>
+<span>    gdp_percap <span class="op">=</span> <span class="va">gdpPercap</span>,</span>
+<span>    left_exp <span class="op">=</span> <span class="va">lifeExp</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year left_exp      pop gdp_percap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;    &lt;dbl&gt;    &lt;int&gt;      &lt;dbl&gt;
+ 1 Afghanistan Asia       1952     28.8  8425333       779.
+ 2 Afghanistan Asia       1957     30.3  9240934       821.
+ 3 Afghanistan Asia       1962     32.0 10267083       853.
+ 4 Afghanistan Asia       1967     34.0 11537966       836.
+ 5 Afghanistan Asia       1972     36.1 13079460       740.
+ 6 Afghanistan Asia       1977     38.4 14880372       786.
+ 7 Afghanistan Asia       1982     39.9 12881816       978.
+ 8 Afghanistan Asia       1987     40.8 13867957       852.
+ 9 Afghanistan Asia       1992     41.7 16317921       649.
+10 Afghanistan Asia       1997     41.8 22227415       635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p>패밀리 함수인 <code><a href="https://dplyr.tidyverse.org/reference/rename.html">rename_with()</a></code>를 이용하면 다른 것도 가능하다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename_with</a></span><span class="op">(</span></span>
+<span>    <span class="va">tolower</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"l"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year lifeexp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.
+10 Afghanistan Asia       1997    41.8 22227415      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+</section><section id="relocate-함수" class="level3" data-number="2.4"><h3 data-number="2.4" class="anchored" data-anchor-id="relocate-함수">
+<span class="header-section-number">2.4</span> <code>relocate()</code> 함수</h3>
+<p>변수의 위치를 바꾼다. 열의 길이에는 변화가 없다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+    year continent country     lifeExp      pop gdpPercap
+   &lt;int&gt; &lt;fct&gt;     &lt;fct&gt;         &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1  1952 Asia      Afghanistan    28.8  8425333      779.
+ 2  1957 Asia      Afghanistan    30.3  9240934      821.
+ 3  1962 Asia      Afghanistan    32.0 10267083      853.
+ 4  1967 Asia      Afghanistan    34.0 11537966      836.
+ 5  1972 Asia      Afghanistan    36.1 13079460      740.
+ 6  1977 Asia      Afghanistan    38.4 14880372      786.
+ 7  1982 Asia      Afghanistan    39.9 12881816      978.
+ 8  1987 Asia      Afghanistan    40.8 13867957      852.
+ 9  1992 Asia      Afghanistan    41.7 16317921      649.
+10  1997 Asia      Afghanistan    41.8 22227415      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p><code>.before</code>나 <code>.after</code> 아규먼트를 사용하여 해당 변수를 어떤 변수의 앞이나 뒤로 보낼 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="va">pop</span>, .before <span class="op">=</span> <span class="va">lifeExp</span> <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year      pop lifeExp gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;    &lt;int&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952  8425333    28.8      779.
+ 2 Afghanistan Asia       1957  9240934    30.3      821.
+ 3 Afghanistan Asia       1962 10267083    32.0      853.
+ 4 Afghanistan Asia       1967 11537966    34.0      836.
+ 5 Afghanistan Asia       1972 13079460    36.1      740.
+ 6 Afghanistan Asia       1977 14880372    38.4      786.
+ 7 Afghanistan Asia       1982 12881816    39.9      978.
+ 8 Afghanistan Asia       1987 13867957    40.8      852.
+ 9 Afghanistan Asia       1992 16317921    41.7      649.
+10 Afghanistan Asia       1997 22227415    41.8      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+</section></section><section id="그룹-함수" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="그룹-함수">
+<span class="header-section-number">3</span> 그룹 함수</h2>
+<section id="group_by-함수" class="level3" data-number="3.1"><h3 data-number="3.1" class="anchored" data-anchor-id="group_by-함수">
+<span class="header-section-number">3.1</span> <code>group_by()</code> 함수</h3>
+<p>특정 범주 열(변수)에 의거해 행을 분할한다. 행의 길이는 변하지 않는다.</p>
+<p>하나의 범주 변수에 의거해 그룹화한다. 산출물을 보면 <code>year</code>에 의거해 행이 12개의 그룹으로 나누어졌음이 나타나 있다(두 번째 줄: Group: year [12]).</p>
+<div class="cell">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+# Groups:   year [12]
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.
+10 Afghanistan Asia       1997    41.8 22227415      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p>두 개 이상의 범주 변수에 의거해 그룹화할 수도 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+# Groups:   year, continent [60]
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.
+10 Afghanistan Asia       1997    41.8 22227415      635.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+</section><section id="summarize-함수" class="level3" data-number="3.2"><h3 data-number="3.2" class="anchored" data-anchor-id="summarize-함수">
+<span class="header-section-number">3.2</span> <code>summarize()</code> 함수</h3>
+<p>주어진 열(변수)에 대한 통계 요약값을 계산하고 그것으로 이루어진 새로운 데이터 프레임을 생성한다. 엄밀히 말해 기존 열(변수)을 변형한다기 보다는 기존 데이터 프레임으로부터 새로운 데이터 프레임을 생성한다고 볼 수 있다. <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize()</a></code> 함수는 대부분의 경우 <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 함수와 함께 사용된다. 다음의 둘을 비교해 보라.</p>
+<div class="cell">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>mean_gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  mean_gdpPercap
+           &lt;dbl&gt;
+1         11680.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="fl">2007</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>mean_gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  continent mean_gdpPercap
+  &lt;fct&gt;              &lt;dbl&gt;
+1 Africa             3089.
+2 Americas          11003.
+3 Asia              12473.
+4 Europe            25054.
+5 Oceania           29810.</code></pre>
+</div>
+</div>
+<p>좀 더 복잡한 확장이 가능하다. 마지막의 <code><a href="https://dplyr.tidyverse.org/reference/context.html">n()</a></code>은 자동으로 생성되는 그룹별 빈도값이다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">continent</span>, <span class="va">year</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span></span>
+<span>      mean_gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span>,</span>
+<span>      sd_gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span>,</span>
+<span>      mean_pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>,</span>
+<span>      sd_pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>,</span>
+<span>      n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 7
+# Groups:   continent [5]
+   continent  year mean_gdpPercap sd_gdpPercap  mean_pop    sd_pop     n
+   &lt;fct&gt;     &lt;int&gt;          &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
+ 1 Africa     1952          1253.         983.  4570010.  6317450.    52
+ 2 Africa     1957          1385.        1135.  5093033.  7076042.    52
+ 3 Africa     1962          1598.        1462.  5702247.  7957545.    52
+ 4 Africa     1967          2050.        2848.  6447875.  8985505.    52
+ 5 Africa     1972          2340.        3287.  7305376. 10130833.    52
+ 6 Africa     1977          2586.        4142.  8328097. 11585184.    52
+ 7 Africa     1982          2482.        3243.  9602857. 13456243.    52
+ 8 Africa     1987          2283.        2567. 11054502. 15277484.    52
+ 9 Africa     1992          2282.        2644. 12674645. 17562719.    52
+10 Africa     1997          2379.        2821. 14304480. 19873013.    52
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code>와 <code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>를 결합하는 경우, <code>.by_group = TRUE</code>를 하면 그룹별로 행을 배열할 수 있다(그렇지 않으면 그룹 설정을 무시한 채 행을 배열한다.)</p>
+<div class="cell">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span>, .by_group <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+# Groups:   year, continent [60]
+   country      continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;        &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 South Africa Africa     1952    45.0 14264935     4725.
+ 2 Gabon        Africa     1952    37.0   420702     4293.
+ 3 Angola       Africa     1952    30.0  4232095     3521.
+ 4 Reunion      Africa     1952    52.7   257700     2719.
+ 5 Djibouti     Africa     1952    34.8    63149     2670.
+ 6 Algeria      Africa     1952    43.1  9279525     2449.
+ 7 Namibia      Africa     1952    41.7   485831     2424.
+ 8 Libya        Africa     1952    42.7  1019729     2388.
+ 9 Congo, Rep.  Africa     1952    42.1   854885     2126.
+10 Mauritius    Africa     1952    51.0   516556     1968.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p>아래는 연도별/대륙별로 일인당 GDP가 가장 높은 국가를 추출한 것이다. 코드를 생각해 보라.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 6
+# Groups:   year, continent [60]
+   country       continent  year lifeExp       pop gdpPercap
+   &lt;fct&gt;         &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+ 1 South Africa  Africa     1952    45.0  14264935     4725.
+ 2 United States Americas   1952    68.4 157553000    13990.
+ 3 Kuwait        Asia       1952    55.6    160000   108382.
+ 4 Switzerland   Europe     1952    69.6   4815000    14734.
+ 5 New Zealand   Oceania    1952    69.4   1994794    10557.
+ 6 South Africa  Africa     1957    48.0  16151549     5487.
+ 7 United States Americas   1957    69.5 171984000    14847.
+ 8 Kuwait        Asia       1957    58.0    212846   113523.
+ 9 Switzerland   Europe     1957    70.6   5126000    17909.
+10 New Zealand   Oceania    1957    70.3   2229407    12247.
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 함수가 한 번 적용되면, 그 뒤의 모든 오퍼레이션에 그룹 분할이 적용되기 때문에 예기치 못한 일이 발생할 수 있다. 이것을 회피하기 위해 두 가지 옵션이 있다. 첫번째 방법은 마지막에 <code>upgroup()</code> 함수를 첨가하는 것이다. 아래에 위 질문에 대한 정답이 나타나 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 6
+   country       continent  year lifeExp       pop gdpPercap
+   &lt;fct&gt;         &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+ 1 South Africa  Africa     1952    45.0  14264935     4725.
+ 2 United States Americas   1952    68.4 157553000    13990.
+ 3 Kuwait        Asia       1952    55.6    160000   108382.
+ 4 Switzerland   Europe     1952    69.6   4815000    14734.
+ 5 New Zealand   Oceania    1952    69.4   1994794    10557.
+ 6 South Africa  Africa     1957    48.0  16151549     5487.
+ 7 United States Americas   1957    69.5 171984000    14847.
+ 8 Kuwait        Asia       1957    58.0    212846   113523.
+ 9 Switzerland   Europe     1957    70.6   5126000    17909.
+10 New Zealand   Oceania    1957    70.3   2229407    12247.
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p>두 번째 방법은 <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 함수 대신 <code>by</code> 아규먼트를 사용하는 것이다. 결과가 달라보이겠지만 정렬의 차이일 뿐 동일하다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">gdpPercap</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 6
+   country      continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;        &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Kuwait       Asia       1952    55.6   160000   108382.
+ 2 Kuwait       Asia       1957    58.0   212846   113523.
+ 3 Kuwait       Asia       1962    60.5   358266    95458.
+ 4 Kuwait       Asia       1967    64.6   575003    80895.
+ 5 Kuwait       Asia       1972    67.7   841934   109348.
+ 6 Kuwait       Asia       1977    69.3  1140357    59265.
+ 7 Saudi Arabia Asia       1982    63.0 11254672    33693.
+ 8 Kuwait       Asia       1987    74.2  1891487    28118.
+ 9 Kuwait       Asia       1992    75.2  1418095    34933.
+10 Kuwait       Asia       1997    76.2  1765345    40301.
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+</section><section id="count-함수" class="level3" data-number="3.3"><h3 data-number="3.3" class="anchored" data-anchor-id="count-함수">
+<span class="header-section-number">3.3</span> <code>count()</code> 함수</h3>
+<p>특정 범주 열(변수)에 의거한 빈도를 빠르게 계산해 준다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 3
+    year continent     n
+   &lt;int&gt; &lt;fct&gt;     &lt;int&gt;
+ 1  1952 Africa       52
+ 2  1952 Americas     25
+ 3  1952 Asia         33
+ 4  1952 Europe       30
+ 5  1952 Oceania       2
+ 6  1957 Africa       52
+ 7  1957 Americas     25
+ 8  1957 Asia         33
+ 9  1957 Europe       30
+10  1957 Oceania       2
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p><code>wt</code> 아규먼트를 사용하면 빈도가 아니라 범주별 특정 변수의 합산값을 구할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html">count</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span>, wt <span class="op">=</span> <span class="va">pop</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 3
+    year continent          n
+   &lt;int&gt; &lt;fct&gt;          &lt;dbl&gt;
+ 1  1952 Africa     237640501
+ 2  1952 Americas   345152446
+ 3  1952 Asia      1395357351
+ 4  1952 Europe     418120846
+ 5  1952 Oceania     10686006
+ 6  1957 Africa     264837738
+ 7  1957 Americas   386953916
+ 8  1957 Asia      1562780599
+ 9  1957 Europe     437890351
+10  1957 Oceania     11941976
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p>위의 두 개는 사실 아래와 동일하다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span></span>
+<span>    n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    sum_pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 4
+# Groups:   year [12]
+    year continent     n    sum_pop
+   &lt;int&gt; &lt;fct&gt;     &lt;int&gt;      &lt;dbl&gt;
+ 1  1952 Africa       52  237640501
+ 2  1952 Americas     25  345152446
+ 3  1952 Asia         33 1395357351
+ 4  1952 Europe       30  418120846
+ 5  1952 Oceania       2   10686006
+ 6  1957 Africa       52  264837738
+ 7  1957 Americas     25  386953916
+ 8  1957 Asia         33 1562780599
+ 9  1957 Europe       30  437890351
+10  1957 Oceania       2   11941976
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+</section><section id="across-함수" class="level3" data-number="3.4"><h3 data-number="3.4" class="anchored" data-anchor-id="across-함수">
+<span class="header-section-number">3.4</span> <code>across()</code> 함수</h3>
+<p>다수의 열(변수)에 동일한 함수를 적용할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">lifeExp</span>, <span class="va">gdpPercap</span><span class="op">)</span>, <span class="va">round</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952      29  8425333       779
+ 2 Afghanistan Asia       1957      30  9240934       821
+ 3 Afghanistan Asia       1962      32 10267083       853
+ 4 Afghanistan Asia       1967      34 11537966       836
+ 5 Afghanistan Asia       1972      36 13079460       740
+ 6 Afghanistan Asia       1977      38 14880372       786
+ 7 Afghanistan Asia       1982      40 12881816       978
+ 8 Afghanistan Asia       1987      41 13867957       852
+ 9 Afghanistan Asia       1992      42 16317921       649
+10 Afghanistan Asia       1997      42 22227415       635
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p>이것은 다음과 동일하다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    lifeExp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">lifeExp</span><span class="op">)</span>,</span>
+<span>    gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952      29  8425333       779
+ 2 Afghanistan Asia       1957      30  9240934       821
+ 3 Afghanistan Asia       1962      32 10267083       853
+ 4 Afghanistan Asia       1967      34 11537966       836
+ 5 Afghanistan Asia       1972      36 13079460       740
+ 6 Afghanistan Asia       1977      38 14880372       786
+ 7 Afghanistan Asia       1982      40 12881816       978
+ 8 Afghanistan Asia       1987      41 13867957       852
+ 9 Afghanistan Asia       1992      42 16317921       649
+10 Afghanistan Asia       1997      42 22227415       635
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize()</a></code> 함수와 결합하여 선택된 변수에 특정 함수를 적용하고 그 결과의 이름을 변수명과 함수명을 사용하여 부여할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">lifeExp</span>, <span class="va">gdpPercap</span><span class="op">)</span>, <span class="va">mean</span>, .names <span class="op">=</span> <span class="st">"mean_{.col}"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 4
+# Groups:   year [12]
+    year continent mean_lifeExp mean_gdpPercap
+   &lt;int&gt; &lt;fct&gt;            &lt;dbl&gt;          &lt;dbl&gt;
+ 1  1952 Africa            39.1          1253.
+ 2  1952 Americas          53.3          4079.
+ 3  1952 Asia              46.3          5195.
+ 4  1952 Europe            64.4          5661.
+ 5  1952 Oceania           69.3         10298.
+ 6  1957 Africa            41.3          1385.
+ 7  1957 Americas          56.0          4616.
+ 8  1957 Asia              49.3          5788.
+ 9  1957 Europe            66.7          6963.
+10  1957 Oceania           70.3         11599.
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+</section><section id="c_across-함수" class="level3" data-number="3.5"><h3 data-number="3.5" class="anchored" data-anchor-id="c_across-함수">
+<span class="header-section-number">3.5</span> <code>c_across()</code> 함수</h3>
+<p><code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 함수와 <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> 함수가 결합하는 것과 정반대로, <code><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise()</a></code> 함수와 <code><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across()</a></code> 함수를 결합하며, 행별 통계값을 산출할 수 있다. 물론 여기서 sd 값은 아무런 의미가 없다.</p>
+<div class="cell">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/c_across.html">c_across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 7
+# Rowwise: 
+   country     continent  year lifeExp      pop gdpPercap        sd
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.  4212207.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.  4619999.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.  5133067.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.  5768510.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.  6539272.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.  7439719.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.  6440408.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.  6933499.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.  8158513.
+10 Afghanistan Asia       1997    41.8 22227415      635. 11113262.
+# ℹ 1,694 more rows</code></pre>
+</div>
+</div>
+
+
+</section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./exec_03.html" class="pagination-link  aria-label=">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">데이터 불러오기와 정리하기</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./exec_05.html" class="pagination-link" aria-label="데이터 시각화하기">
+        <span class="nav-page-text">데이터 시각화하기</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2024, Sang-Il Lee</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sangillee66/data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://sangillee.snu.ac.kr/">
+      <i class="bi bi-house" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:si_lee@snu.ac.kr">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sangillee66">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer>
+
+
+</body></html>
